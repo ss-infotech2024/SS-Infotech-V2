@@ -21,9 +21,9 @@ const Home = () => {
       </section>
 
       {/* Company Goal Section (Optional) */}
-      {/* <section className="py-16 bg-gray-50 flex flex-col items-center justify-center text-center space-y-8">
+      <section className="py-16 px-20 bg-gray-50 flex flex-col items-center justify-center text-center space-y-8">
         <CompanyGoal />
-      </section> */}
+      </section>
 
       {/* Branches Section */}
       <section className="py-16 px-4 md:px-12 bg-gray-50 flex flex-col items-center justify-center space-y-12">
@@ -53,10 +53,10 @@ const Home = () => {
       </section>
 
       {/* Contact Form */}
-      <section className="py-16 px-4 md:px-12 bg-gray-50 flex flex-col items-center justify-center">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9] mb-8 text-center">
+      <section className="px-4 md:px-12 bg-gray-50 flex flex-col items-center justify-center">
+        {/* <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9] mb-8 text-center">
           Get in Touch
-        </h2>
+        </h2> */}
         <ContactForm />
       </section>
     </div>

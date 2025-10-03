@@ -415,3 +415,20 @@
 .hover\:text-brand-blue:hover {
   color: var(--brand-blue);
 }
+
+/* Hide scrollbar but keep scroll functionality */
+
+/* Chrome, Safari and Edge */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.hide-scrollbar {
+  scrollbar-width: none; 
+}
+
+/* IE/Edge (legacy) */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+}

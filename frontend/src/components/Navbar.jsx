@@ -23,7 +23,8 @@ function Navbar() {
   ];
 
   return (
-    <nav className="bg-white text-[#1E245C] px-4 sm:px-6 lg:px-8 py-3 border-b-2 border-[#1E245C] sticky top-0 z-50 shadow-md">
+  // border-[#1E245C]( 
+    <nav className="bg-white text-[#1E245C] px-4 sm:px-6 lg:px-8 py-3 border-b-2  sticky top-0 z-50 shadow-md"> 
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo / Brand */}
         <NavLink to="/" className="flex items-center space-x-2">

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 
 const ImageSlider = () => {
   const images = [
-    "/img/img1.png",
-    "/img/img2.png",
-    "/img/img3.png",
-    "/img/img4.png",
+    "/img/imag1.png",
+    "/img/imag2.png",
+    "/img/imag3.png",
+    "/img/imag4.png",
+    "/img/imag5.png",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
 
