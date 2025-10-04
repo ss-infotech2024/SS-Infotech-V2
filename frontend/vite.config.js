@@ -7,7 +7,7 @@ export default defineConfig({
     outDir: 'dist', // default, but explicit is good
   },
   server: {
-    port: 3000,
+    port: 5173,
   },
   // 👇 This is important if you're using React Router
   resolve: {
