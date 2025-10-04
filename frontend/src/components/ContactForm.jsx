@@ -46,11 +46,11 @@ const ContactForm = () => {
   ];
   return(
     <>
-    <div className="bg-gray-50 min-h-screen p-8">
-<h2 className="pt-40 text-3xl font-bold text-center mb-8" style={{ color: "#AB1EA9" }}>
+    <div className="bg-gray-50 min-h-screen px-40">
+<h2 className="pt-12 text-3xl font-bold text-center mb-8" style={{ color: "#AB1EA9" }}>
         Our Contact
       </h2>
-      <p className="text-center text-gray-600 mb-12">Feel Free To Ask Us Anything</p>
+      <p className="text-center text-gray-600 mb-16">Feel Free To Ask Us Anything</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Card - Contact Form */}

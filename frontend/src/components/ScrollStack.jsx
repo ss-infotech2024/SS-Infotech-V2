@@ -3,7 +3,12 @@ import Lenis from 'lenis';
 
 export const ScrollStackItem = ({ children, itemClassName = '' }) => (
   <div
-    className={`scroll-stack-card relative w-full h-80 my-8 p-12 rounded-[40px] shadow-[0_0_30px_rgba(0,0,0,0.1)] box-border origin-top will-change-transform bg-white ${itemClassName}`.trim()}
+className={`scroll-stack-card relative w-full h-50 my-8 p-5 rounded-[40px] box-border origin-top will-change-transform
+  bg-gradient-to-br from-[rgba(171,30,169,0.06)] via-[rgba(171,30,169,0.03)] to-[rgba(255,179,71,0.03)]
+  border border-[rgba(171,30,169,0.06)] text-[#111827] backdrop-blur-lg
+  hover: transition-shadow duration-300
+  ${itemClassName}`.trim()}
+
     style={{
       backfaceVisibility: 'hidden',
       transformStyle: 'preserve-3d'
@@ -16,7 +21,7 @@ export const ScrollStackItem = ({ children, itemClassName = '' }) => (
 const ScrollStack = ({
   children,
   className = '',
-  itemDistance = 100,
+  itemDistance = 5,
   itemScale = 0.03,
   itemStackDistance = 30,
   stackPosition = '20%',
@@ -24,7 +29,7 @@ const ScrollStack = ({
   baseScale = 0.85,
   scaleDuration = 0.5,
   rotationAmount = 0,
-  blurAmount = 0,
+  blurAmount = 0.9,
   useWindowScroll = false,
   allowParentScrollOnEnd = false,
   onStackComplete
@@ -411,13 +416,13 @@ const ScrollStack = ({
         willChange: 'scroll-position'
       };
 
-  const containerClassName = useWindowScroll
-    ? `relative w-full ${className}`.trim()
-    : `relative w-full h-full overflow-y-auto overflow-x-visible ${className}`.trim();
+ const containerClassName = useWindowScroll
+  ? `relative w-4/5 mx-auto overflow-y-auto hide-scrollbar ${className}`.trim()
+  : `relative w-4/5 h-full overflow-y-auto overflow-x-visible mx-auto hide-scrollbar ${className}`.trim();
 
   return (
     <div className={containerClassName} ref={scrollerRef} style={containerStyles}>
-      <div className="scroll-stack-inner pt-[20vh] px-20 pb-[18rem]">
+      <div className="scroll-stack-inner pt-[20vh] pb-[18rem]">
         {children}
         {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
