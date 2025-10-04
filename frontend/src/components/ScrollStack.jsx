@@ -1,13 +1,12 @@
 import React, { useLayoutEffect, useRef, useCallback } from 'react';
-import Lenis from 'lenis';
 
 export const ScrollStackItem = ({ children, itemClassName = '' }) => (
   <div
-className={`scroll-stack-card relative w-full h-50 my-8 p-5 rounded-[40px] box-border origin-top will-change-transform
-  bg-gradient-to-br from-[rgba(171,30,169,0.06)] via-[rgba(171,30,169,0.03)] to-[rgba(255,179,71,0.03)]
-  border border-[rgba(171,30,169,0.06)] text-[#111827] backdrop-blur-lg
-  hover: transition-shadow duration-300
-  ${itemClassName}`.trim()}
+    className={`scroll-stack-card relative w-full h-50 my-8 p-5 rounded-[40px] box-border origin-top will-change-transform
+      bg-gradient-to-br from-[rgba(171,30,169,0.06)] via-[rgba(171,30,169,0.03)] to-[rgba(255,179,71,0.03)]
+      border border-[rgba(171,30,169,0.06)] text-[#111827] backdrop-blur-lg
+      hover: transition-shadow duration-300
+      ${itemClassName}`.trim()}
 
     style={{
       backfaceVisibility: 'hidden',
@@ -36,12 +35,11 @@ const ScrollStack = ({
 }) => {
   const scrollerRef = useRef(null);
   const stackCompletedRef = useRef(false);
-  const animationFrameRef = useRef(null);
-  const lenisRef = useRef(null);
   const cardsRef = useRef([]);
   const lastTransformsRef = useRef(new Map());
   const isUpdatingRef = useRef(false);
   const touchStartYRef = useRef(null);
+  const rafIdRef = useRef(null);
 
   const calculateProgress = useCallback((scrollTop, start, end) => {
     if (scrollTop < start) return 0;
@@ -86,78 +84,6 @@ const ScrollStack = ({
     [useWindowScroll]
   );
 
-  // handler used by Lenis
-  const handleScroll = useCallback(() => {
-    updateCardTransforms();
-  }, []); // note: updateCardTransforms is defined later - we'll reassign via closure below
-
-  // setupLenis declared after handleScroll so we can attach handleScroll to Lenis events
-  const setupLenis = useCallback(() => {
-    // destroy any previous lenis
-    if (lenisRef.current) {
-      try { lenisRef.current.destroy(); } catch (e) {}
-      lenisRef.current = null;
-    }
-
-    if (useWindowScroll) {
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
-      });
-
-      lenis.on('scroll', handleScroll);
-
-      const raf = time => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-
-      lenisRef.current = lenis;
-      return lenis;
-    } else {
-      const scroller = scrollerRef.current;
-      if (!scroller) return;
-
-      // ensure scroller initial overflow style
-      scroller.style.overflowY = scroller.style.overflowY || 'auto';
-
-      const lenis = new Lenis({
-        wrapper: scroller,
-        content: scroller.querySelector('.scroll-stack-inner'),
-        duration: 1.2,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
-      });
-
-      lenis.on('scroll', handleScroll);
-
-      const raf = time => {
-        lenis.raf(time);
-        animationFrameRef.current = requestAnimationFrame(raf);
-      };
-      animationFrameRef.current = requestAnimationFrame(raf);
-
-      lenisRef.current = lenis;
-      return lenis;
-    }
-  }, [useWindowScroll, handleScroll]);
-
-  // updateCardTransforms defined after setupLenis, but we need handleScroll to call it;
-  // to avoid circular dependency issues we set handleScroll above (it will close over the correct function since both are stable callbacks).
   const updateCardTransforms = useCallback(() => {
     if (!cardsRef.current.length || isUpdatingRef.current) return;
 
@@ -172,9 +98,6 @@ const ScrollStack = ({
       : scrollerRef.current?.querySelector('.scroll-stack-end');
 
     const endElementTop = endElement ? getElementOffset(endElement) : 0;
-
-    // (No longer toggling overflow or destroying lenis here.)
-    // We will forward wheel/touch events to parent instead via listeners attached in useLayoutEffect.
 
     cardsRef.current.forEach((card, i) => {
       if (!card) return;
@@ -269,11 +192,47 @@ const ScrollStack = ({
     getElementOffset
   ]);
 
-  // Re-bind handleScroll to the "real" function closure so Lenis calls updateCardTransforms properly.
-  // (A no-op when handleScroll already uses the latest closure.)
-  // (This line ensures stable references in setupLenis useCallback.)
-  // eslint-disable-next-line no-unused-expressions
-  handleScroll;
+  const handleScroll = useCallback(() => {
+    if (rafIdRef.current) {
+      cancelAnimationFrame(rafIdRef.current);
+    }
+    rafIdRef.current = requestAnimationFrame(updateCardTransforms);
+  }, [updateCardTransforms]);
+
+  const handleWheel = useCallback((e) => {
+    if (!useWindowScroll && allowParentScrollOnEnd && scrollerRef.current) {
+      const scroller = scrollerRef.current;
+      const deltaY = e.deltaY;
+      const atTop = scroller.scrollTop <= 0;
+      const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
+
+      if ((atBottom && deltaY > 0) || (atTop && deltaY < 0)) {
+        e.preventDefault();
+        window.scrollBy({ top: deltaY, left: 0, behavior: 'auto' });
+        return;
+      }
+    }
+  }, [useWindowScroll, allowParentScrollOnEnd]);
+
+  const handleTouchStart = useCallback((e) => {
+    touchStartYRef.current = e.touches?.[0]?.clientY ?? null;
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    if (!useWindowScroll && allowParentScrollOnEnd && scrollerRef.current && touchStartYRef.current != null) {
+      const scroller = scrollerRef.current;
+      const currentY = e.touches?.[0]?.clientY ?? 0;
+      const delta = touchStartYRef.current - currentY;
+      const atTop = scroller.scrollTop <= 0;
+      const atBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1;
+
+      if ((atBottom && delta > 0) || (atTop && delta < 0)) {
+        e.preventDefault();
+        window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+        touchStartYRef.current = currentY;
+      }
+    }
+  }, [useWindowScroll, allowParentScrollOnEnd]);
 
   useLayoutEffect(() => {
     const scroller = scrollerRef.current;
@@ -288,6 +247,7 @@ const ScrollStack = ({
     cardsRef.current = cards;
     const transformsCache = lastTransformsRef.current;
 
+    // Setup card styles
     cards.forEach((card, i) => {
       if (i < cards.length - 1) {
         card.style.marginBottom = `${itemDistance}px`;
@@ -301,80 +261,43 @@ const ScrollStack = ({
       card.style.webkitPerspective = '1000px';
     });
 
-    // ensure scroller has initial overflow style
+    // Setup scroll container
     if (!useWindowScroll) {
       scroller.style.overflowY = scroller.style.overflowY || 'auto';
     }
 
-    setupLenis();
-
-    // initial transform pass
-    updateCardTransforms();
-
-    // ---- forward wheel & touch to parent when at child top/bottom ----
-    // only attach if user opted-in and we're using internal scroller
-    let wheelHandler = null;
-    let touchStart = null;
-    let touchMove = null;
+    // Add event listeners
+    const scrollTarget = useWindowScroll ? window : scroller;
+    scrollTarget.addEventListener('scroll', handleScroll, { passive: true });
 
     if (!useWindowScroll && allowParentScrollOnEnd) {
-      const scrollerEl = scroller;
-
-      wheelHandler = (e) => {
-        // if useWindowScroll or no scroller, ignore
-        if (useWindowScroll || !scrollerEl) return;
-        const deltaY = e.deltaY;
-        const atTop = scrollerEl.scrollTop <= 0;
-        const atBottom = scrollerEl.scrollTop + scrollerEl.clientHeight >= scrollerEl.scrollHeight - 1;
-
-        // If trying to scroll past bounds, forward to parent (window)
-        if ((atBottom && deltaY > 0) || (atTop && deltaY < 0)) {
-          e.preventDefault();
-          // forward delta to window
-          window.scrollBy({ top: deltaY, left: 0, behavior: 'auto' });
-        }
-      };
-
-      touchStart = (ev) => {
-        touchStartYRef.current = ev.touches?.[0]?.clientY ?? null;
-      };
-
-      touchMove = (ev) => {
-        if (useWindowScroll || !scrollerEl || touchStartYRef.current == null) return;
-        const currentY = ev.touches?.[0]?.clientY ?? 0;
-        const delta = touchStartYRef.current - currentY; // positive => user swiped up
-        const atTop = scrollerEl.scrollTop <= 0;
-        const atBottom = scrollerEl.scrollTop + scrollerEl.clientHeight >= scrollerEl.scrollHeight - 1;
-
-        if ((atBottom && delta > 0) || (atTop && delta < 0)) {
-          ev.preventDefault();
-          window.scrollBy({ top: delta, left: 0, behavior: 'auto' });
-          // update start so continued movement keeps forwarding
-          touchStartYRef.current = currentY;
-        }
-      };
-
-      // wheel must be non-passive so we can preventDefault
-      scrollerEl.addEventListener('wheel', wheelHandler, { passive: false, capture: true });
-      scrollerEl.addEventListener('touchstart', touchStart, { passive: true });
-      scrollerEl.addEventListener('touchmove', touchMove, { passive: false });
+      scroller.addEventListener('wheel', handleWheel, { passive: false });
+      scroller.addEventListener('touchstart', handleTouchStart, { passive: true });
+      scroller.addEventListener('touchmove', handleTouchMove, { passive: false });
     }
 
+    // Initial transform
+    updateCardTransforms();
+
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      if (lenisRef.current) {
-        try { lenisRef.current.destroy(); } catch (e) {}
-        lenisRef.current = null;
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
       }
 
-      if (!useWindowScroll && allowParentScrollOnEnd && scroller) {
-        if (wheelHandler) scroller.removeEventListener('wheel', wheelHandler, { capture: true });
-        if (touchStart) scroller.removeEventListener('touchstart', touchStart);
-        if (touchMove) scroller.removeEventListener('touchmove', touchMove);
+      const scrollTarget = useWindowScroll ? window : scroller;
+      scrollTarget.removeEventListener('scroll', handleScroll);
+
+      if (!useWindowScroll && allowParentScrollOnEnd) {
+        scroller.removeEventListener('wheel', handleWheel);
+        scroller.removeEventListener('touchstart', handleTouchStart);
+        scroller.removeEventListener('touchmove', handleTouchMove);
       }
 
-      // restore overflow style
-      if (scrollerRef.current) scrollerRef.current.style.overflowY = '';
+      // Cleanup styles
+      if (scrollerRef.current) {
+        scrollerRef.current.style.overflowY = '';
+      }
+
       stackCompletedRef.current = false;
       cardsRef.current = [];
       transformsCache.clear();
@@ -382,49 +305,34 @@ const ScrollStack = ({
     };
   }, [
     itemDistance,
-    itemScale,
-    itemStackDistance,
-    stackPosition,
-    scaleEndPosition,
-    baseScale,
-    scaleDuration,
-    rotationAmount,
-    blurAmount,
     useWindowScroll,
-    onStackComplete,
-    setupLenis,
-    updateCardTransforms,
-    allowParentScrollOnEnd
+    allowParentScrollOnEnd,
+    handleScroll,
+    handleWheel,
+    handleTouchStart,
+    handleTouchMove,
+    updateCardTransforms
   ]);
 
-  // Container styles based on scroll mode
-  const containerStyles = useWindowScroll
-    ? {
-        // Global scroll mode - no overflow constraints
-        overscrollBehavior: 'contain',
-        WebkitOverflowScrolling: 'touch',
-        WebkitTransform: 'translateZ(0)',
-        transform: 'translateZ(0)'
-      }
-    : {
-        // Container scroll mode - original behavior
-        overscrollBehavior: 'contain',
-        WebkitOverflowScrolling: 'touch',
-        scrollBehavior: 'smooth',
-        WebkitTransform: 'translateZ(0)',
-        transform: 'translateZ(0)',
-        willChange: 'scroll-position'
-      };
+  // Container styles
+  const containerStyles = {
+    overscrollBehavior: 'contain',
+    WebkitOverflowScrolling: 'touch',
+    scrollBehavior: 'auto', // Use native scroll behavior
+  };
 
- const containerClassName = useWindowScroll
-  ? `relative w-4/5 mx-auto overflow-y-auto hide-scrollbar ${className}`.trim()
-  : `relative w-4/5 h-full overflow-y-auto overflow-x-visible mx-auto hide-scrollbar ${className}`.trim();
+  const containerClassName = useWindowScroll
+    ? `relative w-4/5 mx-auto ${className}`.trim()
+    : `relative w-4/5 h-full overflow-y-auto overflow-x-visible mx-auto hide-scrollbar ${className}`.trim();
 
   return (
-    <div className={containerClassName} ref={scrollerRef} style={containerStyles}>
+    <div 
+      className={containerClassName} 
+      ref={scrollerRef} 
+      style={containerStyles}
+    >
       <div className="scroll-stack-inner pt-[20vh] pb-[18rem]">
         {children}
-        {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
       </div>
     </div>
