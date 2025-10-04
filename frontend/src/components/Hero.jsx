@@ -27,6 +27,8 @@ const Hero = () => {
     fetchSlides();
   }, []);
 
+  
+
   useEffect(() => {
     if (!isPlaying || slides.length === 0) return;
 

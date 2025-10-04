@@ -22,6 +22,7 @@ function timeAgo(dateStr) {
   return "just now";
 }
 
+
 // JobApplicationModal Component
 
 
