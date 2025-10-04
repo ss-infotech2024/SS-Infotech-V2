@@ -5,7 +5,7 @@ import CompanyGoal from "../components/CompanyGoal";
 import SsGbranch from "../components/SsGbranch";
 import BoardAdvisory from "../components/BoardAdvisory";
 import OurTeam from "../components/OurTeam";
-import LogoSlider from "../components/LogoSlider";
+import LogoSlider from "../components/Logoslider";
 import ContactForm from "../components/ContactForm";
 import Services from "../components/Services";
 
