@@ -42,17 +42,35 @@ export const upload = multer({
 //
 // 📌 Resume Upload Storage (PDF, DOC, DOCX)
 //
+// const resumeStorage = new CloudinaryStorage({
+//   cloudinary,
+//   params: async (req, file) => {
+//     return {
+//       folder: "resumes",
+//       allowed_formats: ["pdf", "doc", "docx"],
+//       public_id: `${Date.now()}-${file.originalname}`,
+//       resource_type: "raw", // required for non-image/video files
+//     };
+//   },
+// });
 const resumeStorage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
+    const safeName = file.originalname.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\.-]/g, "");
+
     return {
       folder: "resumes",
+      resource_type: "raw",
+      type: "upload",         // ensure it's a standard uploaded file
+      access_mode: "public",  // make it public
+      use_filename: true,     // let Cloudinary keep original name (optional)
+      unique_filename: false, // prevent random IDs
       allowed_formats: ["pdf", "doc", "docx"],
-      public_id: `${Date.now()}-${file.originalname}`,
-      resource_type: "raw", // required for non-image/video files
+      public_id: `${Date.now()}-${safeName}`,
     };
   },
 });
+
 
 export const resumeUpload = multer({
   storage: resumeStorage,
@@ -73,5 +91,21 @@ export const resumeUpload = multer({
       return cb(null, true);
     }
     cb(new Error("Only PDF, DOC, and DOCX files are allowed"));
+  },
+});
+// ✅ Multer setup for Excel file upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+});
+
+export const excelUpload = multer({
+  storage,
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+  fileFilter: (req, file, cb) => {
+    if (!file.originalname.match(/\.(xlsx|xls)$/)) {
+      return cb(new Error("Only Excel files are allowed"));
+    }
+    cb(null, true);
   },
 });

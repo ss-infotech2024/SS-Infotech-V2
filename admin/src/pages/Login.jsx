@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -7,23 +8,31 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Hardcoded credentials (for now, replace with real API logic)
-    const adminUser = {
-      username: "admin",
-      password: "12345",
-    };
+    try {
+      // Call backend API
+      const { data } = await axios.post(
+        "http://localhost:3000/api/admin/login",
+        { username, password }
+      );
 
-    if (username === adminUser.username && password === adminUser.password) {
-      // Save the login state in localStorage or any other method for persistence
-      localStorage.setItem("isAdminLoggedIn", true);
+      if (data.success) {
+        // Save the admin token to localStorage
+        localStorage.setItem("adminToken", data.token);
+        localStorage.setItem("isAdminLoggedIn", true);
 
-      // Redirect to home page ("/" route) after successful login
-      navigate("/"); // Navigate to the home page (or wherever your main landing page is)
-    } else {
-      setError("Invalid username or password ❌");
+        // Redirect to admin dashboard or home page
+        navigate("/"); 
+      } else {
+        setError(data.message || "Login failed ❌");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(
+        err.response?.data?.message || "Server error. Please try again."
+      );
     }
   };
 

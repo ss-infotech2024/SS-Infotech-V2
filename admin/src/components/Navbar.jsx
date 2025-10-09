@@ -38,6 +38,9 @@ export default function Navbar() {
           <Link to="/certificates" className="text-white hover:bg-blue-500 px-4 py-2 rounded-md">
             Certificates
           </Link>
+          <Link to="/candidate-manager" className="text-white hover:bg-blue-500 px-4 py-2 rounded-md">
+            candidate-manager
+          </Link>
         </div>
 
         {/* Logout Button */}

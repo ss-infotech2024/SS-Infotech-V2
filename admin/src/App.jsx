@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
+import AdminApplications from "./pages/AdminApplications";
+import CandidateManager from "./pages/CandidateManager";
 
 function App() {
   return (
@@ -22,7 +24,23 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          {/* Protected Dashboard Route */}
+          <Route
+            path="/job-applications"
+            element={
+              <ProtectedRoute>
+                <AdminApplications />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/candidate-manager"
+            element={
+              <ProtectedRoute>
+                <CandidateManager />
+              </ProtectedRoute>
+            }
+          />
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>

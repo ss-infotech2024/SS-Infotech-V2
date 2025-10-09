@@ -7,7 +7,7 @@ import GalleryMagnetic from '../components/GalleryMagnetic';
 export default function GalleryHero() {
   return (
     <>
-    <ManuallScroll/>
+    {/* <ManuallScroll/> */}
     <GalleryParallax/>
     <GalleryMagnetic/>
 

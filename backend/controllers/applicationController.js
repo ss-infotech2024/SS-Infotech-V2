@@ -70,6 +70,9 @@ export const createApplication = async (req, res) => {
 };
 
 // Get all applications (e.g., for admin)
+
+
+// Get all applications (admin)
 export const getApplications = async (req, res) => {
   try {
     const applications = await Application.find().sort({ createdAt: -1 });
@@ -86,6 +89,19 @@ export const getApplications = async (req, res) => {
     });
   }
 };
+
+
+
+// Delete all applications
+export const deleteAllApplications = async (req, res) => {
+  try {
+    await Application.deleteMany({});
+    res.json({ success: true, message: "All applications deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to delete all applications" });
+  }
+};
+
 
 // Get applications for a specific job
 export const getApplicationsByJob = async (req, res) => {
@@ -105,3 +121,52 @@ export const getApplicationsByJob = async (req, res) => {
     });
   }
 };
+
+// 🔹 Delete all applications
+export const deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const app = await Application.findByIdAndDelete(id);
+    if (!app) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+
+    try {
+      if (app.resume) {
+        await cloudinary.uploader.destroy(app.resume, { resource_type: "raw" });
+      }
+    } catch (e) {
+      console.warn("Cloudinary delete warning:", e.message);
+    }
+
+    res.json({ success: true, message: "Application deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to delete application" });
+  }
+};
+
+export const downloadResume = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const application = await Application.findById(id);
+
+    if (!application || !application.resumePath) {
+      return res.status(404).json({ success: false, message: "Resume not found" });
+    }
+
+    // Return the direct Cloudinary URL
+    res.json({
+      success: true,
+      resumePath: application.resumePath,
+      filename: `${application.name.replace(/\s+/g, "_")}_resume.pdf`,
+    });
+  } catch (err) {
+    console.error("Error fetching resume URL:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get resume",
+      error: err.message,
+    });
+  }
+};
+

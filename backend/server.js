@@ -10,6 +10,11 @@ import jobListingRoutes from './routes/jobListingRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import slideRoutes from './routes/slideRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import galleryRoutes from './routes/galleryRoutes.js';
+import seminerRouter from './routes/seminerRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import candidateRoutes from './routes/candidateRoutes.js';
 import cloudinary from 'cloudinary'; // Import Cloudinary
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,17 +34,22 @@ connectDB()
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: ["http://localhost:5173","http://localhost:5174"], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/Uploads", express.static(join(__dirname, "Uploads")));
 app.use("/public", express.static(join(__dirname, "public")));
-
+app.use("/resumes", express.static(join(__dirname, "public")));
+app.use("/api/admin",adminRoutes);
 app.use("/api/joblistings", jobListingRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/slides", slideRoutes);
+app.use("/api/events",eventRoutes );
+app.use("/api/gallery", galleryRoutes );
+app.use("/api/candidate", candidateRoutes); 
+app.use("/api/seminars", seminerRouter ); // Using galleryRoutes for seminars as well
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
