@@ -43,7 +43,11 @@ const About = () => {
 
   return (
     <section className="py-16 bg-gradient-to-b from-white to-gray-50/30">
+<<<<<<< HEAD
       <div className="py-12 flex md:flex-row justify-between gap-12 max-w-7xl mx-auto">
+=======
+      <div className="px-12 py-12 md:px-24 flex md:flex-row justify-between gap-12 max-w-7xl mx-auto">
+>>>>>>> af26607 ( Internship Offer Letter)
         {/* Left Div - Animate from left */}
         <div 
           className="md:w-1/2 flex flex-col justify-center transition-all duration-500 bg-white px-8 py-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md"
@@ -129,7 +133,11 @@ const About = () => {
             <ImageSlider />
           </div>
           
+<<<<<<< HEAD
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-96 h-32">
+=======
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full">
+>>>>>>> af26607 ( Internship Offer Letter)
             {/* Education Card - Staggered fade-up */}
             <div
               onMouseEnter={() => setHovered("education")}
@@ -235,7 +243,11 @@ const About = () => {
 
           {/* CTA Button - Fade up from below */}
           <button 
+<<<<<<< HEAD
             className="mt-5 group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#FFB347] to-orange-400 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 w-full max-w-xs justify-center"
+=======
+            className="mt-10 group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#FFB347] to-orange-400 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 w-full max-w-xs justify-center"
+>>>>>>> af26607 ( Internship Offer Letter)
             data-aos="fade-up"
             data-aos-delay="1000" // Delay after cards
           >

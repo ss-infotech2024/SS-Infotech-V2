@@ -49,4 +49,31 @@ import Slide from "../models/slideModel.js";
       }
       res.status(500).json({ success: false, message: err.message });
     }
+
   };
+  export const deleteSlide = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the slide by ID
+    const slide = await Slide.findById(id);
+    if (!slide) {
+      return res.status(404).json({ success: false, message: "Slide not found" });
+    }
+
+    // Delete the media file from Cloudinary
+    if (slide.public_id) {
+      await cloudinary.v2.uploader.destroy(slide.public_id, {
+        resource_type: slide.type,
+      });
+    }
+
+    // Delete the slide from MongoDB
+    await Slide.findByIdAndDelete(id);
+
+    res.json({ success: true, message: "Slide deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting slide:", err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

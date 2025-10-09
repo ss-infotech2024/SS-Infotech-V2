@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, MapPin, Briefcase, Clock, DollarSign, X } from "lucide-react";
+
+import { Search, MapPin, Briefcase, Clock, IndianRupee, X } from "lucide-react";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import JobSearchHero from "./JobSearchHero"; // Assuming this component exists in your project
@@ -211,7 +213,9 @@ export default function JobSearch() {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        let url = "http://localhost:3000/api/jobs/show-job";
+
+        let url = "http://localhost:3000/api/jobs/show-jobs";
+
         // Add query parameters for filters
         const params = new URLSearchParams();
         if (query) params.append("query", query);
@@ -528,7 +532,9 @@ export default function JobSearch() {
                               </span>
                               {job.salary && (
                                 <span className="flex items-center gap-1">
-                                  <DollarSign className="h-4 w-4" />
+
+                                  <IndianRupee className="h-4 w-4" />
+
                                   {job.salary}
                                 </span>
                               )}

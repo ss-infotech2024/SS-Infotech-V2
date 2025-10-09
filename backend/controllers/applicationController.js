@@ -71,8 +71,6 @@ export const createApplication = async (req, res) => {
 
 // Get all applications (e.g., for admin)
 
-
-// Get all applications (admin)
 export const getApplications = async (req, res) => {
   try {
     const applications = await Application.find().sort({ createdAt: -1 });
@@ -92,6 +90,7 @@ export const getApplications = async (req, res) => {
 
 
 
+
 // Delete all applications
 export const deleteAllApplications = async (req, res) => {
   try {
@@ -103,7 +102,7 @@ export const deleteAllApplications = async (req, res) => {
 };
 
 
-// Get applications for a specific job
+
 export const getApplicationsByJob = async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,6 +119,7 @@ export const getApplicationsByJob = async (req, res) => {
       message: err.message,
     });
   }
+
 };
 
 // 🔹 Delete all applications

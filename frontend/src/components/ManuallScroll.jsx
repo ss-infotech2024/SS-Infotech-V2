@@ -7,12 +7,50 @@ const GAP = 20; // px
 const AUTOPLAY_MS = 2500;
 const AUTOPLAY_RESUME_DELAY = 3000;
 
+<<<<<<< HEAD
 export default function ManualScroll() {
+=======
+const events = [
+  {
+    name: "Independence Day",
+    description: "Celebrating freedom and national pride",
+    images: [
+      "https://images.unsplash.com/photo-1705524220939-dac17cf94236?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1724691003865-14d185039a73?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1661170300070-73ff77592f68?q=80&w=1331&auto=format&fit=crop&ixlib=rb-4.1.0",
+    ],
+    color: "#EF4444", // Red
+  },
+  {
+    name: "Shivaji Maharaj Jayanti",
+    description: "Honoring the great Maratha warrior king",
+    images: [
+      "https://images.unsplash.com/photo-1658057699489-1d5dcc490a5d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1706610298583-750fa172e24a?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0",
+    ],
+    color: "#F59E0B", // Amber
+  },
+  {
+    name: "Ganesh Chaturthi",
+    description: "Welcoming the lord of new beginnings",
+    images: [
+      "https://images.unsplash.com/photo-1567591391293-f9a99c77e128?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1528293319334-2b98c83a27fd?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1725197836024-b0deae0074a2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+      "https://images.unsplash.com/photo-1705524220939-dac17cf94236?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0",
+    ],
+    color: "#10B981", // Emerald
+  },
+];
+
+export default function LightAnimatedManualScroll() {
+>>>>>>> af26607 ( Internship Offer Letter)
   const scrollRef = useRef(null);
   const intervalRef = useRef(null);
   const resumeTimeoutRef = useRef(null);
   const isPausedRef = useRef(false);
 
+<<<<<<< HEAD
   const [events, setEvents] = useState([]);
   const [activeEventIndex, setActiveEventIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -38,11 +76,19 @@ export default function ManualScroll() {
 
     fetchEvents();
   }, []);
+=======
+  const [activeEventIndex, setActiveEventIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+>>>>>>> af26607 ( Internship Offer Letter)
 
   // Enhanced active event detection
   const updateActiveEvent = () => {
     const container = scrollRef.current;
+<<<<<<< HEAD
     if (!container || events.length === 0) return;
+=======
+    if (!container) return;
+>>>>>>> af26607 ( Internship Offer Letter)
     
     const scrollTop = container.scrollTop;
     const containerHeight = container.clientHeight;
@@ -79,12 +125,20 @@ export default function ManualScroll() {
 
     container.addEventListener("scroll", onScroll, { passive: true });
     return () => container.removeEventListener("scroll", onScroll);
+<<<<<<< HEAD
   }, [events]);
+=======
+  }, []);
+>>>>>>> af26607 ( Internship Offer Letter)
 
   // Enhanced autoplay
   useEffect(() => {
     const container = scrollRef.current;
+<<<<<<< HEAD
     if (!container || events.length === 0) return;
+=======
+    if (!container) return;
+>>>>>>> af26607 ( Internship Offer Letter)
 
     intervalRef.current = setInterval(() => {
       if (isPausedRef.current || isHovered) return;
@@ -99,11 +153,19 @@ export default function ManualScroll() {
     }, AUTOPLAY_MS);
 
     return () => clearInterval(intervalRef.current);
+<<<<<<< HEAD
   }, [isHovered, events]);
 
   const scrollToEvent = (index) => {
     const container = scrollRef.current;
     if (!container || events.length === 0) return;
+=======
+  }, [isHovered]);
+
+  const scrollToEvent = (index) => {
+    const container = scrollRef.current;
+    if (!container) return;
+>>>>>>> af26607 ( Internship Offer Letter)
 
     let targetScroll = 0;
     for (let i = 0; i < index; i++) {
@@ -120,9 +182,12 @@ export default function ManualScroll() {
     }, AUTOPLAY_RESUME_DELAY);
   };
 
+<<<<<<< HEAD
   if (loading) return <div className="text-center py-10 text-gray-600">Loading events...</div>;
   if (error) return <div className="text-center py-10 text-red-600">Error: {error}</div>;
 
+=======
+>>>>>>> af26607 ( Internship Offer Letter)
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 relative overflow-hidden">
       {/* Animated Background Elements */}

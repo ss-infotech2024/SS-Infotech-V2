@@ -1,4 +1,5 @@
 import express from 'express';
+
 import { createApplication, getApplications, deleteApplication,downloadResume } from '../controllers/applicationController.js';
 import { resumeUpload } from '../middleware/upload.js';
 import { adminAuth } from '../middleware/adminAuth.js';
@@ -20,4 +21,3 @@ router.get("/download/:publicId", adminAuth, downloadResume);
 router.delete('/delete/:id', deleteApplication);
 // router.delete('/delete-all', adminAuth, deleteAllApplications);
 
-export default router;

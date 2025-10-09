@@ -1,21 +1,37 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
-import AdminApplications from "./pages/AdminApplications";
-import CandidateManager from "./pages/CandidateManager";
 
-function App() {
+
+import AdminSlides from "./pages/AdminSlides";
+import AdminJobs from "./pages/AdminJobs";
+import AdminGallery from "./pages/AdminGallery";
+import AdminCertificate from "./GenerateCertificate";
+import AdminApplications from "./pages/AdminApplications";
+
+function AppContent() {
+  const location = useLocation();
+  const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
+
+  // Hide Navbar on login page
+  const hideNavbar = location.pathname === "/login";
+
   return (
-    <BrowserRouter>
-      <Navbar /> {/* Navbar is fixed at the top */}
-      <div className="pt-20"> {/* Add padding top to avoid content hiding behind the navbar */}
+    <>
+      {!hideNavbar && isLoggedIn && <Navbar />}
+
+      {/* Add padding only if Navbar is visible */}
+      <div className={!hideNavbar && isLoggedIn ? "pt-20" : ""}>
         <Routes>
           <Route path="/login" element={<Login />} />
 
-          {/* Protected Dashboard Route */}
+          {/* Protected Routes */}
+
           <Route
             path="/"
             element={
@@ -24,7 +40,40 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Protected Dashboard Route */}
+
+          <Route
+            path="/hero-banner"
+            element={
+              <ProtectedRoute>
+                <AdminSlides />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/job-listings"
+            element={
+              <ProtectedRoute>
+                <AdminJobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/gallery"
+            element={
+              <ProtectedRoute>
+                <AdminGallery />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/certificates"
+            element={
+              <ProtectedRoute>
+                <AdminCertificate />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/job-applications"
             element={
@@ -33,6 +82,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
             <Route
             path="/candidate-manager"
             element={
@@ -41,12 +91,21 @@ function App() {
               </ProtectedRoute>
             }
           />
+=
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
+
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
 
-export default App;

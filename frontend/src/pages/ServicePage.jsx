@@ -5,7 +5,9 @@ import { Badge } from "../components/UI/Badge";
 import { Button } from "../components/UI/Button";
 import { Input } from "../components/UI/Input";
 import { Textarea } from "../components/UI/Textarea";
-import { Label } from "../components/UI/Label ";
+
+import { Label } from "../components/UI/Lable ";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/UI/Select";
 import { toast } from "../Hooks/use-toast";
 import {

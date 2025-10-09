@@ -10,10 +10,12 @@ import {
 const router = express.Router();
 
 // Routes
-router.post("/add-job", createJob);        // Create job
-router.get("/show-job", getJobs);           // Get all jobs
+
+router.post("/add-jobs", createJob);        // Create job
+router.get("/show-jobs", getJobs);           // Get all jobs
 // router.get("//:id", getJobById);     // Get single job
-router.put("/update-job/:id", updateJob);      // Update job
-router.delete("/delete-job/:id", deleteJob);   // Delete job
+router.put("/update-jobs/:id", updateJob);      // Update job
+router.delete("/delete-jobs/:id", deleteJob);   // Delete job
 
 export default router;
+

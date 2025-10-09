@@ -3,7 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../co
 import { Badge } from "../components/UI/Badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/UI/Tabs";
 import { Input } from "../components/UI/Input";
-import { Label } from "../components/UI/Label ";
+
+import { Label } from "../components/UI/Lable ";
+
 import { Textarea } from "../components/UI/Textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/UI/Select";
 import { 
