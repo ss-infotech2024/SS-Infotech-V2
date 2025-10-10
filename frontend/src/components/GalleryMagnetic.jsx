@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import React, { useState, useEffect, useRef } from "react";
 import {
   motion,
@@ -15,17 +15,7 @@ export default function GalleryMagnetic({
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-=======
-// components/GalleryMagnetic.jsx
-import React, { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "framer-motion";
 
-export default function GalleryMagnetic({ 
-  images = [], 
-  title = "Seminars",
-  description = "A glimpse into our engaging seminars where experts share knowledge, inspire ideas, and encourage innovation."
-}) {
->>>>>>> af26607 ( Internship Offer Letter)
   const [activeCard, setActiveCard] = useState(null);
 
   const colors = {
@@ -33,11 +23,9 @@ export default function GalleryMagnetic({
     secondary: "#8B5CF6",
     accent: "#06B6D4",
     highlight: "#10B981",
-<<<<<<< HEAD
+
     glow: "#F59E0B",
-=======
-    glow: "#F59E0B"
->>>>>>> af26607 ( Internship Offer Letter)
+
   };
 
   const getCategoryColor = (category) => {
@@ -51,16 +39,13 @@ export default function GalleryMagnetic({
       Desert: colors.glow,
       Aurora: colors.secondary,
       Beach: colors.accent,
-<<<<<<< HEAD
+
       Mountains: colors.primary,
-=======
-      Mountains: colors.primary
->>>>>>> af26607 ( Internship Offer Letter)
+
     };
     return colorMap[category] || colors.primary;
   };
 
-<<<<<<< HEAD
   // ✅ Fetch gallery images from the backend API
   useEffect(() => {
     const fetchGalleryImages = async () => {
@@ -122,62 +107,14 @@ export default function GalleryMagnetic({
       <div className="container mx-auto px-4 relative z-10">
         {/* Heading */}
         <motion.div
-=======
-  const defaultImages = [
-    {
-      title: "Cosmic Mountains",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop",
-      category: "Mountains"
-    },
-    {
-      title: "Enchanted Forest",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop",
-      category: "Forest"
-    },
-    {
-      title: "Ocean Depths",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=400&h=400&fit=crop",
-      category: "Ocean"
-    },
-    {
-      title: "Urban Dreams",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=400&h=350&fit=crop",
-      category: "Urban"
-    },
-    {
-      title: "Golden Sunset",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=450&fit=crop",
-      category: "Sunset"
-    },
-    {
-      title: "Winter Magic",
-      link: "#",
-      thumbnail: "https://images.unsplash.com/photo-1418985991508-e47386d96a71?w=400&h=320&fit=crop",
-      category: "Winter"
-    }
-  ];
 
-  const galleryImages = images.length > 0 ? images : defaultImages;
-
-  return (
-    <section className="relative py-20 lg:py-28 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 overflow-hidden">
-      {/* Background stuff omitted for brevity ... */}
-
-      <div className="container mx-auto px-40 relative z-10">
-        <motion.div 
->>>>>>> af26607 ( Internship Offer Letter)
           className="text-center mb-16 lg:mb-20"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           viewport={{ once: true }}
         >
-<<<<<<< HEAD
+
           <motion.h2
             className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent mb-6"
             animate={{ backgroundPosition: ["0%", "100%"] }}
@@ -186,12 +123,7 @@ export default function GalleryMagnetic({
               repeat: Infinity,
               repeatType: "reverse",
             }}
-=======
-          <motion.h2 
-            className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 bg-clip-text text-transparent mb-6"
-            animate={{ backgroundPosition: ["0%", "100%"] }}
-            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
->>>>>>> af26607 ( Internship Offer Letter)
+
             style={{ backgroundSize: "200% 200%" }}
           >
             {title}
@@ -201,7 +133,7 @@ export default function GalleryMagnetic({
           </p>
         </motion.div>
 
-<<<<<<< HEAD
+
         {/* ✅ Gallery Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
           {Array.isArray(displayImages) &&
@@ -216,28 +148,14 @@ export default function GalleryMagnetic({
                 categoryColor={getCategoryColor(image.category)}
               />
             ))}
-=======
-        {/* Gallery grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative">
-          {galleryImages.map((image, index) => (
-            <MagneticCard
-              key={image.title + index}
-              image={image}
-              index={index}
-              isActive={activeCard === index}
-              onHoverStart={() => setActiveCard(index)}
-              onHoverEnd={() => setActiveCard(null)}
-              categoryColor={getCategoryColor(image.category)}
-            />
-          ))}
->>>>>>> af26607 ( Internship Offer Letter)
+
         </div>
       </div>
     </section>
   );
 }
 
-<<<<<<< HEAD
+
 function MagneticCard({
   image,
   index,
@@ -246,9 +164,7 @@ function MagneticCard({
   onHoverEnd,
   categoryColor,
 }) {
-=======
-function MagneticCard({ image, index, isActive, onHoverStart, onHoverEnd, categoryColor }) {
->>>>>>> af26607 ( Internship Offer Letter)
+
   const ref = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -294,11 +210,9 @@ function MagneticCard({ image, index, isActive, onHoverStart, onHoverEnd, catego
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
       >
-<<<<<<< HEAD
+
         {/* Glow Effect */}
-=======
-        {/* Glow effect bound directly */}
->>>>>>> af26607 ( Internship Offer Letter)
+
         <motion.div
           className="absolute inset-0 rounded-3xl pointer-events-none"
           style={{
@@ -320,7 +234,7 @@ function MagneticCard({ image, index, isActive, onHoverStart, onHoverEnd, catego
           />
         </div>
 
-<<<<<<< HEAD
+
         {/* Title & Description */}
         <div>
           <h3 className="text-xl font-bold text-gray-800 mb-2">
@@ -329,12 +243,7 @@ function MagneticCard({ image, index, isActive, onHoverStart, onHoverEnd, catego
           <p className="text-gray-600 text-sm">
             Discover the beauty of this landscape
           </p>
-=======
-        {/* Title */}
-        <div>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">{image.title}</h3>
-          <p className="text-gray-600 text-sm">Discover the beauty of this landscape</p>
->>>>>>> af26607 ( Internship Offer Letter)
+
         </div>
       </motion.div>
     </motion.div>

@@ -21,3 +21,4 @@ router.get("/download/:publicId", adminAuth, downloadResume);
 router.delete('/delete/:id', deleteApplication);
 // router.delete('/delete-all', adminAuth, deleteAllApplications);
 
+export default router;

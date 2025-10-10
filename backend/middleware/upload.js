@@ -42,7 +42,7 @@ export const upload = multer({
 //
 // 📌 Resume Upload Storage (PDF, DOC, DOCX)
 //
-<<<<<<< HEAD
+
 // const resumeStorage = new CloudinaryStorage({
 //   cloudinary,
 //   params: async (req, file) => {
@@ -68,24 +68,14 @@ const resumeStorage = new CloudinaryStorage({
       unique_filename: false, // prevent random IDs
       allowed_formats: ["pdf", "doc", "docx"],
       public_id: `${Date.now()}-${safeName}`,
-=======
-const resumeStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    return {
-      folder: "resumes",
-      allowed_formats: ["pdf", "doc", "docx"],
-      public_id: `${Date.now()}-${file.originalname}`,
-      resource_type: "raw", // required for non-image/video files
->>>>>>> af26607 ( Internship Offer Letter)
+
     };
   },
 });
 
-<<<<<<< HEAD
 
-=======
->>>>>>> af26607 ( Internship Offer Letter)
+
+
 export const resumeUpload = multer({
   storage: resumeStorage,
   limits: {
@@ -107,7 +97,7 @@ export const resumeUpload = multer({
     cb(new Error("Only PDF, DOC, and DOCX files are allowed"));
   },
 });
-<<<<<<< HEAD
+
 // ✅ Multer setup for Excel file upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
@@ -124,5 +114,4 @@ export const excelUpload = multer({
     cb(null, true);
   },
 });
-=======
->>>>>>> af26607 ( Internship Offer Letter)
+

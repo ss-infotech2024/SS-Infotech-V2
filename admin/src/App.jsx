@@ -83,15 +83,7 @@ function AppContent() {
             }
           />
 
-            {/* <Route
-            path="/candidate-manager"
-            element={
-              <ProtectedRoute>
-                <CandidateManager />
-              </ProtectedRoute>
-            }
-          /> */}
-=
+           
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>

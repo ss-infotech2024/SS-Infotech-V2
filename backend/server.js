@@ -10,7 +10,12 @@ import jobListingRoutes from './routes/jobListingRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import slideRoutes from './routes/slideRoutes.js';
-import cloudinary from 'cloudinary';
+import eventRoutes from './routes/eventRoutes.js';
+import galleryRoutes from './routes/galleryRoutes.js';
+import seminerRouter from './routes/seminerRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import candidateRoutes from './routes/candidateRoutes.js';
+import cloudinary from 'cloudinary'; // Import Cloudinary
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -29,32 +34,22 @@ connectDB()
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Enhanced CORS Middleware
-app.use(cors({
-  // origin: true,
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+app.use(cors({ origin: ["http://localhost:5173","http://localhost:5174"], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static file serving
 app.use("/Uploads", express.static(join(__dirname, "Uploads")));
 app.use("/public", express.static(join(__dirname, "public")));
-
-// API Routes
+app.use("/resumes", express.static(join(__dirname, "public")));
+app.use("/api/admin",adminRoutes);
 app.use("/api/joblistings", jobListingRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/slides", slideRoutes);
-
-// Test endpoint
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Backend is working for both frontend and admin!' });
-});
+app.use("/api/events",eventRoutes );
+app.use("/api/gallery", galleryRoutes );
+app.use("/api/candidate", candidateRoutes); 
+app.use("/api/seminars", seminerRouter ); // Using galleryRoutes for seminars as well
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
