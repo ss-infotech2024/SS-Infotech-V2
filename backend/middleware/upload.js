@@ -115,3 +115,36 @@ export const excelUpload = multer({
   },
 });
 
+
+// Image Upload Storage (up to 10 images)
+export const albums = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const fileExtension = file.originalname.split('.').pop().toLowerCase();
+    return {
+      folder: 'ss-infotech',
+      allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+      public_id: `${Date.now()}-${file.originalname}`,
+      resource_type: 'image',
+    };
+  },
+});
+
+export const images = multer({
+  storage: mediaStorage,
+  limits: {
+    fileSize: 30 * 1024 * 1024, // 30MB limit per image
+    files: 10, // Max 10 images
+  },
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|webp/;
+    const extnameValid = filetypes.test(file.originalname.split('.').pop().toLowerCase());
+    const mimetypeValid = filetypes.test(file.mimetype);
+
+    if (extnameValid && mimetypeValid) {
+      return cb(null, true);
+    }
+    cb(new Error('Only images (JPG, PNG, JPEG, WEBP) are allowed'));
+  },
+});
+

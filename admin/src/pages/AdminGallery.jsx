@@ -1,128 +1,470 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { ImagePlus, Trash2, Upload } from "lucide-react";
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+
+// Focus trap helper for modals
+const useFocusTrap = (ref, isOpen) => {
+  useEffect(() => {
+    if (!isOpen || !ref.current) return;
+    const element = ref.current;
+    const focusableElements = element.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            e.preventDefault();
+            lastFocusable.focus();
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            e.preventDefault();
+            firstFocusable.focus();
+          }
+        }
+      }
+    };
+
+    element.addEventListener('keydown', handleKeyDown);
+    firstFocusable?.focus();
+
+    return () => element.removeEventListener('keydown', handleKeyDown);
+  }, [ref, isOpen]);
+};
 
 const AdminGallery = () => {
-  const [galleryItems, setGalleryItems] = useState([]);
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  const [formData, setFormData] = useState({
+    title: '',
+    fullTitle: '',
+    color: '',
+    images: [],
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [viewAlbum, setViewAlbum] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [error, setError] = useState('');
+  const formRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const modalRef = useRef(null);
 
-  // Fetch all gallery items
-  const fetchGallery = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/api/gallery");
-      setGalleryItems(res.data);
-    } catch (err) {
-      console.error("Error fetching gallery:", err);
-      toast.error("Failed to load gallery");
-    }
-  };
-
+  // Fetch albums
   useEffect(() => {
-    fetchGallery();
+    const fetchAlbums = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/albums/album-getall');
+        setAlbums(response.data);
+      } catch (err) {
+        setError('Failed to load albums. Please try again.');
+      }
+    };
+    fetchAlbums();
   }, []);
 
-  // Handle Upload
-  const handleUpload = async (e) => {
+  // Close modal on ESC key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && viewAlbum) {
+        closeModal();
+      }
+    };
+    if (viewAlbum) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [viewAlbum]);
+
+  // Keyboard navigation for modal
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!viewAlbum) return;
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'ArrowRight') nextImage();
+    };
+    if (viewAlbum) {
+      document.addEventListener('keydown', handleKey);
+      return () => document.removeEventListener('keydown', handleKey);
+    }
+  }, [viewAlbum, currentImageIndex]);
+
+  // Trap focus in modal
+  useFocusTrap(modalRef, !!viewAlbum);
+
+  // Form input handler
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError('');
+  };
+
+  // File input handler
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 10) {
+      setError('Maximum 10 images allowed');
+      return;
+    }
+    if (!isEditing && files.length < 5) {
+      setError('Minimum 5 images required for new albums');
+      return;
+    }
+    setFormData((prev) => ({ ...prev, images: files }));
+    setError('');
+  };
+
+  // Form submission (create/update)
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return toast.error("Please select a file first!");
-    setLoading(true);
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('fullTitle', formData.fullTitle);
+    data.append('color', formData.color);
+    formData.images.forEach((file) => data.append('images', file));
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      await axios.post("http://localhost:3000/api/gallery/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      toast.success("File uploaded successfully!");
-      setFile(null);
-      fetchGallery();
+      if (isEditing) {
+        const response = await axios.patch(`http://localhost:3000/api/albums/album/${editId}`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setAlbums((prev) => prev.map((album) => (album._id === editId ? response.data.album : album)));
+      } else {
+        const response = await axios.post('http://localhost:3000/api/albums/album-post', data, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        setAlbums((prev) => [...prev, response.data.album]);
+      }
+      setFormData({ title: '', fullTitle: '', color: '', images: [] });
+      setIsEditing(false);
+      setEditId(null);
+      fileInputRef.current.value = '';
+      setError('');
     } catch (err) {
-      console.error("Upload error:", err);
-      toast.error("Failed to upload");
-    } finally {
-      setLoading(false);
+      setError(err.response?.data?.error || 'Failed to save album');
     }
   };
 
-  // Handle Delete
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this item?")) return;
+  // Edit album
+  const handleEdit = (album) => {
+    setIsEditing(true);
+    setEditId(album._id);
+    setFormData({
+      title: album.title,
+      fullTitle: album.fullTitle,
+      color: album.color,
+      images: [],
+    });
+    setError('');
+    formRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Delete album
+  const handleDelete = async (_id) => {
+    if (!confirm('Are you sure you want to delete this album?')) return;
     try {
-      await axios.delete(`http://localhost:3000/api/gallery/${id}`);
-      toast.success("Deleted successfully");
-      fetchGallery();
+      await axios.delete(`http://localhost:3000/api/albums/album/${_id}`);
+      setAlbums((prev) => prev.filter((album) => album._id !== _id));
+      setError('');
     } catch (err) {
-      console.error("Delete error:", err);
-      toast.error("Failed to delete");
+      setError(err.response?.data?.error || 'Failed to delete album');
     }
+  };
+
+  // View album modal
+  const openModal = (album, index = 0) => {
+    setViewAlbum(album);
+    setCurrentImageIndex(index);
+  };
+
+  const closeModal = () => {
+    setViewAlbum(null);
+    setCurrentImageIndex(0);
+  };
+
+  const nextImage = () => {
+    if (!viewAlbum) return;
+    setCurrentImageIndex((i) => (i + 1) % viewAlbum.images.length);
+  };
+
+  const prevImage = () => {
+    if (!viewAlbum) return;
+    setCurrentImageIndex((i) => (i - 1 + viewAlbum.images.length) % viewAlbum.images.length);
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) closeModal();
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <ToastContainer />
-      <h2 className="text-3xl font-bold mb-6 text-center">Gallery Admin</h2>
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <header className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <h1 className="text-3xl font-bold text-gray-900">Admin Panel - College Gallery</h1>
+        </div>
+      </header>
 
-      {/* Upload Section */}
-      <form
-        onSubmit={handleUpload}
-        className="flex flex-col items-center gap-4 bg-gray-50 p-6 rounded-2xl shadow-md"
-      >
-        <label className="flex flex-col items-center gap-2 border-2 border-dashed border-gray-400 p-4 rounded-xl cursor-pointer hover:bg-gray-100 transition">
-          <ImagePlus className="w-8 h-8 text-gray-600" />
-          <span className="text-gray-700">
-            {file ? file.name : "Click or drag file to upload"}
-          </span>
-          <input
-            type="file"
-            accept="image/*,video/*"
-            onChange={(e) => setFile(e.target.files[0])}
-            className="hidden"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 disabled:opacity-50"
-        >
-          <Upload className="w-5 h-5" />
-          {loading ? "Uploading..." : "Upload"}
-        </button>
-      </form>
-
-      {/* Gallery Grid */}
-      <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {galleryItems.map((item) => (
-          <div
-            key={item._id}
-            className="relative group rounded-xl overflow-hidden shadow-lg"
-          >
-            {item.type.startsWith("image") ? (
-              <img
-                src={item.url}
-                alt="gallery"
-                className="w-full h-48 object-cover group-hover:scale-105 transition"
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Form Section */}
+        <section className="mb-12 bg-white rounded-lg shadow-md p-6" ref={formRef}>
+          <h2 className="text-2xl font-semibold mb-6">{isEditing ? 'Update Album' : 'Create New Album'}</h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                required
+                aria-describedby="title-error"
               />
-            ) : (
-              <video
-                src={item.url}
-                controls
-                className="w-full h-48 object-cover"
-              ></video>
+            </div>
+            <div>
+              <label htmlFor="fullTitle" className="block text-sm font-medium text-gray-700">Full Title</label>
+              <input
+                type="text"
+                name="fullTitle"
+                value={formData.fullTitle}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                required
+                aria-describedby="fullTitle-error"
+              />
+            </div>
+            <div>
+              <label htmlFor="color" className="block text-sm font-medium text-gray-700">Color (TailwindCSS gradient, e.g., from-blue-500 to-cyan-600)</label>
+              <input
+                type="text"
+                name="color"
+                value={formData.color}
+                onChange={handleInputChange}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                required
+                aria-describedby="color-error"
+              />
+            </div>
+            <div>
+              <label htmlFor="images" className="block text-sm font-medium text-gray-700">Images (5-10, JPEG/PNG/WEBP)</label>
+              <input
+                type="file"
+                name="images"
+                multiple
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                ref={fileInputRef}
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md"
+                required={!isEditing}
+                aria-describedby="images-error"
+              />
+            </div>
+            {error && (
+              <p id="form-error" className="text-red-600 text-sm" role="alert">{error}</p>
             )}
-            <button
-              onClick={() => handleDelete(item._id)}
-              className="absolute top-2 right-2 bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
+            <div className="flex gap-4">
+              <button
+                type="submit"
+                className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                {isEditing ? 'Update Album' : 'Create Album'}
+              </button>
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditId(null);
+                    setFormData({ title: '', fullTitle: '', color: '', images: [] });
+                    fileInputRef.current.value = '';
+                    setError('');
+                  }}
+                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+          </form>
+        </section>
+
+        {/* Albums Table */}
+        <section className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-semibold mb-6">Albums</h2>
+          {albums.length === 0 ? (
+            <p className="text-gray-500">No albums found.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {albums.map((album) => (
+                    <tr key={album._id}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{album.title}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{album.fullTitle}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <span className={`inline-block w-4 h-4 rounded-full bg-gradient-to-r ${album.color}`}></span> {album.color}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{album.images.length}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button
+                          onClick={() => openModal(album)}
+                          className="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline"
+                          aria-label={`View ${album.title} gallery`}
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => handleEdit(album)}
+                          className="text-yellow-600 hover:text-yellow-900 focus:outline-none focus:underline"
+                          aria-label={`Edit ${album.title}`}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(album._id)}
+                          className="text-red-600 hover:text-red-900 focus:outline-none focus:underline"
+                          aria-label={`Delete ${album.title}`}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      </main>
+
+      {/* View Album Modal */}
+      <AnimatePresence>
+        {viewAlbum && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            onClick={handleOverlayClick}
+            ref={modalRef}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden border border-white/20"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${viewAlbum.title} image gallery`}
             >
-              <Trash2 className="w-5 h-5" />
-            </button>
-          </div>
-        ))}
-      </div>
+              <div className="flex items-center justify-between p-6 border-b border-gray-200/50 bg-white/50">
+                <h3 className="text-xl font-bold text-gray-900">{viewAlbum.fullTitle}</h3>
+                <button
+                  onClick={closeModal}
+                  className="p-2 hover:bg-gray-200/50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  aria-label="Close gallery modal"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 overflow-auto max-h-[calc(95vh-140px)]">
+                <div className="mb-8 relative bg-gray-100/50 rounded-xl overflow-hidden shadow-inner">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentImageIndex}
+                      src={viewAlbum.images[currentImageIndex]}
+                      alt={`${viewAlbum.title} - Image ${currentImageIndex + 1}`}
+                      className="w-full h-[60vh] sm:h-[70vh] object-contain select-none rounded-lg"
+                      loading="lazy"
+                      decoding="async"
+                      width={800}
+                      height={600}
+                      drag="x"
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.1}
+                      onDragEnd={(e, info) => {
+                        if (info.offset.x > 100) prevImage();
+                        else if (info.offset.x < -100) nextImage();
+                      }}
+                      initial={{ opacity: 0, x: 50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -50 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    />
+                  </AnimatePresence>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 z-10"
+                    aria-label="Previous image"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 z-10"
+                    aria-label="Next image"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                    {currentImageIndex + 1} / {viewAlbum.images.length}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {viewAlbum.images.map((image, index) => (
+                    <motion.button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative rounded-xl overflow-hidden shadow-md transition-all border-2 ${
+                        index === currentImageIndex
+                          ? 'border-indigo-500 ring-2 ring-indigo-200/50 bg-indigo-50'
+                          : 'border-transparent hover:border-gray-300 hover:shadow-lg'
+                      } focus:outline-none focus:ring-2 focus:ring-indigo-500`}
+                      aria-label={`Jump to image ${index + 1}`}
+                    >
+                      <img
+                        src={image}
+                        alt={`${viewAlbum.title} - Thumbnail ${index + 1}`}
+                        className="w-full h-24 object-cover"
+                        loading="lazy"
+                        decoding="async"
+                        width={150}
+                        height={100}
+                      />
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -1,37 +1,34 @@
 
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-
+import AdminSidebar from "./components/AdminSidebar";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
-import Navbar from "./components/Navbar";
-
-
 import AdminSlides from "./pages/AdminSlides";
 import AdminJobs from "./pages/AdminJobs";
 import AdminGallery from "./pages/AdminGallery";
 import AdminCertificate from "./GenerateCertificate";
 import AdminApplications from "./pages/AdminApplications";
+import CandidateManager from "./pages/CandidateManager";
 
 function AppContent() {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
 
-  // Hide Navbar on login page
-  const hideNavbar = location.pathname === "/login";
+  // Hide Sidebar on login page
+  const hideSidebar = location.pathname === "/login";
 
   return (
-    <>
-      {!hideNavbar && isLoggedIn && <Navbar />}
+    <div className="flex">
+      {/* Sidebar */}
+      {!hideSidebar && isLoggedIn && <AdminSidebar />}
 
-      {/* Add padding only if Navbar is visible */}
-      <div className={!hideNavbar && isLoggedIn ? "pt-20" : ""}>
+      {/* Main Content */}
+      <div className={`flex-1 ${!hideSidebar && isLoggedIn ? "md:ml-72" : ""}`}>
         <Routes>
           <Route path="/login" element={<Login />} />
-
           {/* Protected Routes */}
-
           <Route
             path="/"
             element={
@@ -40,7 +37,14 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/hero-banner"
             element={
@@ -54,6 +58,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <AdminJobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/job-applications"
+            element={
+              <ProtectedRoute>
+                <AdminApplications />
               </ProtectedRoute>
             }
           />
@@ -73,23 +85,19 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-
           <Route
-            path="/job-applications"
+            path="/candidate-excel"
             element={
               <ProtectedRoute>
-                <AdminApplications />
+                <CandidateManager />
               </ProtectedRoute>
             }
           />
-
-           
           {/* Catch-all Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-
-    </>
+    </div>
   );
 }
 
@@ -100,4 +108,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-

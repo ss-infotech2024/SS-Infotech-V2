@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause } from "lucide-react";
-
+import Popup from "../components/Popup";
 const Hero = () => {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
@@ -9,7 +9,7 @@ const Hero = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const videoRefs = useRef([]);
-
+  const [showPopup, setShowPopup] = useState(true);
   useEffect(() => {
     const fetchSlides = async () => {
       try {
@@ -185,6 +185,7 @@ const Hero = () => {
           key={current}
         />
       </div>
+        {showPopup && <Popup duration={20} onClose={() => setShowPopup(false)} />}
     </div>
   );
 };

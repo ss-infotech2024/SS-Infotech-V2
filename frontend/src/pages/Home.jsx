@@ -3,62 +3,71 @@ import Hero from "../components/Hero";
 import About from "../components/About";
 import CompanyGoal from "../components/CompanyGoal";
 import SsGbranch from "../components/SsGbranch";
-import BoardAdvisory from "../components/BoardAdvisory";
-import OurTeam from "../components/OurTeam";
+// import BoardAdvisory from "../components/BoardAdvisory";
+// import OurTeam from "../components/OurTeam";
 import LogoSlider from "../components/Logoslider";
 import ContactForm from "../components/ContactForm";
 import Services from "../components/Services";
+import AnimatedBackground from '../components/AnimatedBackground';
 
 const Home = () => {
   return (
-    <div className="bg-white text-[#111827]">
-      {/* Hero Section */}
-      <Hero />
+    <div className="relative min-h-screen">
+      
+      <AnimatedBackground/>
 
-      {/* About Section */}
-      <section className="py-16 px-4 md:px-12">
-        <About />
-      </section>
+      {/* Floating Shapes Background */}
+      <div className="floating-shapes">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      
+      {/* Soft Gradient Overlay */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50"></div>
 
-      {/* Company Goal Section (Optional) */}
-      <section className="py-16 px-20 bg-gray-50 flex flex-col items-center justify-center text-center space-y-8">
-        <CompanyGoal />
-      </section>
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 animate-gradient-x"></div>
+      
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <Hero />
 
-      {/* Branches Section */}
-      <section className="py-16 px-4 md:px-12 bg-gray-50 flex flex-col items-center justify-center space-y-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9]">
-          Our Branches
-        </h2>
-        <SsGbranch/>
-      </section>
+        {/* About Section */}
+        <section className="py-16 px-4 md:px-12">
+          <About />
+        </section>
 
-      {/* Services Section */}
-      <section className="py-16 px-4 md:px-12">
-        <Services />
-      </section>
+        {/* Company Goal Section */}
+        <section className="py-16 px-20 flex flex-col items-center justify-center text-center space-y-8">
+          <CompanyGoal />
+        </section>
 
-      {/* Team & Advisory Section (Optional) */}
-      {/* <section className="py-16 bg-gray-50 flex flex-col items-center justify-center text-center space-y-12">
-        <OurTeam />
-        <BoardAdvisory />
-      </section> */}
+        {/* Branches Section */}
+        <section className="py-16 px-4 md:px-12 flex flex-col items-center justify-center space-y-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9]">
+            Our Branches
+          </h2>
+          <SsGbranch/>
+        </section>
 
-      {/* Client Logos */}
-      <section className="py-16 px-4 md:px-12 flex flex-col items-center justify-center space-y-12">
-        {/* <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9]">
-          Our Clients
-        </h2> */}
-        <LogoSlider />
-      </section>
+        {/* Services Section */}
+        <section className="py-16 px-4 md:px-12">
+          <Services />
+        </section>
 
-      {/* Contact Form */}
-      <section className="px-4 md:px-12 bg-gray-50 flex flex-col items-center justify-center">
-        {/* <h2 className="text-3xl md:text-4xl font-bold text-[#AB1EA9] mb-8 text-center">
-          Get in Touch
-        </h2> */}
-        <ContactForm />
-      </section>
+        {/* Client Logos */}
+        <section className="py-16 px-4 md:px-12 flex flex-col items-center justify-center space-y-12">
+          <LogoSlider />
+        </section>
+
+        {/* Contact Form */}
+        <section className="px-4 md:px-12 flex flex-col items-center justify-center">
+          <ContactForm />
+        </section>
+      </div>
     </div>
   );
 };

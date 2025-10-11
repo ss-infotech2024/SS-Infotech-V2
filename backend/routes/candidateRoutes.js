@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // 👇 IMPORTANT: the argument to .single() defines the expected field name
-router.post("/upload-excel", upload.single("file"), uploadExcel);
+router.post("/upload-excel", excelUpload.single("file"), uploadExcel);
 router.get("/candidates", getCandidates);
 router.delete("/candidate/:id", deleteCandidate);
 router.delete("/candidates", deleteAllCandidates);

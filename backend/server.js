@@ -10,11 +10,9 @@ import jobListingRoutes from './routes/jobListingRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import slideRoutes from './routes/slideRoutes.js';
-import eventRoutes from './routes/eventRoutes.js';
-import galleryRoutes from './routes/galleryRoutes.js';
-import seminerRouter from './routes/seminerRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import candidateRoutes from './routes/candidateRoutes.js';
+import albumRoutes from './routes/albumRoutes.js'; // Import album routes
 import cloudinary from 'cloudinary'; // Import Cloudinary
 
 const __filename = fileURLToPath(import.meta.url);
@@ -46,10 +44,9 @@ app.use("/api/joblistings", jobListingRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/slides", slideRoutes);
-app.use("/api/events",eventRoutes );
-app.use("/api/gallery", galleryRoutes );
-app.use("/api/candidate", candidateRoutes); 
-app.use("/api/seminars", seminerRouter ); // Using galleryRoutes for seminars as well
+app.use("/api/candidate", candidateRoutes);
+app.use("/api/albums", albumRoutes); // Ensure albumRoutes is imported correctly
+ // Using galleryRoutes for seminars as well
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

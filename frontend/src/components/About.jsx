@@ -42,13 +42,13 @@ const About = () => {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-gray-50/30">
+    <section className="py-16 bg-gradient-to-b">
 
       <div className="py-12 flex md:flex-row justify-between gap-12 max-w-7xl mx-auto">
 
         {/* Left Div - Animate from left */}
         <div 
-          className="md:w-1/2 flex flex-col justify-center transition-all duration-500 bg-white px-8 py-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md"
+          className="md:w-1/2 flex flex-col justify-center transition-all duration-500 bg-white/1 backdrop-blur-sm px-8 py-10 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md"
           data-aos="fade-right" // AOS: Fade in from right
           data-aos-duration="800"
         >
@@ -81,7 +81,7 @@ const About = () => {
 
           {hovered && (
             <div 
-              className="w-full max-w-xl bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-all duration-500 hover:shadow-xl"
+              className="w-full max-w-xl rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-all duration-500 hover:shadow-xl"
               data-aos="zoom-in" // AOS: Zoom in for the detailed card (enhances hover reveal)
               data-aos-duration="600"
             >
@@ -123,7 +123,7 @@ const About = () => {
 
         {/* Right Div - Animate from right */}
         <div 
-          className="md:w-1/2 flex flex-col items-center bg-white px-6 py-8 rounded-3xl shadow-sm border border-gray-100"
+          className="md:w-1/2 flex flex-col items-center bg-white/1 backdrop-blur-sm px-6 py-8 rounded-3xl shadow-sm border border-gray-100"
           data-aos="fade-left" // AOS: Fade in from left
           data-aos-duration="800"
         >

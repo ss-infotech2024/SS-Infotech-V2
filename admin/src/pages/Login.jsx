@@ -30,7 +30,7 @@ export default function Login() {
         className="hidden md:flex w-1/2 h-full items-center justify-center p-8"
       >
         <img
-          src="https://ssinfotech.co/logo.png"
+          src="ssinfotech-logo.png"
           alt="SS Infotech Logo"
           className="w-3/4 max-w-md drop-shadow-lg"
         />
