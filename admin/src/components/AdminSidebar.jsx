@@ -49,7 +49,7 @@ export default function AdminSidebar() {
             <img
               src="ssinfotech-logo.png"
               alt="SS Infotech Admin"
-              className="h-10 w-auto object-contain"
+              className="h-[60px] w-auto object-contain"
               onError={(e) => (e.target.style.display = "none")}
             />
            

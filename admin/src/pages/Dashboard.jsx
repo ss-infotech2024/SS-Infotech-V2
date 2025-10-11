@@ -1,5 +1,6 @@
+
 import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Progress from "../components/ui/Progress";
@@ -98,6 +99,24 @@ export default function Dashboard() {
     return monthlyData;
   }, [applications]);
 
+  const candidatesData = useMemo(() => {
+    const monthlyData = Array(12).fill(0).map((_, i) => {
+      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
+      const count = candidates.filter(c => new Date(c.createdAt || Date.now()).getMonth() === i).length;
+      return { month, value: count };
+    });
+    return monthlyData;
+  }, [candidates]);
+
+  const jobsData = useMemo(() => {
+    const monthlyData = Array(12).fill(0).map((_, i) => {
+      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
+      const count = jobs.filter(j => new Date(j.createdAt || Date.now()).getMonth() === i).length;
+      return { month, value: count };
+    });
+    return monthlyData;
+  }, [jobs]);
+
   // Form handling
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -150,12 +169,12 @@ export default function Dashboard() {
     try {
       if (activeSection === 'albums') {
         if (isEditing) {
-          const res = await axios.patch(`http://localhost:3000/api/albums/album/${editId}`, data, {
+          const res = await axios.patch(`/api/albums/album/${editId}`, data, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
           setAlbums((prev) => prev.map((item) => (item._id === editId ? res.data.album : item)));
         } else {
-          const res = await axios.post('http://localhost:3000/api/albums/album-post', data, {
+          const res = await axios.post('/api/albums/album-post', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
           setAlbums((prev) => [...prev, res.data.album]);
@@ -165,7 +184,7 @@ export default function Dashboard() {
           setError('Editing applications is not supported.');
           return;
         }
-        const res = await axios.post('http://localhost:3000/api/applications/fill-applications', data, {
+        const res = await axios.post('/api/applications/fill-applications', data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setApplications((prev) => [...prev, res.data]);
@@ -174,16 +193,16 @@ export default function Dashboard() {
           setError('Editing candidates is not supported.');
           return;
         }
-        const res = await axios.post('http://localhost:3000/api/candidate/upload-excel', data, {
+        const res = await axios.post('/api/candidate/upload-excel', data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setCandidates((prev) => [...prev, ...res.data]);
       } else if (activeSection === 'jobs') {
         if (isEditing) {
-          const res = await axios.put(`http://localhost:3000/api/jobs/update-jobs/${editId}`, formData);
+          const res = await axios.put(`/api/jobs/update-jobs/${editId}`, formData);
           setJobs((prev) => prev.map((item) => (item._id === editId ? res.data : item)));
         } else {
-          const res = await axios.post('http://localhost:3000/api/jobs/add-jobs', formData);
+          const res = await axios.post('/api/jobs/add-jobs', formData);
           setJobs((prev) => [...prev, res.data]);
         }
       } else if (activeSection === 'slides') {
@@ -191,7 +210,7 @@ export default function Dashboard() {
           setError('Editing slides is not supported.');
           return;
         }
-        const res = await axios.post('http://localhost:3000/api/slides', data, {
+        const res = await axios.post('/api/slides', data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setSlides((prev) => [...prev, res.data]);
@@ -222,19 +241,19 @@ export default function Dashboard() {
     if (!confirm(`Are you sure you want to delete this ${activeSection.slice(0, -1)}?`)) return;
     try {
       if (activeSection === 'albums') {
-        await axios.delete(`http://localhost:3000/api/albums/album/${id}`);
+        await axios.delete(`/api/albums/album/${id}`);
         setAlbums((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'applications') {
-        await axios.delete(`http://localhost:3000/api/applications/delete/${id}`);
+        await axios.delete(`/api/applications/delete/${id}`);
         setApplications((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'candidates') {
-        await axios.delete(`http://localhost:3000/api/candidate/candidate/${id}`);
+        await axios.delete(`/api/candidate/candidate/${id}`);
         setCandidates((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'jobs') {
-        await axios.delete(`http://localhost:3000/api/jobs/delete-jobs/${id}`);
+        await axios.delete(`/api/jobs/delete-jobs/${id}`);
         setJobs((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'slides') {
-        await axios.delete(`http://localhost:3000/api/slides/delete/${id}`);
+        await axios.delete(`/api/slides/delete/${id}`);
         setSlides((prev) => prev.filter((item) => item._id !== id));
       }
       setError('');
@@ -245,7 +264,7 @@ export default function Dashboard() {
 
   const handleDownloadResume = async (publicId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/applications/download/${publicId}`, {
+      const response = await axios.get(`/api/applications/download/${publicId}`, {
         headers: { Authorization: 'Bearer YOUR_TOKEN_HERE' },
         responseType: 'blob',
       });
@@ -516,7 +535,6 @@ export default function Dashboard() {
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((s) => {
           const Icon = s.icon;
-          const isUp = s.trend === "up";
           return (
             <Card key={s.label} className="overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -535,8 +553,8 @@ export default function Dashboard() {
       </div>
 
       {/* Charts */}
-      <div className="grid gap-6 lg:grid-cols-7">
-        <Card className="lg:col-span-4">
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Albums Over Time</CardTitle>
@@ -559,13 +577,60 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-3">
+        <Card>
           <CardHeader>
-            <CardTitle>Applications Over Time</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Applications Over Time</CardTitle>
+              <Badge variant="secondary">{currentYear}</Badge>
+            </div>
           </CardHeader>
           <CardContent className="pt-6">
             <ChartContainer config={{ value: { label: "Applications", color: "hsl(var(--accent))" } }} className="h-64">
               <LineChart data={applicationsData} margin={{ left: 12, right: 12 }}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                <YAxis tickLine={false} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend />
+                <Line type="monotone" dataKey="value" stroke="hsl(var(--accent))" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Candidates Over Time</CardTitle>
+              <Badge variant="secondary">{currentYear}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <ChartContainer
+              config={{ value: { label: "Candidates", color: "hsl(var(--primary))" } }}
+              className="h-64"
+            >
+              <AreaChart data={candidatesData} margin={{ left: 12, right: 12 }}>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                <YAxis tickLine={false} axisLine={false} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Area dataKey="value" type="monotone" stroke="hsl(var(--primary))" fill="hsl(var(--primary)/.15)" strokeWidth={2} />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Jobs Over Time</CardTitle>
+              <Badge variant="secondary">{currentYear}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <ChartContainer config={{ value: { label: "Jobs", color: "hsl(var(--accent))" } }} className="h-64">
+              <LineChart data={jobsData} margin={{ left: 12, right: 12 }}>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis dataKey="month" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
@@ -609,7 +674,7 @@ export default function Dashboard() {
       </div>
 
       {/* Form Section */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>{isEditing ? `Update ${activeSection.slice(0, -1)}` : `Create ${activeSection.slice(0, -1)}`}</CardTitle>
         </CardHeader>
@@ -670,7 +735,7 @@ export default function Dashboard() {
             </div>
           </form>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }

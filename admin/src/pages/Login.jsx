@@ -41,7 +41,7 @@ export default function Login() {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="bg-white shadow-2xl rounded-2xl p-8 w-[90%] md:w-[400px] mx-auto"
+        className="bg-white shadow-2xl  p-8 w-[90%] md:w-[400px] mx-auto"
       >
         <h2 className="text-3xl font-bold text-center text-purple-700">
           SS Infotech        </h2>
@@ -61,7 +61,7 @@ export default function Login() {
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full border border-gray-300  p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </motion.div>
 
@@ -76,7 +76,7 @@ export default function Login() {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full border border-gray-300  p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </motion.div>
 
@@ -94,7 +94,7 @@ export default function Login() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md"
+            className="w-full bg-blue-600 text-white py-2  hover:bg-blue-700 transition-all shadow-md"
           >
             Login
           </motion.button>
