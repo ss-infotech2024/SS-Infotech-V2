@@ -21,22 +21,23 @@ export const uploadExcel = async (req, res) => {
       return res.status(400).json({ success: false, message: "Excel file is empty" });
     }
 
-    const candidates = data.map((row, i) => ({
-      fullName: row["Full Name"] || "",
-      phoneNumber: row["Phone Number"] || "",
-      emailAddress: row["Email Address"] || "",
-      currentLocation: row["Current Location (City, State)"] || "",
-      dateOfBirth: row["Date of Birth / Age"] || "",
-      postGraduationDegree: row["Post Graduation Degree"] || "",
-      underGraduationDegree: row["Under Graduation Degree"] || "",
-      diploma: row["Diploma"] || "",
-      iti: row["ITI"] || "",
-      twelfth: row["12th"] || "",
-      currentEmploymentStatus: row["Current Employment Status"] || "",
-      experience: row["Experience (if any)"] || "",
-      techType: row["Tech / Non Tech / Both"] || "",
-      resumeLink: row["Upload Resume Link"] || "",
-    }));
+    const candidates = data.map((row) => ({
+  fullName: row["fullName"] || "",
+  phoneNumber: row["phoneNumber"] || "",
+  emailAddress: row["emailAddress"] || "",
+  currentLocation: row["currentLocation"] || "",
+  dateOfBirth: row["dateOfBirth"] || null,
+  postGraduationDegree: row["postGraduationDegree"] || "",
+  underGraduationDegree: row["underGraduationDegree"] || "",
+  diploma: row["diploma"] || "",
+  iti: row["iti"] || "",
+  twelfth: row["twelfth"] || "",
+  currentEmploymentStatus: row["currentEmploymentStatus"] || "",
+  experience: row["experience"] || "",
+  techNonTechBoth: row["techNonTechBoth"] || "",
+  resumeLink: row["resumeLink"] || "",
+}));
+
 
     // Save all candidates
     await Candidate.insertMany(candidates);

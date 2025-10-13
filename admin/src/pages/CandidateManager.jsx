@@ -186,7 +186,7 @@ export default function CandidateManager() {
           <Button icon={<UploadOutlined />}>Select Excel</Button>
         </Upload>
 
-        <Button type="primary" onClick={handleUpload} loading={loading}>
+        <Button type="primary" onClick={handleUpload} loading={loading} className="bg-[#552586]">
           Upload
         </Button>
 
@@ -203,7 +203,7 @@ export default function CandidateManager() {
             onChange={(e) => handleSearch(e.target.value)}
             allowClear
             style={{ width: 320 }}
-          />
+            className="border-[#552586]"/>
         </Space>
       </div>
 

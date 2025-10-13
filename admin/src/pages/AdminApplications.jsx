@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "antd";
-
+import {message} from "antd";
 const ADMIN_TOKEN = "i4oTayXOPrLmdMaaBhYbIdeowhIZRRQa";
 
 export default function AdminApplications() {
@@ -16,7 +16,7 @@ export default function AdminApplications() {
       setApplications(res.data.applications || []);
     } catch (err) {
       console.error("Failed to load applications:", err);
-      alert("Failed to load applications.");
+      message.error("Failed to load applications.");
     }
   };
 
@@ -44,11 +44,11 @@ export default function AdminApplications() {
       await axios.delete(`http://localhost:3000/api/applications/delete/${id}`, {
         headers: { "x-admin-token": ADMIN_TOKEN },
       });
-      alert("Application deleted successfully!");
+      message.success("Application deleted successfully!");
       fetchApplications();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete application.");
+      message.error("Failed to delete application.");
     }
   };
 
@@ -59,11 +59,11 @@ export default function AdminApplications() {
       await axios.delete("http://localhost:3000/api/applications/delete-all", {
         headers: { "x-admin-token": ADMIN_TOKEN },
       });
-      alert("All applications deleted successfully!");
+      message.success("All applications deleted successfully!");
       fetchApplications();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete all applications.");
+      message.error("Failed to delete all applications.");
     }
   };
 
@@ -95,7 +95,7 @@ export default function AdminApplications() {
                 <td className="border px-3 py-2 text-center space-x-2">
                   <Button
                     type="primary"
-                    onClick={() => handleDownload(app.resumePath, app.name)}
+                    onClick={() => handleDownload(app.resumePath, app.name)} className="bg-[#552586]"
                   >
                     Download Resume
                   </Button>

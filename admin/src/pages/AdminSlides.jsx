@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState([]);
@@ -13,11 +14,12 @@ const AdminSlides = () => {
 
   const API_BASE = "http://localhost:3000"; // Your backend URL
 
-  // Fetch slides on component mount
+  // Fetch slides on mount
   useEffect(() => {
     fetchSlides();
   }, []);
 
+  // Fetch slides
   const fetchSlides = async () => {
     try {
       setFetchError("");
@@ -38,15 +40,17 @@ const AdminSlides = () => {
     }
   };
 
+  // Handle file change
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  // Submit new slide
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file) return alert("Please select a file");
-    if (!form.title.trim()) return alert("Please provide a title");
+    if (!file) return message.error("Please select a file");
+    if (!form.title.trim()) return message.error("Please provide a title");
 
     setLoading(true);
     try {
@@ -76,15 +80,16 @@ const AdminSlides = () => {
       setFile(null);
       document.getElementById("file-input").value = "";
       fetchSlides();
-      alert("Slide created successfully!");
+      message.success("✅ Slide created successfully!");
     } catch (error) {
       console.error("Error creating slide:", error);
-      alert(`Error creating slide: ${error.message}`);
+      message.error(`❌ Error creating slide: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
+  // Delete slide
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this slide?")) return;
 
@@ -101,22 +106,27 @@ const AdminSlides = () => {
 
       const result = await res.json();
       console.log("Delete success:", result);
-      fetchSlides(); // Refresh slide list
-      alert("Slide deleted successfully!");
+      fetchSlides();
+      message.success("✅ Slide deleted successfully!");
     } catch (error) {
       console.error("Error deleting slide:", error);
-      alert(`Error deleting slide: ${error.message}`);
+      message.error(`❌ Error deleting slide: ${error.message}`);
     }
   };
 
+  // Test backend connection
   const testConnection = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/slides`, {
         credentials: "include",
       });
-      alert(`Backend connection: ${res.status === 200 ? "SUCCESS" : "FAILED"}`);
+      if (res.status === 200) {
+        message.success("✅ Backend connection successful!");
+      } else {
+        message.error("⚠️ Backend connection failed!");
+      }
     } catch (error) {
-      alert(`Backend connection FAILED: ${error.message}`);
+      message.error(`❌ Backend connection failed: ${error.message}`);
     }
   };
 
@@ -127,13 +137,13 @@ const AdminSlides = () => {
         <h2 className="text-2xl font-bold text-gray-800">Manage Hero Slides</h2>
         <button
           onClick={testConnection}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm"
+          className="bg-[#552586] hover:bg-[#6a36a2] text-white px-4 py-2 rounded text-sm"
         >
           Test Backend Connection
         </button>
       </div>
 
-      {/* Error */}
+      {/* Error Display */}
       {fetchError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {fetchError}
@@ -166,8 +176,7 @@ const AdminSlides = () => {
             </p>
             {file && (
               <p className="text-sm text-green-600 mt-1">
-                Selected: {file.name} (
-                {(file.size / 1024 / 1024).toFixed(2)} MB)
+                Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
           </div>
@@ -219,7 +228,7 @@ const AdminSlides = () => {
         <button
           type="submit"
           disabled={loading || !file}
-          className="bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white px-6 py-2 rounded-md font-medium transition-colors"
+          className="bg-[#552586] hover:bg-[#6a36a2] disabled:bg-[#a58ec2] text-white px-6 py-2 rounded-md font-medium transition-colors"
         >
           {loading ? "Uploading..." : "Add Slide"}
         </button>
@@ -267,9 +276,7 @@ const AdminSlides = () => {
                     )}
                   </div>
                   <div>
-                    <h4 className="font-medium">
-                      {slide.title || "Untitled Slide"}
-                    </h4>
+                    <h4 className="font-medium">{slide.title || "Untitled Slide"}</h4>
                     <p className="text-sm text-gray-500 capitalize">
                       {slide.type} •{" "}
                       {new Date(slide.createdAt).toLocaleDateString()}

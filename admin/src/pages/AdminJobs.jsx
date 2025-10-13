@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
 
 // Icons
 import { Trash, Plus, Edit3, Loader2 } from "lucide-react";
@@ -34,7 +35,7 @@ export default function AdminJobs() {
       const data = await res.json();
       setJobs(data.jobs || []);
     } catch (err) {
-      toast.error(err.message);
+      message.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -75,7 +76,7 @@ export default function AdminJobs() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save job");
 
-      toast.success(editingJob ? "Job updated successfully!" : "Job added successfully!");
+      message.success(editingJob ? "Job updated successfully!" : "Job added successfully!");
 
       // Reset form
       setJobForm({
@@ -92,7 +93,7 @@ export default function AdminJobs() {
       setEditingJob(null);
       fetchJobs();
     } catch (err) {
-      toast.error(err.message);
+      message.error(err.message);
     } finally {
       setSubmitting(false);
     }
@@ -106,10 +107,10 @@ export default function AdminJobs() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to delete job");
 
-      toast.success("Job deleted successfully!");
+      message.success("Job deleted successfully!");
       setJobs((prev) => prev.filter((job) => job._id !== id));
     } catch (err) {
-      toast.error(err.message);
+      message.error(err.message);
     }
   };
 
@@ -190,7 +191,7 @@ export default function AdminJobs() {
         <button
           type="submit"
           disabled={submitting}
-          className="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 flex items-center gap-2"
+          className="bg-[#552586] text-white px-4 py-2 rounded-md hover:bg-[#552586] flex items-center gap-2"
         >
           {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingJob ? <Edit3 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
           {editingJob ? "Update Job" : "Create Job"}
@@ -217,7 +218,7 @@ export default function AdminJobs() {
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(job)}
-                  className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  className="text-[#552586] hover:text-[#552586] flex items-center gap-1"
                 >
                   <Edit3 className="h-4 w-4" /> Edit
                 </button>

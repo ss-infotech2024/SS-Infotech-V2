@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import { message } from 'antd'; // ✅ fixed import
 
 // Focus trap helper for modals
 const useFocusTrap = (ref, isOpen) => {
@@ -60,7 +61,7 @@ const AdminGallery = () => {
         const response = await axios.get('http://localhost:3000/api/albums/album-getall');
         setAlbums(response.data);
       } catch (err) {
-        setError('Failed to load albums. Please try again.');
+        message.error('Failed to load albums. Please try again.');
       }
     };
     fetchAlbums();
@@ -69,9 +70,7 @@ const AdminGallery = () => {
   // Close modal on ESC key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape' && viewAlbum) {
-        closeModal();
-      }
+      if (e.key === 'Escape' && viewAlbum) closeModal();
     };
     if (viewAlbum) {
       document.addEventListener('keydown', handleEscape);
@@ -111,10 +110,12 @@ const AdminGallery = () => {
     const files = Array.from(e.target.files);
     if (files.length > 10) {
       setError('Maximum 10 images allowed');
+      message.error('Maximum 10 images allowed');
       return;
     }
     if (!isEditing && files.length < 5) {
       setError('Minimum 5 images required for new albums');
+      message.error('Minimum 5 images required for new albums');
       return;
     }
     setFormData((prev) => ({ ...prev, images: files }));
@@ -136,19 +137,24 @@ const AdminGallery = () => {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setAlbums((prev) => prev.map((album) => (album._id === editId ? response.data.album : album)));
+        message.success('Album updated successfully!');
       } else {
         const response = await axios.post('http://localhost:3000/api/albums/album-post', data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setAlbums((prev) => [...prev, response.data.album]);
+        message.success('Album created successfully!');
       }
+
       setFormData({ title: '', fullTitle: '', color: '', images: [] });
       setIsEditing(false);
       setEditId(null);
       fileInputRef.current.value = '';
       setError('');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to save album');
+      const errMsg = err.response?.data?.error || 'Failed to save album';
+      setError(errMsg);
+      message.error(errMsg);
     }
   };
 
@@ -163,6 +169,7 @@ const AdminGallery = () => {
       images: [],
     });
     setError('');
+    message.info(`Editing album: ${album.title}`);
     formRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -172,9 +179,11 @@ const AdminGallery = () => {
     try {
       await axios.delete(`http://localhost:3000/api/albums/album/${_id}`);
       setAlbums((prev) => prev.filter((album) => album._id !== _id));
-      setError('');
+      message.success('Album deleted successfully!');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to delete album');
+      const errMsg = err.response?.data?.error || 'Failed to delete album';
+      setError(errMsg);
+      message.error(errMsg);
     }
   };
 
@@ -205,13 +214,6 @@ const AdminGallery = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      {/* <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Panel - College Gallery</h1>
-        </div>
-      </header> */}
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Form Section */}
         <section className="mb-12 bg-white rounded-lg shadow-md p-6" ref={formRef}>
@@ -224,9 +226,8 @@ const AdminGallery = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md"
                 required
-                aria-describedby="title-error"
               />
             </div>
             <div>
@@ -236,25 +237,23 @@ const AdminGallery = () => {
                 name="fullTitle"
                 value={formData.fullTitle}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md"
                 required
-                aria-describedby="fullTitle-error"
               />
             </div>
             <div>
-              <label htmlFor="color" className="block text-sm font-medium text-gray-700">Color (TailwindCSS gradient, e.g., from-blue-500 to-cyan-600)</label>
+              <label htmlFor="color" className="block text-sm font-medium text-gray-700">Color (Tailwind Gradient)</label>
               <input
                 type="text"
                 name="color"
                 value={formData.color}
                 onChange={handleInputChange}
-                className="mt-1 block w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full p-3 border border-gray-300 rounded-md"
                 required
-                aria-describedby="color-error"
               />
             </div>
             <div>
-              <label htmlFor="images" className="block text-sm font-medium text-gray-700">Images (5-10, JPEG/PNG/WEBP)</label>
+              <label htmlFor="images" className="block text-sm font-medium text-gray-700">Images (5–10)</label>
               <input
                 type="file"
                 name="images"
@@ -264,16 +263,13 @@ const AdminGallery = () => {
                 ref={fileInputRef}
                 className="mt-1 block w-full p-3 border border-gray-300 rounded-md"
                 required={!isEditing}
-                aria-describedby="images-error"
               />
             </div>
-            {error && (
-              <p id="form-error" className="text-red-600 text-sm" role="alert">{error}</p>
-            )}
+            {error && <p className="text-red-600 text-sm">{error}</p>}
             <div className="flex gap-4">
               <button
                 type="submit"
-                className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="px-6 py-2 bg-[#552586] text-white rounded-md hover:bg-[#6a34a0]"
               >
                 {isEditing ? 'Update Album' : 'Create Album'}
               </button>
@@ -286,8 +282,9 @@ const AdminGallery = () => {
                     setFormData({ title: '', fullTitle: '', color: '', images: [] });
                     fileInputRef.current.value = '';
                     setError('');
+                    message.info('Edit canceled');
                   }}
-                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
                 >
                   Cancel
                 </button>
@@ -296,7 +293,7 @@ const AdminGallery = () => {
           </form>
         </section>
 
-        {/* Albums Table */}
+        {/* Album List */}
         <section className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-semibold mb-6">Albums</h2>
           {albums.length === 0 ? (
@@ -306,44 +303,24 @@ const AdminGallery = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Full Title</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Color</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Full Title</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Color</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Images</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-gray-200">
                   {albums.map((album) => (
                     <tr key={album._id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{album.title}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{album.fullTitle}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span className={`inline-block w-4 h-4 rounded-full bg-gradient-to-r ${album.color}`}></span> {album.color}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{album.images.length}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        <button
-                          onClick={() => openModal(album)}
-                          className="text-indigo-600 hover:text-indigo-900 focus:outline-none focus:underline"
-                          aria-label={`View ${album.title} gallery`}
-                        >
-                          View
-                        </button>
-                        <button
-                          onClick={() => handleEdit(album)}
-                          className="text-yellow-600 hover:text-yellow-900 focus:outline-none focus:underline"
-                          aria-label={`Edit ${album.title}`}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(album._id)}
-                          className="text-red-600 hover:text-red-900 focus:outline-none focus:underline"
-                          aria-label={`Delete ${album.title}`}
-                        >
-                          Delete
-                        </button>
+                      <td className="px-6 py-4">{album.title}</td>
+                      <td className="px-6 py-4">{album.fullTitle}</td>
+                      <td className="px-6 py-4">{album.color}</td>
+                      <td className="px-6 py-4">{album.images.length}</td>
+                      <td className="px-6 py-4 space-x-3">
+                        <button onClick={() => openModal(album)} className="text-indigo-600 hover:underline">View</button>
+                        <button onClick={() => handleEdit(album)} className="text-yellow-600 hover:underline">Edit</button>
+                        <button onClick={() => handleDelete(album._id)} className="text-red-600 hover:underline">Delete</button>
                       </td>
                     </tr>
                   ))}
@@ -369,96 +346,38 @@ const AdminGallery = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden border border-white/20"
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${viewAlbum.title} image gallery`}
+              className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl max-w-5xl w-full max-h-[95vh] overflow-hidden"
             >
               <div className="flex items-center justify-between p-6 border-b border-gray-200/50 bg-white/50">
-                <h3 className="text-xl font-bold text-gray-900">{viewAlbum.fullTitle}</h3>
+                <h3 className="text-xl font-bold">{viewAlbum.fullTitle}</h3>
                 <button
                   onClick={closeModal}
-                  className="p-2 hover:bg-gray-200/50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="p-2 hover:bg-gray-200 rounded-full"
                   aria-label="Close gallery modal"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  ✕
                 </button>
               </div>
               <div className="p-6 overflow-auto max-h-[calc(95vh-140px)]">
-                <div className="mb-8 relative bg-gray-100/50 rounded-xl overflow-hidden shadow-inner">
-                  <AnimatePresence mode="wait">
-                    <motion.img
-                      key={currentImageIndex}
-                      src={viewAlbum.images[currentImageIndex]}
-                      alt={`${viewAlbum.title} - Image ${currentImageIndex + 1}`}
-                      className="w-full h-[60vh] sm:h-[70vh] object-contain select-none rounded-lg"
-                      loading="lazy"
-                      decoding="async"
-                      width={800}
-                      height={600}
-                      drag="x"
-                      dragConstraints={{ left: 0, right: 0 }}
-                      dragElastic={0.1}
-                      onDragEnd={(e, info) => {
-                        if (info.offset.x > 100) prevImage();
-                        else if (info.offset.x < -100) nextImage();
-                      }}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    />
-                  </AnimatePresence>
+                <div className="relative bg-gray-100 rounded-xl overflow-hidden">
+                  <motion.img
+                    key={currentImageIndex}
+                    src={viewAlbum.images[currentImageIndex]}
+                    alt="album"
+                    className="w-full h-[60vh] object-contain"
+                  />
                   <button
                     onClick={prevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 z-10"
-                    aria-label="Previous image"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
+                    ‹
                   </button>
                   <button
                     onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white shadow-lg p-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 z-10"
-                    aria-label="Next image"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    ›
                   </button>
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
-                    {currentImageIndex + 1} / {viewAlbum.images.length}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {viewAlbum.images.map((image, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`relative rounded-xl overflow-hidden shadow-md transition-all border-2 ${
-                        index === currentImageIndex
-                          ? 'border-indigo-500 ring-2 ring-indigo-200/50 bg-indigo-50'
-                          : 'border-transparent hover:border-gray-300 hover:shadow-lg'
-                      } focus:outline-none focus:ring-2 focus:ring-indigo-500`}
-                      aria-label={`Jump to image ${index + 1}`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${viewAlbum.title} - Thumbnail ${index + 1}`}
-                        className="w-full h-24 object-cover"
-                        loading="lazy"
-                        decoding="async"
-                        width={150}
-                        height={100}
-                      />
-                    </motion.button>
-                  ))}
                 </div>
               </div>
             </motion.div>

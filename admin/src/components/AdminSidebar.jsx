@@ -29,7 +29,7 @@ export default function AdminSidebar() {
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md text-[#1E245C] text-2xl focus:outline-none focus:ring-2 focus:ring-[#1E245C] transition duration-200"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md text-[#552586] text-2xl focus:outline-none focus:ring-2 focus:ring-[#552586] transition duration-200"
         aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
       >
         {isOpen ? <FaTimes /> : <FaBars />}
@@ -66,10 +66,10 @@ export default function AdminSidebar() {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-2 text-[#1E245C] font-medium px-3 py-2 rounded-lg transition duration-200 text-sm ${
+                className={`flex items-center gap-2 text-[#552586] font-medium px-3 py-2 rounded-lg transition duration-200 text-sm ${
                   isActive
-                    ? "bg-[#1E245C] text-white shadow-sm"
-                    : "hover:bg-[#1E245C]/90 hover:text-white"
+                    ? "bg-[#552586] text-white shadow-sm"
+                    : "hover:bg-[#552586]/90 hover:text-white"
                 }`}
                 aria-current={isActive ? "page" : undefined}
               >
@@ -84,7 +84,7 @@ export default function AdminSidebar() {
         <div className="p-3 border-t border-[#1E245C]/10">
           <button
             onClick={handleLogout}
-            className="flex items-center justify-center gap-2 w-full bg-[#1E245C] text-white font-medium px-3 py-2 rounded-lg hover:bg-[#2E3AA3] transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#2E3AA3] text-sm"
+            className="flex items-center justify-center gap-2 w-full bg-[#552586] text-white font-medium px-3 py-2 rounded-lg hover:bg-[#552586] transition duration-300 focus:outline-none focus:ring-2 focus:ring-[#552586] text-sm"
             aria-label="Logout"
           >
             <FaSignOutAlt size={14} />

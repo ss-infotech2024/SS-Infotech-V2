@@ -86,7 +86,7 @@ const GenerateCertificate = () => {
       <div className="flex justify-center">
         <button
           onClick={downloadPdf}
-          className="bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
+          className="bg-[#552586] hover:bg-[#552586] text-white py-2 px-4 rounded"
         >
           Download {docType}
         </button>
