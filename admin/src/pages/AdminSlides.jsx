@@ -80,10 +80,10 @@ const AdminSlides = () => {
       setFile(null);
       document.getElementById("file-input").value = "";
       fetchSlides();
-      message.success("✅ Slide created successfully!");
+      message.success(" Slide created successfully!");
     } catch (error) {
       console.error("Error creating slide:", error);
-      message.error(`❌ Error creating slide: ${error.message}`);
+      message.error(` Error creating slide: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -107,10 +107,10 @@ const AdminSlides = () => {
       const result = await res.json();
       console.log("Delete success:", result);
       fetchSlides();
-      message.success("✅ Slide deleted successfully!");
+      message.success(" Slide deleted successfully!");
     } catch (error) {
       console.error("Error deleting slide:", error);
-      message.error(`❌ Error deleting slide: ${error.message}`);
+      message.error(` Error deleting slide: ${error.message}`);
     }
   };
 
@@ -126,7 +126,7 @@ const AdminSlides = () => {
         message.error("⚠️ Backend connection failed!");
       }
     } catch (error) {
-      message.error(`❌ Backend connection failed: ${error.message}`);
+      message.error(` Backend connection failed: ${error.message}`);
     }
   };
 

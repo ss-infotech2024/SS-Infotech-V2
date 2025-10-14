@@ -1,6 +1,6 @@
 // routes/candidateRoutes.js
 import express from "express";
-import { uploadExcel, getCandidates, deleteCandidate, deleteAllCandidates } from "../controllers/candidateController.js";
+import { uploadExcel, getCandidates, deleteCandidate, deleteAllCandidates,downloadExcel } from "../controllers/candidateController.js";
 import { excelUpload } from "../middleware/upload.js";
 import multer from "multer";
 const router = express.Router();
@@ -17,5 +17,6 @@ router.post("/upload-excel", excelUpload.single("file"), uploadExcel);
 router.get("/candidates", getCandidates);
 router.delete("/candidate/:id", deleteCandidate);
 router.delete("/candidates", deleteAllCandidates);
+router.get("/download-excel", downloadExcel);
 
 export default router;

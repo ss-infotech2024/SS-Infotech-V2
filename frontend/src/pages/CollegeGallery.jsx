@@ -1,6 +1,3 @@
-// CollegeGallery.jsx
-// Updated with correct API endpoints
-
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -198,7 +195,7 @@ const CollegeGallery = () => {
               animate={{ rotate: 360 }}
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             />
-            <p className="text-lg text-gray-600">Loading college galleries...</p>
+            <p className="text-lg text-gray-600">Loading gallery...</p>
           </div>
         </div>
       </section>
@@ -247,7 +244,7 @@ const CollegeGallery = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            College Visits
+            Gallery Showcase
           </motion.h1>
 
           <div className="space-y-16">
@@ -266,7 +263,7 @@ const CollegeGallery = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">No Albums Found</h3>
-              <p className="text-gray-500">There are no college visit albums to display.</p>
+              <p className="text-gray-500">There are no gallery albums to display.</p>
             </div>
           )}
         </div>

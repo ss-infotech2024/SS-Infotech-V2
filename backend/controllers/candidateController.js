@@ -85,3 +85,51 @@ export const deleteAllCandidates = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to delete all candidates" });
   }
 };
+export const downloadExcel = async (req, res) => {
+  try {
+    // Fetch all candidates from the database
+    const candidates = await Candidate.find();
+
+    if (!candidates.length) {
+      return res.status(404).json({ success: false, message: "No candidates found to download" });
+    }
+
+    // Transform candidates data into an array suitable for Excel
+    const excelData = candidates.map((candidate) => ({
+      fullName: candidate.fullName,
+      phoneNumber: candidate.phoneNumber,
+      emailAddress: candidate.emailAddress,
+      currentLocation: candidate.currentLocation,
+      dateOfBirth: candidate.dateOfBirth ? candidate.dateOfBirth.toISOString().split('T')[0] : "",
+      postGraduationDegree: candidate.postGraduationDegree,
+      underGraduationDegree: candidate.underGraduationDegree,
+      diploma: candidate.diploma,
+      iti: candidate.iti,
+      twelfth: candidate.twelfth,
+      currentEmploymentStatus: candidate.currentEmploymentStatus,
+      experience: candidate.experience,
+      techNonTechBoth: candidate.techNonTechBoth,
+      resumeLink: candidate.resumeLink,
+    }));
+
+    // Create a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+    // Create a workbook and add the worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates");
+
+    // Generate buffer for the Excel file
+    const buffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" });
+
+    // Set response headers for file download
+    res.setHeader("Content-Disposition", "attachment; filename=candidates_export_" + new Date().toISOString().split('T')[0] + ".xlsx");
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+
+    // Send the file buffer as response
+    res.send(buffer);
+  } catch (err) {
+    console.error("Excel download error:", err);
+    res.status(500).json({ success: false, message: "Server error during Excel download" });
+  }
+};

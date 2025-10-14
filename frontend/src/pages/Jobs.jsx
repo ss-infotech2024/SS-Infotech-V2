@@ -1,10 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Search, MapPin, Briefcase, Clock, IndianRupee, X } from "lucide-react";
-
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import JobSearchHero from "./JobSearchHero"; // Assuming this component exists in your project
 
 // Time ago utility
 function timeAgo(dateStr) {
@@ -24,10 +21,7 @@ function timeAgo(dateStr) {
   return "just now";
 }
 
-
 // JobApplicationModal Component
-
-
 function JobApplicationModal({ job, isOpen, onClose }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -64,7 +58,7 @@ function JobApplicationModal({ job, isOpen, onClose }) {
 
     const formDataToSend = new FormData();
     formDataToSend.append("jobId", job.id);
-    formDataToSend.append("title", job.title || "Untitled Job"); // Fallback for submission
+    formDataToSend.append("title", job.title || "Untitled Job");
     formDataToSend.append("name", formData.name);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("phone", formData.phone);
@@ -99,10 +93,10 @@ function JobApplicationModal({ job, isOpen, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">Apply for {job.title || 'Untitled Job'}</h2>
+          <h2 className="text-xl font-semibold text-purple-900">Apply for {job.title || 'Untitled Job'}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-purple-700"
             disabled={submitting}
           >
             <X className="h-6 w-6" />
@@ -110,53 +104,53 @@ function JobApplicationModal({ job, isOpen, onClose }) {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Full Name</label>
+            <label className="block text-sm font-medium text-purple-900">Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter your full name"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-purple-900">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter your email"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Phone</label>
+            <label className="block text-sm font-medium text-purple-900">Phone</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Enter your phone number"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Resume</label>
+            <label className="block text-sm font-medium text-purple-900">Resume</label>
             <input
               type="file"
               name="resume"
               onChange={handleInputChange}
               accept=".pdf,.doc,.docx"
               required
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               disabled={submitting}
             />
           </div>
@@ -165,14 +159,14 @@ function JobApplicationModal({ job, isOpen, onClose }) {
               type="button"
               onClick={onClose}
               disabled={submitting}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 disabled:opacity-50"
+              className="px-4 py-2 bg-purple-200 text-purple-900 rounded-md hover:bg-purple-300 disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 bg-[#1E2A69] text-white rounded-md hover:bg-[#1E2A69]/90 disabled:opacity-50"
+              className="px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 disabled:opacity-50"
             >
               {submitting ? "Submitting..." : "Submit Application"}
             </button>
@@ -183,15 +177,8 @@ function JobApplicationModal({ job, isOpen, onClose }) {
   );
 }
 
-
-
-
-
-
-
 // JobSearch Component
 export default function JobSearch() {
-  // State for search and filters
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [experience, setExperience] = useState(undefined);
@@ -208,7 +195,8 @@ export default function JobSearch() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch jobs from backend
+  const cardRefs = useRef([]);
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -216,7 +204,6 @@ export default function JobSearch() {
 
         let url = "http://localhost:3000/api/jobs/show-jobs";
 
-        // Add query parameters for filters
         const params = new URLSearchParams();
         if (query) params.append("query", query);
         if (location) params.append("location", location);
@@ -235,7 +222,6 @@ export default function JobSearch() {
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch jobs");
         const data = await response.json();
-        // Transform backend data to match frontend structure
         const transformedJobs = data.jobs.map((job) => ({
           id: job._id,
           title: job.title,
@@ -248,7 +234,7 @@ export default function JobSearch() {
           description: job.description,
           salary: job.salary || "Not specified",
           category: job.category || "Other",
-          isAdmin: true, // Treat all backend jobs as admin jobs
+          isAdmin: true,
         }));
         setJobs(transformedJobs);
         setLoading(false);
@@ -261,7 +247,6 @@ export default function JobSearch() {
     fetchJobs();
   }, [query, location, category, salaryRange, postedWithin]);
 
-  // Memoized filter options
   const locations = useMemo(() => Array.from(new Set(jobs.map((j) => j.location))), [jobs]);
   const experiences = ["0-1 years", "1-3 years", "2-4 years", "4+ years"];
   const types = useMemo(() => Array.from(new Set(jobs.map((j) => j.type))), [jobs]);
@@ -270,7 +255,6 @@ export default function JobSearch() {
   const salaryRanges = ["₹5-10 LPA", "₹10-15 LPA", "₹15-20 LPA", "₹20+ LPA"];
   const postedWithinOptions = ["Any", "Last 24 hours", "Last 7 days", "Last 30 days"];
 
-  // Client-side filtering for experience, job type, and skills
   const filtered = useMemo(() => {
     return jobs.filter((job) => {
       const matchesExperience = experience ? job.experience === experience : true;
@@ -285,7 +269,6 @@ export default function JobSearch() {
     });
   }, [jobs, experience, jobType, selectedSkills, query, location, category, salaryRange, postedWithin]);
 
-  // Toggle save job
   const toggleSave = (jobId) => {
     setSaved((prev) => ({
       ...prev,
@@ -294,34 +277,53 @@ export default function JobSearch() {
     toast.success(saved[jobId] ? "Job removed from saved" : "Job saved!");
   };
 
-  // Toggle skill selection
   const toggleSkill = (skill) => {
     setSelectedSkills((prev) =>
       prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
     );
   };
 
-  // Handle View & Apply button click
   const handleViewApply = (job) => {
     setSelectedJob(job);
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in", "slide-up");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      cardRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, [filtered]);
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <ToastContainer position="top-right" autoClose={3000} />
-      {/* <JobSearchHero /> */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-8 relative z-10">
-        {/* Search and Location Filter */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
           <div className="lg:col-span-2 flex items-center space-x-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by job title, company, or skills"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                className="w-full pl-10 pr-3 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
               />
             </div>
             <button
@@ -335,36 +337,34 @@ export default function JobSearch() {
                 setSalaryRange(undefined);
                 setPostedWithin(undefined);
               }}
-              className="px-4 py-3 bg-gray-200 text-gray-800 rounded-lg font-medium text-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-200"
+              className="px-4 py-3 bg-purple-200 text-purple-900 rounded-lg font-medium text-sm hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-colors duration-200"
             >
               Reset
             </button>
           </div>
           <div>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Enter location (e.g., Pune, India)"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                className="w-full pl-10 pr-3 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
               />
             </div>
           </div>
         </div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar with Filters */}
           <aside className="space-y-4">
-            <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Filters</h2>
+            <div className="bg-white border border-purple-100 rounded-lg shadow-md p-4">
+              <h2 className="text-lg font-semibold text-purple-900 mb-4">Filters</h2>
               <div className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Category</label>
+                  <label className="text-sm font-medium text-purple-900">Category</label>
                   <select
                     onChange={(e) => setCategory(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
                   >
                     <option value="__any">Any</option>
                     {categories.map((cat) => (
@@ -375,10 +375,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Experience</label>
+                  <label className="text-sm font-medium text-purple-900">Experience</label>
                   <select
                     onChange={(e) => setExperience(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
                   >
                     <option value="__any">Any</option>
                     {experiences.map((exp) => (
@@ -389,10 +389,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Job Type</label>
+                  <label className="text-sm font-medium text-purple-900">Job Type</label>
                   <select
                     onChange={(e) => setJobType(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
                   >
                     <option value="__any">Any</option>
                     {types.map((t) => (
@@ -403,7 +403,7 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Skills</label>
+                  <label className="text-sm font-medium text-purple-900">Skills</label>
                   <div className="mt-2 space-y-2 max-h-40 overflow-y-auto">
                     {skills.map((skill) => (
                       <label key={skill} className="flex items-center space-x-2 text-sm cursor-pointer">
@@ -411,18 +411,18 @@ export default function JobSearch() {
                           type="checkbox"
                           checked={selectedSkills.includes(skill)}
                           onChange={() => toggleSkill(skill)}
-                          className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                          className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
                         />
-                        <span>{skill}</span>
+                        <span className="text-purple-800">{skill}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Salary Range</label>
+                  <label className="text-sm font-medium text-purple-900">Salary Range</label>
                   <select
                     onChange={(e) => setSalaryRange(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
                   >
                     <option value="__any">Any</option>
                     {salaryRanges.map((range) => (
@@ -433,10 +433,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Posted Within</label>
+                  <label className="text-sm font-medium text-purple-900">Posted Within</label>
                   <select
                     onChange={(e) => setPostedWithin(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 hover:shadow-sm"
+                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-shadow duration-200 hover:shadow-sm"
                   >
                     <option value="__any">Any</option>
                     {postedWithinOptions.map((option) => (
@@ -447,15 +447,15 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-purple-600">
                     Saved <strong>{Object.keys(saved).filter((k) => saved[k]).length}</strong> jobs
                   </p>
                 </div>
               </div>
             </div>
-            <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Tips</h2>
-              <ul className="list-disc ml-5 text-sm text-gray-600 space-y-2">
+            <div className="bg-white border border-purple-100 rounded-lg shadow-md p-4">
+              <h2 className="text-lg font-semibold text-purple-900 mb-4">Tips</h2>
+              <ul className="list-disc ml-5 text-sm text-purple-600 space-y-2">
                 <li>Use specific keywords (e.g., nurse, accountant) to narrow results.</li>
                 <li>Apply quickly to new listings — save them for later review.</li>
                 <li>Filter by category and salary to find the best fit.</li>
@@ -463,11 +463,10 @@ export default function JobSearch() {
             </div>
           </aside>
 
-          {/* Job Listings */}
           <section className="lg:col-span-3 space-y-4">
             {loading && (
               <div className="text-center py-8">
-                <p className="text-gray-500">Loading jobs...</p>
+                <p className="text-purple-600">Loading jobs...</p>
               </div>
             )}
             {error && (
@@ -477,82 +476,81 @@ export default function JobSearch() {
             )}
             {!loading && !error && (
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Job Opportunities</h3>
+                <h3 className="text-lg font-semibold text-purple-900 mb-4">Job Opportunities</h3>
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-purple-600">
                     Showing <strong>{filtered.length}</strong> results
                   </p>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-purple-600">
                     Sorted by <strong>Relevance</strong>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {filtered.slice(0, visible).map((job) => (
+                  {filtered.slice(0, visible).map((job, index) => (
                     <div
                       key={job.id}
-                      className="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+                      ref={(el) => (cardRefs.current[index] = el)}
+                      className="bg-white border border-purple-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 fade-in-initial card-animate"
                     >
                       <div className="p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3">
-                              <div className="bg-blue-100 rounded-md p-3">
-                                <Briefcase className="h-5 w-5 text-blue-600" />
+                              <div className="bg-purple-100 rounded-md p-3">
+                                <Briefcase className="h-5 w-5 text-purple-700" />
                               </div>
                               <div>
-                                <h3 className="text-lg font-semibold text-gray-800">{job.title}</h3>
-                                <p className="text-sm text-gray-500">
+                                <h3 className="text-lg font-semibold text-purple-900">{job.title}</h3>
+                                <p className="text-sm text-purple-600">
                                   {job.company} • {job.location}
                                 </p>
                               </div>
                             </div>
                             <div className="mt-3 flex items-center gap-2 flex-wrap">
-                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full border border-gray-300 text-gray-600">
+                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full border border-purple-300 text-purple-700">
                                 {job.experience}
                               </span>
-                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full border border-gray-300 text-gray-600">
+                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full border border-purple-300 text-purple-700">
                                 {job.type}
                               </span>
-                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full border border-blue-300 bg-blue-50 text-blue-700">
+                              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-purple-50 text-purple-800">
                                 {job.category}
                               </span>
                               {job.skills.slice(0, 3).map((s) => (
                                 <span
                                   key={s}
-                                  className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+                                  className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800"
                                 >
                                   {s}
                                 </span>
                               ))}
                             </div>
-                            <div className="mt-4 text-sm text-gray-500 flex items-center gap-4">
+                            <div className="mt-4 text-sm text-purple-600 flex items-center gap-4">
                               <span className="flex items-center gap-1">
                                 <Clock className="h-4 w-4" />
                                 {timeAgo(job.postedAt)}
                               </span>
                               {job.salary && (
                                 <span className="flex items-center gap-1">
-
                                   <IndianRupee className="h-4 w-4" />
-
                                   {job.salary}
                                 </span>
                               )}
                             </div>
                             <div className="mt-4">
-                              <p className="text-sm text-gray-600 line-clamp-3">{job.description}</p>
+                              <p className="text-sm text-purple-700 line-clamp-3">{job.description}</p>
                             </div>
                           </div>
                           <div className="flex flex-col items-end space-y-2">
                             <button
                               onClick={() => handleViewApply(job)}
-                              className="px-4 py-2 bg-[#1E2A69] text-white rounded-md font-medium text-sm hover:bg-[#1E2A69]/90 focus:outline-none focus:ring-2 focus:ring-[#1E2A69] transition-colors duration-200"
+                              className="px-4 py-2 bg-purple-700 text-white rounded-md font-medium text-sm hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-colors duration-200"
                             >
                               View & Apply
                             </button>
                             <button
                               onClick={() => toggleSave(job.id)}
-                              className="px-4 py-2 bg-transparent text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-md font-medium text-sm transition-colors duration-200"
+                              className="px-4 py-2 bg-transparent text-purple-700 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded-md font-medium text-sm transition-colors duration-200"
                             >
                               {saved[job.id] ? "Saved" : "Save"}
                             </button>
@@ -563,8 +561,8 @@ export default function JobSearch() {
                   ))}
                 </div>
                 {filtered.length === 0 && (
-                  <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 text-center">
-                    <p className="text-sm text-gray-500">
+                  <div className="bg-white border border-purple-100 rounded-lg shadow-md p-4 text-center">
+                    <p className="text-sm text-purple-600">
                       No jobs matched your search. Try adjusting filters or keywords.
                     </p>
                   </div>
@@ -573,7 +571,7 @@ export default function JobSearch() {
                   <div className="text-center mt-4">
                     <button
                       onClick={() => setVisible((v) => v + 4)}
-                      className="px-4 py-2 bg-[#1E2A69] text-white rounded-md font-medium text-sm hover:bg-[#1E2A69]/90 focus:outline-none focus:ring-2 focus:ring-[#1E2A69] transition-colors duration-200"
+                      className="px-4 py-2 bg-purple-700 text-white rounded-md font-medium text-sm hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-colors duration-200"
                     >
                       Load more
                     </button>

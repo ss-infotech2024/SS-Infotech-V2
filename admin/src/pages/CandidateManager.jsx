@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
-import { UploadOutlined, SearchOutlined } from "@ant-design/icons";
+import { UploadOutlined, SearchOutlined, DownloadOutlined } from "@ant-design/icons";
 
 export default function CandidateManager() {
   const [candidates, setCandidates] = useState([]);
@@ -118,6 +118,30 @@ export default function CandidateManager() {
     setFilteredCandidates(filtered);
   };
 
+  // ✅ Download Excel
+  const handleDownload = async () => {
+    try {
+      const response = await axios.get(`${API_BASE}/download-excel`, {
+        responseType: "blob", // Important: tells axios to treat the response as a binary blob
+      });
+
+      // Create a URL for the blob and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `candidates_export_${new Date().toISOString().split('T')[0]}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      message.success("Excel file downloaded successfully");
+    } catch (err) {
+      console.error("Failed to download Excel:", err);
+      message.error("Failed to download Excel file");
+    }
+  };
+
   // ✅ Table columns
   const columns = [
     { title: "Full Name", dataIndex: "fullName", key: "fullName" },
@@ -194,6 +218,14 @@ export default function CandidateManager() {
           Delete All
         </Button>
 
+        <Button
+          icon={<DownloadOutlined />}
+          onClick={handleDownload}
+          className="bg-[#552586] text-white hover:bg-[#4a2163]"
+        >
+          Download Excel
+        </Button>
+
         {/* Search Box */}
         <Space>
           <Input
@@ -203,7 +235,8 @@ export default function CandidateManager() {
             onChange={(e) => handleSearch(e.target.value)}
             allowClear
             style={{ width: 320 }}
-            className="border-[#552586]"/>
+            className="border-[#552586]"
+          />
         </Space>
       </div>
 

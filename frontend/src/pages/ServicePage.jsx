@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from "react";
+// import { Label } from "../components/UI/Lable ";
+
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/UI/Card";
 import { Badge } from "../components/UI/Badge";
 import { Button } from "../components/UI/Button";
 import { Input } from "../components/UI/Input";
 import { Textarea } from "../components/UI/Textarea";
-
 import { Label } from "../components/UI/Lable ";
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/UI/Select";
 import { toast } from "../Hooks/use-toast";
 import {
@@ -162,26 +162,61 @@ export default function ServicePage() {
     }
   }
 
+  const cardRefs = useRef([]);
+  const sectionRefs = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("fade-in");
+            if (entry.target.classList.contains("card-animate")) {
+              entry.target.classList.add("slide-up");
+            }
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      cardRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+      sectionRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, [filtered]);
+
   return (
     <div className="space-y-8">
-      <section className="bg-gradient-to-br from-brand-blue to-brand-blue-dark text-white py-24">
+      <section className="bg-gradient-to-br from-purple-700 to-purple-900 text-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge className="bg-brand-accent text-white">Our Services</Badge>
-          <h1 className="text-4xl lg:text-5xl font-bold mt-4">
+          <Badge className="bg-purple-500 text-white">Our Services</Badge>
+          <h1 ref={(el) => (sectionRefs.current[0] = el)} className="text-4xl lg:text-5xl font-bold mt-4 fade-in-initial">
             Product engineering, education and hiring services that accelerate careers
           </h1>
-          <p className="text-lg text-blue-100 max-w-3xl mx-auto mt-4">
+          <p ref={(el) => (sectionRefs.current[1] = el)} className="text-lg text-purple-100 max-w-3xl mx-auto mt-4 fade-in-initial">
             From building production-grade products to training and campus hiring — we partner with students and
             companies to create impact.
           </p>
-          <div className="mt-6 flex justify-center gap-3">
+          {/* <div className="mt-6 flex justify-center gap-3">
             <Link to="/contact">
-              <Button className="bg-white text-brand-blue hover:bg-white/90">Talk to an Expert</Button>
+              <Button className="bg-purple-100 text-purple-900 hover:bg-purple-200">Talk to an Expert</Button>
             </Link>
             <Link to="/projects">
-              <Button variant="ghost" className="text-white border-white/20">See Our Work</Button>
+              <Button variant="ghost" className="text-purple-100 border-purple-100/20 hover:bg-purple-900/20">See Our Work</Button>
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -194,6 +229,7 @@ export default function ServicePage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Search services"
+                className="border-purple-300 focus:border-purple-500"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -202,7 +238,7 @@ export default function ServicePage() {
                   key={c.id}
                   onClick={() => setActiveCategory(c.id)}
                   className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-                    activeCategory === c.id ? "bg-brand-blue text-white" : "bg-muted"
+                    activeCategory === c.id ? "bg-purple-700 text-white" : "bg-purple-100 text-purple-900"
                   }`}
                 >
                   {c.label}
@@ -212,49 +248,27 @@ export default function ServicePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((s) => (
+            {filtered.map((s, index) => (
               <Card
                 key={s.id}
-                className={`border-0 shadow-lg hover:shadow-xl transition-shadow cursor-pointer ${
-                  selectedService === s.id ? "ring-2 ring-brand-blue" : ""
-                }`}
-                onClick={() => setSelectedService(s.id)}
+                ref={(el) => (cardRefs.current[index] = el)}
+                className="border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden fade-in-initial card-animate"
               >
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <div className="flex items-center space-x-3">
-                        <s.icon className="h-6 w-6 text-brand-blue" />
-                        <CardTitle className="text-lg">{s.title}</CardTitle>
-                      </div>
-                      <CardDescription className="text-sm text-muted-foreground">{s.description}</CardDescription>
-                    </div>
-                    <div>
-                      <Badge className="bg-brand-accent text-white">Top</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
+                <div className="h-36 bg-gradient-to-br from-purple-100 to-white flex items-center justify-center">
+                  <s.icon className="h-20 w-20 text-purple-700" />
+                </div>
                 <CardContent>
-                  <ul className="list-disc list-inside text-sm space-y-1">
+                  <CardTitle className="text-lg">{s.title}</CardTitle>
+                  <CardDescription className="text-sm text-purple-600">{s.description}</CardDescription>
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {s.highlights.map((h, i) => (
-                      <li key={i}>{h}</li>
+                      <Badge key={i} variant="secondary" className="bg-purple-200 text-purple-800">{h}</Badge>
                     ))}
-                  </ul>
-
-                  <div className="mt-4 flex justify-between items-center">
-                    <div className="text-sm text-muted-foreground">Learn more about delivery & pricing</div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant={selectedService === s.id ? "secondary" : "default"}
-                        onClick={() => setSelectedService(s.id)}
-                        aria-label={`Learn more about ${s.title}`}
-                      >
-                        Learn More
-                      </Button>
-                      <Link to="/contact">
-                        <Button className="bg-brand-blue text-white">Get Quote</Button>
-                      </Link>
-                    </div>
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <Link to="/contact">
+                      <Button className="bg-purple-700 text-white">Explore</Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -263,31 +277,30 @@ export default function ServicePage() {
         </div>
       </section>
 
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-purple-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold">Products we build</h2>
-            <p className="text-muted-foreground mt-2">A selection of product types we deliver end-to-end for startups and enterprises.</p>
+          <div ref={(el) => (sectionRefs.current[2] = el)} className="text-center mb-8 fade-in-initial">
+            <h2 className="text-3xl font-bold text-purple-900">Products we build</h2>
+            <p className="text-purple-600 mt-2">A selection of product types we deliver end-to-end for startups and enterprises.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((p) => (
               <Card key={p.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div className="h-36 bg-gradient-to-br from-gray-100 to-white flex items-center justify-center">
+                <div className="h-36 bg-gradient-to-br from-purple-100 to-white flex items-center justify-center">
                   <img src={p.image} alt={p.name} className="h-20 w-auto" />
                 </div>
                 <CardContent>
                   <CardTitle className="text-lg">{p.name}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">{p.description}</CardDescription>
+                  <CardDescription className="text-sm text-purple-600">{p.description}</CardDescription>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {p.tech.map((t) => (
-                      <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>
+                      <Badge key={t} variant="secondary" className="bg-purple-200 text-purple-800">{t}</Badge>
                     ))}
                   </div>
-
                   <div className="mt-4 flex justify-end">
                     <Link to="/projects">
-                      <Button className="bg-brand-blue text-white">Explore</Button>
+                      <Button className="bg-purple-700 text-white">Explore</Button>
                     </Link>
                   </div>
                 </CardContent>
@@ -300,55 +313,55 @@ export default function ServicePage() {
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8">
-            <div>
-              <h2 className="text-2xl font-bold">Why choose SS Infotech for services?</h2>
-              <p className="text-muted-foreground mt-4">
+            <div ref={(el) => (sectionRefs.current[3] = el)} className="fade-in-initial">
+              <h2 className="text-2xl font-bold text-purple-900">Why choose SS Infotech for services?</h2>
+              <p className="text-purple-600 mt-4">
                 We combine deep technical expertise with practical delivery experience. From prototyping to maintained
                 production systems and training, our teams focus on measurable outcomes and knowledge transfer.
               </p>
 
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <div className="flex items-start space-x-3">
-                  <CheckCircle className="h-6 w-6 text-brand-blue mt-1" />
+                  <CheckCircle className="h-6 w-6 text-purple-700 mt-1" />
                   <div>
-                    <h4 className="font-semibold">Dedicated teams</h4>
-                    <p className="text-sm text-muted-foreground">Experienced engineers aligned to your product goals.</p>
+                    <h4 className="font-semibold text-purple-900">Dedicated teams</h4>
+                    <p className="text-sm text-purple-600">Experienced engineers aligned to your product goals.</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <CheckCircle className="h-6 w-6 text-brand-blue mt-1" />
+                  <CheckCircle className="h-6 w-6 text-purple-700 mt-1" />
                   <div>
-                    <h4 className="font-semibold">Transparent pricing</h4>
-                    <p className="text-sm text-muted-foreground">Clear scope, predictable costs, and flexible engagement models.</p>
+                    <h4 className="font-semibold text-purple-900">Transparent pricing</h4>
+                    <p className="text-sm text-purple-600">Clear scope, predictable costs, and flexible engagement models.</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <Card className="border-0 shadow-lg">
+            <Card ref={(el) => (sectionRefs.current[4] = el)} className="border-0 shadow-lg fade-in-initial">
               <CardHeader>
-                <CardTitle>Request a Consultation</CardTitle>
-                <CardDescription>Share your details and we'll reach out within one business day.</CardDescription>
+                <CardTitle className="text-purple-900">Request a Consultation</CardTitle>
+                <CardDescription className="text-purple-600">Share your details and we'll reach out within one business day.</CardDescription>
               </CardHeader>
               <CardContent>
                 <form className="space-y-3" onSubmit={handleSubmit}>
                   <div>
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" name="name" value={form.name} onChange={handleFormChange} />
+                    <Label htmlFor="name" className="text-purple-900">Name</Label>
+                    <Input id="name" name="name" value={form.name} onChange={handleFormChange} className="border-purple-300 focus:border-purple-500" />
                   </div>
                   <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" value={form.email} onChange={handleFormChange} />
+                    <Label htmlFor="email" className="text-purple-900">Email</Label>
+                    <Input id="email" name="email" type="email" value={form.email} onChange={handleFormChange} className="border-purple-300 focus:border-purple-500" />
                   </div>
                   <div>
-                    <Label htmlFor="service">Interested Service</Label>
+                    <Label htmlFor="service" className="text-purple-900">Interested Service</Label>
                     <Select onValueChange={handleSelect}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose a service" />
+                      <SelectTrigger className="border-purple-300 focus:border-purple-500 bg-white">
+                        <SelectValue placeholder="Choose a service"  className="bg-white"/>
                       </SelectTrigger>
                       <SelectContent>
                         {services.map((s) => (
-                          <SelectItem key={s.id} value={s.title}>
+                          <SelectItem key={s.id} value={s.title} className="text-purple-900 bg-white">
                             {s.title}
                           </SelectItem>
                         ))}
@@ -357,12 +370,12 @@ export default function ServicePage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea id="message" name="message" rows={4} value={form.message} onChange={handleFormChange} />
+                    <Label htmlFor="message" className="text-purple-900">Message</Label>
+                    <Textarea id="message" name="message" rows={4} value={form.message} onChange={handleFormChange} className="border-purple-300 focus:border-purple-500" />
                   </div>
 
                   <div className="flex justify-end">
-                    <Button type="submit" disabled={!canSubmit || submitting} className="bg-brand-blue text-white">
+                    <Button type="submit" disabled={!canSubmit || submitting} className="bg-purple-700 text-white">
                       {submitting ? "Sending..." : "Request Consultation"}
                     </Button>
                   </div>
