@@ -16,7 +16,7 @@ import { Textarea } from "../components/UI/Textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "../components/UI/Select";
-
+import bgPattern from '../../public/service/service/bg.png';
 export default function ContactSection() {
   const sectionRef = useRef(null);
   const formRef = useRef(null);

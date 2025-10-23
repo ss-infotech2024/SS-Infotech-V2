@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Stars, Camera, Users, Target, Eye, Upload, Image as ImageIcon } from "lucide-react";
-
+import bgPattern from '../../public/service/service/bg.png';
 // Animation variants
 const fadeUp = {
   hidden: { opacity: 0, y: 60 },
@@ -119,7 +119,7 @@ const AboutUs = () => {
 
         <div className="absolute inset-0">
           <img
-            src="/imgs/gallery/gallery-29.webp"
+            src={bgPattern}
             alt="About Banner"
             className="w-full h-full object-cover opacity-30"
           />
