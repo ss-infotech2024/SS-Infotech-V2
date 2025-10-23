@@ -1,348 +1,580 @@
-import { Button } from "../components/UI/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/UI/Card";
-import { Badge } from "../components/UI/Badge";
-import { 
-  Target, 
-  Eye, 
-  Award, 
-  Users, 
-  BookOpen, 
-  Star,
-  Linkedin,
-  Mail,
-  GraduationCap,
-  Building,
-  TrendingUp,
-  Heart,
-  CheckCircle,
-  Calendar
-} from "lucide-react";
+import React from "react";
+import { motion } from "framer-motion";
+import { Sparkles, Stars, Camera, Users, Target, Eye, Upload, Image as ImageIcon } from "lucide-react";
 
-export default function About() {
-  const milestones = [
-    { year: "2018", event: "SS Infotech Founded", description: "Started with a vision to bridge the gap between education and industry" },
-    { year: "2019", event: "First 100 Students", description: "Successfully trained and placed our first batch of 100 students" },
-    { year: "2020", event: "Industry Partnerships", description: "Established partnerships with 50+ companies for placements" },
-    { year: "2021", event: "AI/ML Program Launch", description: "Introduced cutting-edge AI and Machine Learning courses" },
-    { year: "2022", event: "2000+ Graduates", description: "Reached milestone of training over 2000 students" },
-    { year: "2023", event: "Corporate Training", description: "Expanded to corporate training and upskilling programs" },
-    { year: "2024", event: "5000+ Success Stories", description: "Celebrating 5000+ successful placements and counting" }
-  ];
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 60 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.15,
+      duration: 0.8,
+      ease: "easeOut",
+      when: "beforeChildren",
+    },
+  }),
+};
 
-  const faculty = [
-    {
-      name: "Dr. Rajesh Kumar",
-      role: "Director & Lead Trainer",
-      specialization: "Full Stack Development, Cloud Computing",
-      experience: "15+ years",
-      education: "PhD Computer Science, IIT Bombay",
-      image: "/placeholder.svg",
-      description: "Expert in modern web technologies with extensive industry experience in leading tech companies."
+const container = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      when: "beforeChildren",
     },
-    {
-      name: "Priya Mehta",
-      role: "AI/ML Program Head",
-      specialization: "Artificial Intelligence, Data Science",
-      experience: "12+ years",
-      education: "M.Tech AI, IIIT Pune",
-      image: "/placeholder.svg",
-      description: "Former senior data scientist with proven track record in ML model deployment and optimization."
-    },
-    {
-      name: "Amit Sharma",
-      role: "Cloud Computing Expert",
-      specialization: "AWS, Azure, DevOps",
-      experience: "10+ years",
-      education: "B.Tech CSE, NIT Nagpur",
-      image: "/placeholder.svg",
-      description: "Certified cloud architect with hands-on experience in enterprise cloud solutions."
-    },
-    {
-      name: "Sneha Patil",
-      role: "Career Counselor",
-      specialization: "Placement Assistance, Soft Skills",
-      experience: "8+ years",
-      education: "MBA HR, Symbiosis Pune",
-      image: "/placeholder.svg",
-      description: "Dedicated placement specialist helping students achieve their career goals."
-    }
-  ];
+  },
+};
 
-  const achievements = [
-    { icon: Users, label: "Students Trained", value: "5000+" },
-    { icon: Building, label: "Partner Companies", value: "200+" },
-    { icon: Award, label: "Placement Success Rate", value: "85%" },
-    { icon: Star, label: "Average Rating", value: "4.8/5" },
-    { icon: BookOpen, label: "Programs Offered", value: "15+" },
-    { icon: TrendingUp, label: "Average Salary Hike", value: "150%" }
-  ];
+const item = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: "easeOut" },
+  },
+};
 
-  const values = [
-    {
-      icon: Target,
-      title: "Excellence",
-      description: "We strive for excellence in everything we do, from curriculum design to student support."
+const floatingAnimation = {
+  animate: {
+    y: [0, -20, 0],
+    transition: {
+      duration: 6,
+      repeat: Infinity,
+      ease: "easeInOut",
     },
-    {
-      icon: Heart,
-      title: "Student-Centric",
-      description: "Every decision we make is focused on what's best for our students' career growth."
-    },
-    {
-      icon: BookOpen,
-      title: "Continuous Learning",
-      description: "We believe in lifelong learning and constantly update our programs with latest technologies."
-    },
-    {
-      icon: Users,
-      title: "Collaboration",
-      description: "We foster a collaborative environment where students and faculty work together towards success."
-    }
-  ];
+  },
+};
 
+const pulseAnimation = {
+  animate: {
+    scale: [1, 1.05, 1],
+    opacity: [0.3, 0.6, 0.3],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
+
+const AboutUs = () => {
   return (
-    <div className="space-y-0">
+    <div className="bg-gradient-to-br from-purple-50 via-white to-purple-100 text-gray-800 font-sans relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <motion.div
+        className="absolute top-20 left-10 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"
+        animate={{
+          y: [0, 30, 0],
+          x: [0, 15, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
+      />
+
+      <motion.div
+        className="absolute bottom-32 right-20 w-32 h-32 bg-pink-400/30 rounded-full blur-2xl"
+        animate={{
+          y: [0, -40, 0],
+          x: [0, -20, 0],
+          scale: [1, 1.3, 1],
+        }}
+        transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
+      />
+
+      {/* Floating Stars */}
+      <motion.div
+        className="absolute top-1/4 left-1/5"
+        variants={floatingAnimation}
+        animate="animate"
+      >
+        <Stars className="h-6 w-6 text-purple-300" />
+      </motion.div>
+
+      <motion.div
+        className="absolute bottom-1/3 right-1/3"
+        variants={floatingAnimation}
+        animate="animate"
+        style={{ animationDelay: "2s" }}
+      >
+        <Sparkles className="h-4 w-4 text-pink-300" />
+      </motion.div>
+
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-brand-blue to-brand-blue-dark text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-6">
-            <Badge className="bg-brand-accent text-white">About SS Infotech</Badge>
-            <h1 className="text-4xl lg:text-6xl font-bold">
-              Empowering Students for a
-              <span className="text-brand-accent"> Digital Future</span>
-            </h1>
-            <p className="text-xl text-blue-100 max-w-4xl mx-auto">
-              Since 2018, SS Infotech has been at the forefront of technology education, 
-              transforming students into industry-ready professionals through innovative training programs and dedicated placement support.
-            </p>
-          </div>
+      <section className="relative bg-gradient-to-r from-purple-900 via-purple-800 to-purple-600 text-white py-28 overflow-hidden">
+        <motion.div
+          className="absolute -top-1/2 -left-1/4 w-1/2 h-1/2 bg-purple-500/10 rounded-full blur-3xl"
+          variants={pulseAnimation}
+          animate="animate"
+        />
+
+        <motion.div
+          className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-pink-500/10 rounded-full blur-3xl"
+          variants={pulseAnimation}
+          animate="animate"
+          style={{ animationDelay: "2s" }}
+        />
+
+        <div className="absolute inset-0">
+          <img
+            src="/imgs/gallery/gallery-29.webp"
+            alt="About Banner"
+            className="w-full h-full object-cover opacity-30"
+          />
         </div>
-      </section>
 
-      {/* Mission & Vision */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12">
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="text-center bg-gradient-to-br from-brand-blue to-brand-blue-dark text-white rounded-t-lg">
-                <Target className="h-12 w-12 mx-auto mb-4" />
-                <CardTitle className="text-2xl">Our Mission</CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  To bridge the gap between academic learning and industry requirements by providing 
-                  comprehensive, practical, and industry-relevant training programs that empower students 
-                  with the skills and confidence needed to excel in the technology sector.
-                </p>
-                <div className="mt-6 space-y-3">
-                  {[
-                    "Industry-aligned curriculum",
-                    "Hands-on practical training",
-                    "100% placement assistance",
-                    "Continuous skill development"
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <CheckCircle className="h-5 w-5 text-brand-blue" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="text-center bg-gradient-to-br from-brand-accent to-yellow-500 text-white rounded-t-lg">
-                <Eye className="h-12 w-12 mx-auto mb-4" />
-                <CardTitle className="text-2xl">Our Vision</CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <p className="text-muted-foreground leading-relaxed text-lg">
-                  To become the leading technology training institute in India, recognized for our innovative 
-                  teaching methodologies, exceptional placement records, and our contribution to building 
-                  a skilled workforce for the digital economy.
-                </p>
-                <div className="mt-6 space-y-3">
-                  {[
-                    "Market leader in tech education",
-                    "Global recognition and partnerships",
-                    "Innovation in teaching methods",
-                    "Sustainable career growth"
-                  ].map((item, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <CheckCircle className="h-5 w-5 text-brand-accent" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Achievements */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-brand-blue text-white">Our Achievements</Badge>
-            <h2 className="text-4xl font-bold text-foreground">Numbers That Speak</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our success is measured by the success of our students and their career achievements
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {achievements.map((achievement, index) => (
-              <Card key={index} className="text-center border-0 shadow-md hover:shadow-lg transition-shadow">
-                <CardContent className="p-6 space-y-4">
-                  <div className="bg-brand-blue/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
-                    <achievement.icon className="h-8 w-8 text-brand-blue" />
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-brand-blue">{achievement.value}</div>
-                    <div className="text-sm text-muted-foreground">{achievement.label}</div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Our Journey */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-brand-accent text-white">Our Journey</Badge>
-            <h2 className="text-4xl font-bold text-foreground">Milestones & Growth</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From a small training center to a leading tech education institute - our journey of excellence
-            </p>
-          </div>
-
-          <div className="relative">
-            <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-brand-blue/20"></div>
-            <div className="space-y-8">
-              {milestones.map((milestone, index) => (
-                <div key={index} className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                  <div className="flex-1 space-y-1 md:px-8">
-                    <Card className={`border-0 shadow-md ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                      <CardContent className="p-6">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <Calendar className="h-4 w-4 text-brand-blue" />
-                          <Badge className="bg-brand-blue text-white">{milestone.year}</Badge>
-                        </div>
-                        <h3 className="text-xl font-bold text-foreground mb-2">{milestone.event}</h3>
-                        <p className="text-muted-foreground">{milestone.description}</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-8 h-8 bg-brand-blue rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Faculty Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-brand-blue text-white">Our Faculty</Badge>
-            <h2 className="text-4xl font-bold text-foreground">Expert Trainers & Mentors</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Learn from industry professionals with years of real-world experience and passion for teaching
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {faculty.map((member, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
-                <CardContent className="p-6 text-center space-y-4">
-                  <img 
-                    src={member.image} 
-                    alt={member.name}
-                    className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-brand-blue/20"
-                  />
-                  <div>
-                    <h3 className="text-xl font-bold text-foreground">{member.name}</h3>
-                    <p className="text-brand-blue font-medium">{member.role}</p>
-                    <p className="text-sm text-muted-foreground">{member.education}</p>
-                  </div>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="font-medium">Experience: </span>
-                      <span className="text-muted-foreground">{member.experience}</span>
-                    </div>
-                    <div>
-                      <span className="font-medium">Specialization: </span>
-                      <span className="text-muted-foreground">{member.specialization}</span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{member.description}</p>
-                  <div className="flex justify-center space-x-2">
-                    <Button size="sm" variant="outline" className="p-2">
-                      <Linkedin className="h-4 w-4" />
-                    </Button>
-                    <Button size="sm" variant="outline" className="p-2">
-                      <Mail className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <Badge className="bg-brand-accent text-white">Our Values</Badge>
-            <h2 className="text-4xl font-bold text-foreground">What We Stand For</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The core principles that guide everything we do at SS Infotech
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <div key={index} className="text-center space-y-4">
-                <div className="bg-brand-blue/10 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto">
-                  <value.icon className="h-10 w-10 text-brand-blue" />
-                </div>
-                <h3 className="text-xl font-bold text-foreground">{value.title}</h3>
-                <p className="text-muted-foreground">{value.description}</p>
+        <div className="relative container mx-auto px-6 text-center z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="space-y-6"
+          >
+            <motion.div
+              className="inline-flex items-center justify-center mb-6"
+              variants={item}
+            >
+              <div className="bg-purple-400/20 backdrop-blur-sm text-purple-100 px-6 py-3 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 rounded-full font-semibold">
+                <Sparkles className="w-5 h-5 mr-2 inline" />
+                About Our Journey
               </div>
-            ))}
-          </div>
+            </motion.div>
+
+            <motion.h1
+              variants={item}
+              className="text-5xl md:text-7xl font-bold mb-6"
+            >
+              Discover Our{" "}
+              <motion.span
+                className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ["0%", "100%", "0%"],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  backgroundSize: "200% 200%",
+                }}
+              >
+                Story
+              </motion.span>
+            </motion.h1>
+
+            <motion.p
+              variants={item}
+              className="text-xl md:text-2xl text-purple-100 leading-relaxed max-w-4xl mx-auto"
+            >
+              Discover our mission, vision, and the dedicated team driving our{" "}
+              <motion.span
+                className="font-semibold text-white"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                success in technology innovation.
+              </motion.span>
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-brand-blue text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <div className="space-y-4">
-            <h2 className="text-4xl font-bold">Join the SS Infotech Family</h2>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Be part of our growing community of successful professionals. Start your journey with us today.
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-brand-accent hover:bg-brand-accent/90 text-white">
-              Apply for Programs
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-brand-blue">
-              Contact Us
-            </Button>
-          </div>
+      {/* First Section - Image Left, Content Right - Company Overview */}
+      <section className="py-20 container mx-auto px-6 relative z-10">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={container}
+          className="grid md:grid-cols-2 gap-12 items-center"
+        >
+          {/* Left Side - Image */}
+          <motion.div variants={fadeUp} custom={0}>
+            <div className="relative">
+              <motion.img
+                src="/img/imag3.jpg"
+                alt="Company"
+                className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              />
+              <motion.div
+                className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl -z-10"
+                animate={{
+                  opacity: [0.1, 0.2, 0.1],
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Right Side - Content */}
+          <motion.div variants={fadeUp} custom={0.2} className="space-y-6">
+            <motion.div
+              className="inline-flex items-center mb-4"
+              variants={item}
+            >
+              <div className="bg-purple-100 p-3 rounded-xl">
+                <Users className="w-6 h-6 text-purple-600" />
+              </div>
+              <span className="ml-3 text-purple-600 font-semibold">About Our Company</span>
+            </motion.div>
+
+            <h2 className="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
+              Who We Are
+            </h2>
+
+            <div className="space-y-4 text-lg text-purple-700">
+              <p>
+                We are a team of technology enthusiasts, innovators, and creative
+                thinkers dedicated to delivering top-tier IT solutions. Our focus
+                is to empower businesses with cutting-edge software, web, and
+                mobile technologies.
+              </p>
+              <p>
+                From startups to enterprises, we craft solutions that solve real
+                problems, boost productivity, and deliver lasting impact.
+              </p>
+            </div>
+
+            {/* <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300"
+            >
+              Learn More About Us
+            </motion.button> */}
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Second Section - Image Right, Content Left - Founder */}
+      <section className="py-20 bg-gradient-to-br from-white to-purple-50 relative overflow-hidden">
+        <motion.div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-purple-500/10 blur-3xl rounded-full"
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="grid md:grid-cols-2 gap-12 items-center"
+          >
+            {/* Left Side - Content */}
+            <motion.div variants={fadeUp} custom={0} className="space-y-6 order-2 md:order-1">
+              <motion.div
+                className="inline-flex items-center mb-4"
+                variants={item}
+              >
+                <div className="bg-purple-100 p-3 rounded-xl">
+                  <Sparkles className="w-6 h-6 text-purple-600" />
+                </div>
+                <span className="ml-3 text-purple-600 font-semibold">Founder</span>
+              </motion.div>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
+                Our Founder's Vision
+              </h2>
+
+              <div className="space-y-4 text-lg text-purple-700">
+                <p>
+                  "Our journey began with a simple yet powerful vision: to create technology solutions that truly make a difference. 
+                  We believe in the transformative power of innovation and its ability to shape a better future for businesses and communities alike."
+                </p>
+                <p>
+                  "At SS Infotech, we're not just building software; we're building relationships, trust, and lasting partnerships. 
+                  Every line of code we write carries our commitment to excellence and our passion for creating meaningful impact."
+                </p>
+                <p className="font-semibold text-purple-800">
+                  - John Doe, Founder & CEO
+                </p>
+              </div>
+
+              {/* <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300"
+              >
+                Connect with Founder
+              </motion.button> */}
+            </motion.div>
+
+            {/* Right Side - Image */}
+            <motion.div variants={fadeUp} custom={0.2} className="order-1 md:order-2">
+              <div className="relative">
+                <motion.img
+                  src="/imgs/gallery/founder1.jpg"
+                  alt="Founder"
+                  className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl -z-10"
+                  animate={{
+                    opacity: [0.1, 0.2, 0.1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Third Section - Image Left, Content Right - Director */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-white relative overflow-hidden">
+        <motion.div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full"
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="grid md:grid-cols-2 gap-12 items-center"
+          >
+            {/* Left Side - Image */}
+            <motion.div variants={fadeUp} custom={0}>
+              <div className="relative">
+                <motion.img
+                  src="/imgs/gallery/founder2.jpg"
+                  alt="SS Infotech Director"
+                  className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl -z-10"
+                  animate={{
+                    opacity: [0.1, 0.2, 0.1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </div>
+            </motion.div>
+
+            {/* Right Side - Content */}
+            <motion.div variants={fadeUp} custom={0.2} className="space-y-6">
+              <motion.div
+                className="inline-flex items-center mb-4"
+                variants={item}
+              >
+                <div className="bg-purple-100 p-3 rounded-xl">
+                  <Target className="w-6 h-6 text-purple-600" />
+                </div>
+                <span className="ml-3 text-purple-600 font-semibold">Director - SS Infotech</span>
+              </motion.div>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
+                Driving Innovation Forward
+              </h2>
+
+              <div className="space-y-4 text-lg text-purple-700">
+                <p>
+                  "As the Director of SS Infotech, my focus is on fostering innovation while maintaining the highest standards of quality. 
+                  We're committed to delivering solutions that not only meet but exceed our clients' expectations."
+                </p>
+                <p>
+                  "Our team's dedication to continuous learning and adaptation in this rapidly evolving tech landscape is what sets us apart. 
+                  We embrace challenges as opportunities to innovate and grow."
+                </p>
+                <p className="font-semibold text-purple-800">
+                  - Jane Smith, Director - SS Infotech
+                </p>
+              </div>
+
+              {/* <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300"
+              >
+                Learn About Our Strategy
+              </motion.button> */}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Fourth Section - Image Right, Content Left - Overseas Director */}
+      <section className="py-20 bg-gradient-to-br from-white to-purple-50 relative overflow-hidden">
+        <motion.div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-purple-500/10 blur-3xl rounded-full"
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+        />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="grid md:grid-cols-2 gap-12 items-center"
+          >
+            {/* Left Side - Content */}
+            <motion.div variants={fadeUp} custom={0} className="space-y-6 order-2 md:order-1">
+              <motion.div
+                className="inline-flex items-center mb-4"
+                variants={item}
+              >
+                <div className="bg-purple-100 p-3 rounded-xl">
+                  <Eye className="w-6 h-6 text-purple-600" />
+                </div>
+                <span className="ml-3 text-purple-600 font-semibold">Overseas Director</span>
+              </motion.div>
+
+              <h2 className="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
+                Global Perspective, Local Impact
+              </h2>
+
+              <div className="space-y-4 text-lg text-purple-700">
+                <p>
+                  "As the Overseas Director, I bridge the gap between global technological trends and local business needs. 
+                  Our international experience allows us to bring world-class solutions to our clients while understanding their unique regional challenges."
+                </p>
+                <p>
+                  "We're constantly exploring new markets and technologies to ensure that SS Infotech remains at the forefront of global innovation. 
+                  Our diverse team brings together the best practices from around the world to deliver exceptional results."
+                </p>
+                <p className="font-semibold text-purple-800">
+                  - Michael Lee, Overseas Director
+                </p>
+              </div>
+
+              {/* <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300"
+              >
+                Explore Global Partnerships
+              </motion.button> */}
+            </motion.div>
+
+            {/* Right Side - Image */}
+            <motion.div variants={fadeUp} custom={0.2} className="order-1 md:order-2">
+              <div className="relative">
+                <motion.img
+                  src="/imgs/gallery/founder3.jpg"
+                  alt="Overseas Director"
+                  className="rounded-2xl shadow-2xl w-full h-auto object-cover"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.div
+                  className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl opacity-20 blur-xl -z-10"
+                  animate={{
+                    opacity: [0.1, 0.2, 0.1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Mission & Vision Section */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-white relative overflow-hidden">
+        <motion.div
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full"
+          animate={{
+            opacity: [0.2, 0.4, 0.2],
+            scale: [1, 1.1, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+        />
+
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="space-y-4 mb-16"
+          >
+            <motion.h2
+              variants={item}
+              className="text-4xl md:text-5xl font-bold text-purple-900 mb-4"
+            >
+              Our Vision & Mission
+            </motion.h2>
+            <motion.p
+              variants={item}
+              className="text-xl text-purple-600 max-w-3xl mx-auto"
+            >
+              Driving innovation and excellence in everything we do
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            variants={container}
+            className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+          >
+            <motion.div
+              variants={fadeUp}
+              custom={0}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-100 group"
+            >
+              <motion.div
+                className="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-purple-200 transition-colors"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+              >
+                <Eye className="w-8 h-8 text-purple-600" />
+              </motion.div>
+              <h3 className="text-2xl font-bold text-purple-900 mb-4">Our Vision</h3>
+              <p className="text-purple-700 leading-relaxed">
+                To be a globally recognized leader in technology, driving
+                innovation and digital transformation with next-generation IT
+                solutions that shape the future.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              custom={0.2}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-100 group"
+            >
+              <motion.div
+                className="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-purple-200 transition-colors"
+                whileHover={{ rotate: 10, scale: 1.1 }}
+              >
+                <Target className="w-8 h-8 text-purple-600" />
+              </motion.div>
+              <h3 className="text-2xl font-bold text-purple-900 mb-4">Our Mission</h3>
+              <p className="text-purple-700 leading-relaxed">
+                To deliver exceptional digital products with passion,
+                performance, and precision, while fostering long-term client
+                relationships built on trust and mutual success.
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>
   );
-}
+};
+
+export default AboutUs;

@@ -48,7 +48,9 @@ export default function LogoSlider({ imagesProp, duration = 10, visibleCount = 6
 
   return (
     <section className="text-center space-y-8 py-16 px-10 rounded-4xl bg-gray-50">
-          <h2 className="text-3xl  font-bold text-[#AB1EA9]">Our Client</h2>
+          <h2 className="text-3xl font-bold bg-gradient-to-br from-purple-900 via-purple-800 to-purple-600 bg-clip-text text-transparent">
+    Our Client
+  </h2>
     <div className="relative w-full bg-white py-6 rounded-3xl border border-gray-200">
       <div
         className="logo-track overflow-hidden"
