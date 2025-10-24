@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV!="production"){
+    require('dotenv').config()
+   
+}
 import dotenv from 'dotenv';
 dotenv.config(); // Load .env variables at the top
 
