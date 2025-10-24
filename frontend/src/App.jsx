@@ -40,7 +40,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<ServicePage/>} />
           <Route path="/contact" element={<ContactPage/>} />
- 
+          <Route path="/*" element={"not found"} />
         </Routes>
       </main>
       <Footer />

@@ -4,15 +4,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'dist', // default, but explicit is good
+    outDir: 'dist', // Matches Netlify publish directory
   },
-  server: {
-    port: 5173,
-  },
-  // 👇 This is important if you're using React Router
   resolve: {
     alias: {
-      '@': '/src', // so you can use "@/components/..." imports
+      '@': 'src', // Relative to frontend folder
     },
-  }
+  },
 })
