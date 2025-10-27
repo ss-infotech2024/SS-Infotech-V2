@@ -85,17 +85,15 @@ const startServer = async () => {
     // ------------------------
     // Serve Frontend (React/Vite build)
     // ------------------------
-   // Serve frontend (React/Vite build)
-if (process.env.NODE_ENV === "production") {
-  const frontendPath = join(__dirname, "../frontend/dist");
-  app.use(express.static(frontendPath));
+    if (process.env.NODE_ENV === "production") {
+      const frontendPath = join(__dirname, "../frontend/dist");
+      app.use(express.static(frontendPath));
 
-  // Catch-all route
-  app.get("/*", (req, res) => {
-    res.sendFile(join(frontendPath, "index.html"));
-  });
-}
-
+      // ✅ Express 5 fix: use a regex instead of "/*"
+      app.get(/.*/, (req, res) => {
+        res.sendFile(join(frontendPath, "index.html"));
+      });
+    }
 
     // ------------------------
     // Health check route
