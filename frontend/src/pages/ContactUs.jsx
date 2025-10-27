@@ -1,12 +1,11 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import {
   Phone, Mail, MessageCircle, MapPin, ExternalLink, Building,
-  Clock, Navigation, Calendar, Facebook, Linkedin, Twitter, Instagram, Youtube,
-  Send, FileText, HeadphonesIcon, ArrowRight, Stars, Sparkles
+  Clock, Navigation, Calendar, Facebook, Linkedin, Instagram,
+  Send, FileText, HeadphonesIcon, Stars, Sparkles
 } from "lucide-react";
 import emailjs from '@emailjs/browser';
-
 import { Button } from "../components/UI/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/UI/Card";
 import { Badge } from "../components/UI/Badge";
@@ -17,28 +16,32 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "../components/UI/Select";
 import bgPattern from '../../public/service/service/bg.png';
-export default function ContactSection() {
+
+// Initialize EmailJS outside the component to avoid reinitialization
+emailjs.init('uo8vZ7IYM4nQArKtj');
+
+export default function ContactUs() {
   const sectionRef = useRef(null);
   const formRef = useRef(null);
   const [formStatus, setFormStatus] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Scroll-based animations
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
   });
+  const y = useTransform(scrollYProgress, [0, 1], [80, -80]); // Reduced amplitude
+  const opacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0]); // Smoother opacity transition
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 0.95]); // Subtler scale
 
-  // Scroll-based animations
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.9]);
-
-  // Floating animation variants
+  // Animation variants
   const floatingAnimation = {
     animate: {
-      y: [0, -20, 0],
+      y: [0, -15, 0], // Reduced amplitude for smoother motion
       transition: {
-        duration: 6,
+        duration: 5, // Faster for snappier feel
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -47,32 +50,51 @@ export default function ContactSection() {
 
   const pulseAnimation = {
     animate: {
-      scale: [1, 1.05, 1],
-      opacity: [0.3, 0.6, 0.3],
+      scale: [1, 1.03, 1], // Subtler scale for less CPU strain
+      opacity: [0.2, 0.4, 0.2],
       transition: {
-        duration: 4,
+        duration: 3.5,
         repeat: Infinity,
         ease: "easeInOut"
       }
     }
   };
 
-  // Animation Variants
   const fadeUp = {
-    hidden: { opacity: 0, y: 60 },
+    hidden: { opacity: 0, y: 40 },
     visible: (i) => ({
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.15,
-        duration: 0.8,
+        delay: i * 0.1, // Tighter stagger
+        duration: 0.6, // Faster for smoother flow
         ease: "easeOut",
-        when: "beforeChildren"
       },
     }),
   };
 
-  const contactMethods = [
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15, // Tighter stagger
+        when: "beforeChildren"
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
+  // Memoized data to prevent re-computation
+  const contactMethods = useMemo(() => [
     {
       icon: Phone,
       title: "Call Us",
@@ -102,31 +124,11 @@ export default function ContactSection() {
       title: "Visit Our Campus",
       description: "Come and see our facilities",
       primary: "Plot No.26, Khandwekar Bunglow, 2nd Floor,",
-      secondary: " Near Lendra park, Nagpur - 440012",
+      secondary: "Near Lendra park, Nagpur - 440012",
     }
-  ];
+  ], []);
 
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        when: "beforeChildren"
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: "easeOut" },
-    },
-  };
-
-  const departments = [
+  const departments = useMemo(() => [
     {
       name: "Training Support",
       email: "hr@ssinfo.co",
@@ -145,15 +147,15 @@ export default function ContactSection() {
       phone: "+91 9399345989",
       description: "Custom training solutions for organizations"
     }
-  ];
+  ], []);
 
-  const socialLinks = [
+  const socialLinks = useMemo(() => [
     { icon: Linkedin, name: "LinkedIn", url: "https://www.linkedin.com/company/ss-infotech-co/" },
     { icon: Instagram, name: "Instagram", url: "https://www.instagram.com/ss.infotech_?igsh=MTJvNHVqdGZ0aXM2bA==" },
     { icon: Facebook, name: "Facebook", url: "https://www.facebook.com/share/19mkLDmfgH/" },
-  ];
+  ], []);
 
-  const faqs = [
+  const faqs = useMemo(() => [
     {
       question: "What are your office hours?",
       answer: "We are open Monday to Saturday from 9:00 AM to 6:00 PM. Sunday is closed. However, our support team is available via email and WhatsApp for urgent queries."
@@ -170,42 +172,7 @@ export default function ContactSection() {
       question: "How quickly do you respond to queries?",
       answer: "We typically respond to email queries within 24 hours on business days. Phone calls and WhatsApp messages are answered during office hours, usually within a few hours."
     }
-  ];
-
-  // EmailJS form submission handler with validation
-  const sendEmail = (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setFormStatus(null);
-    setErrors({});
-
-    emailjs.sendForm(
-      'YOUR_SERVICE_ID', // Replace with your EmailJS Service ID
-      'YOUR_TEMPLATE_ID', // Replace with your EmailJS Template ID
-      formRef.current,
-      'uo8vZ7IYM4nQArKtj' // Your Public Key
-    )
-      .then(() => {
-        setFormStatus({ type: 'success', message: 'Your message has been sent successfully!' });
-        formRef.current.reset();
-      })
-      .catch((error) => {
-        setFormStatus({ type: 'error', message: 'Failed to send message. Please try again later.' });
-        console.error('EmailJS error:', error);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  };
-
-  // Initialize EmailJS with the Public Key
-  emailjs.init('uo8vZ7IYM4nQArKtj');
+  ], []);
 
   // Form validation function
   const validateForm = () => {
@@ -237,228 +204,204 @@ export default function ContactSection() {
     return newErrors;
   };
 
+  // EmailJS form submission handler
+  const sendEmail = (e) => {
+    e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFormStatus(null);
+    setErrors({});
+
+    emailjs.sendForm(
+      'YOUR_SERVICE_ID', // Replace with your EmailJS Service ID
+      'YOUR_TEMPLATE_ID', // Replace with your EmailJS Template ID
+      formRef.current
+    )
+      .then(() => {
+        setFormStatus({ type: 'success', message: 'Your message has been sent successfully!' });
+        formRef.current.reset();
+      })
+      .catch((error) => {
+        setFormStatus({ type: 'error', message: 'Failed to send message. Please try again later.' });
+        console.error('EmailJS error:', error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
+
   return (
     <div className="space-y-0" ref={sectionRef}>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-purple-600 text-white">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src={bgPattern}
+            alt="Contact Banner"
+            className="w-full h-full object-cover opacity-30"
+            loading="lazy"
+            onError={(e) => (e.target.src = "/imgs/placeholder.jpg")} // Fallback image
+          />
+        </div>
+
+        {/* Background Animations */}
         <motion.div
-          className="absolute top-20 left-10 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"
+          className="absolute top-20 left-10 w-16 h-16 bg-purple-400/20 rounded-full blur-xl will-change-transform"
           animate={{
-            y: [0, 30, 0],
-            x: [0, 15, 0],
+            y: [0, 20, 0],
+            x: [0, 10, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-32 right-20 w-24 h-24 bg-pink-400/30 rounded-full blur-2xl will-change-transform"
+          animate={{
+            y: [0, -30, 0],
+            x: [0, -15, 0],
             scale: [1, 1.2, 1]
           }}
-          transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-32 right-20 w-32 h-32 bg-pink-400/30 rounded-full blur-2xl"
-          animate={{
-            y: [0, -40, 0],
-            x: [0, -20, 0],
-            scale: [1, 1.3, 1]
-          }}
-          transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/3 right-1/4 w-16 h-16 bg-indigo-400/25 rounded-full blur-lg"
-          animate={{
-            y: [0, 25, 0],
-            x: [0, -15, 0],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 left-1/5"
+          className="absolute top-1/4 left-1/5 will-change-transform"
           variants={floatingAnimation}
           animate="animate"
         >
-          <Stars className="h-6 w-6 text-purple-300" />
+          <Stars className="h-5 w-5 text-purple-300" />
         </motion.div>
-        <motion.div
-          className="absolute bottom-1/3 right-1/3"
-          variants={floatingAnimation}
-          animate="animate"
-          style={{ animationDelay: '2s' }}
-        >
-          <Sparkles className="h-4 w-4 text-pink-300" />
-        </motion.div>
-        <motion.div
-          className="absolute top-2/3 left-1/3"
-          variants={floatingAnimation}
-          animate="animate"
-          style={{ animationDelay: '4s' }}
-        >
-          <Stars className="h-5 w-5 text-indigo-300" />
-        </motion.div>
+
         <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-8"
+            style={{ y, opacity, scale }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={container}
+            className="space-y-6"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <Badge className="bg-purple-400/20 backdrop-blur-sm text-purple-100 px-6 py-2 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 font-semibold">
+            <motion.div variants={item}>
+              <Badge className="bg-purple-400/20 backdrop-blur-sm text-purple-100 px-5 py-2 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 font-semibold">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Contact Us
               </Badge>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="space-y-6"
-            >
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
-                Let's Start Your{" "}
-                <motion.span
-                  className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent inline-block"
-                  animate={{
-                    backgroundPosition: ['0%', '100%', '0%'],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  style={{
-                    backgroundSize: '200% 200%'
-                  }}
-                >
-                  Success Journey
-                </motion.span>
-              </h1>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="max-w-3xl mx-auto"
-            >
-              <p className="text-xl md:text-2xl lg:text-3xl text-purple-100 leading-relaxed">
-                Have questions about our programs? Need guidance on your career path?{" "}
-                <motion.span
-                  className="font-semibold text-white"
-                  animate={{ opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  Our team is here to help you every step of the way.
-                </motion.span>{" "}
-                Get in touch with us today.
-              </p>
-            </motion.div>
+            <motion.h1 variants={item} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              Let's Start Your{" "}
+              <motion.span
+                className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ['0%', '100%', '0%'],
+                }}
+                transition={{
+                  duration: 3.5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{
+                  backgroundSize: '200% 200%'
+                }}
+              >
+                Success Journey
+              </motion.span>
+            </motion.h1>
+            <motion.p variants={item} className="text-lg sm:text-xl md:text-2xl text-purple-100 leading-relaxed max-w-3xl mx-auto">
+              Have questions about our programs? Need guidance on your career path?{" "}
+              <motion.span
+                className="font-semibold text-white"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 1.8, repeat: Infinity }}
+              >
+                Our team is here to help you every step of the way.
+              </motion.span>{" "}
+              Get in touch with us today.
+            </motion.p>
           </motion.div>
         </div>
         <motion.div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 will-change-transform"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
         >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+          <div className="w-5 h-8 border-2 border-white/50 rounded-full flex justify-center">
             <motion.div
-              className="w-1 h-3 bg-white/70 rounded-full mt-2"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
+              className="w-1 h-2 bg-white/70 rounded-full mt-1"
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
             />
           </div>
         </motion.div>
         <motion.div
-          className="absolute -top-1/2 -left-1/4 w-1/2 h-1/2 bg-purple-500/10 rounded-full blur-3xl"
+          className="absolute -top-1/2 -left-1/4 w-1/2 h-1/2 bg-purple-500/10 rounded-full blur-3xl will-change-transform"
           variants={pulseAnimation}
           animate="animate"
-        />
-        <motion.div
-          className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-pink-500/10 rounded-full blur-3xl"
-          variants={pulseAnimation}
-          animate="animate"
-          style={{ animationDelay: '2s' }}
         />
       </section>
 
       {/* Quick Contact Methods */}
       <motion.section
-        className="py-20 overflow-hidden relative bg-background"
+        className="py-16 bg-background relative overflow-hidden"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={container}
       >
         <motion.div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full will-change-transform"
           animate={{
-            opacity: [0.2, 0.4, 0.2],
-            scale: [1, 1.1, 1],
+            opacity: [0.15, 0.3, 0.15],
+            scale: [1, 1.05, 1],
             rotate: [0, 180, 360]
           }}
-          transition={{ repeat: Infinity, duration: 12, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            className="text-center space-y-4 mb-16"
-            variants={item}
-          >
-            <motion.h2
-              className="text-4xl font-bold text-foreground"
-              variants={item}
-            >
+          <motion.div className="text-center space-y-4 mb-12" variants={item}>
+            <motion.h2 className="text-3xl sm:text-4xl font-bold text-foreground" variants={item}>
               Get in Touch
             </motion.h2>
-            <motion.p
-              className="text-xl text-muted-foreground max-w-3xl mx-auto"
-              variants={item}
-            >
+            <motion.p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto" variants={item}>
               Choose the best way to reach us — we're here to help with all your questions
             </motion.p>
           </motion.div>
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
-            variants={container}
-          >
+          <motion.div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6" variants={container}>
             {contactMethods.map((method, index) => (
               <motion.div
                 key={index}
-                variants={item}
+                variants={fadeUp}
+                custom={index}
                 whileHover={{
-                  y: -10,
+                  y: -8,
                   transition: { type: "spring", stiffness: 300 }
                 }}
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all text-center group bg-gradient-to-b from-white to-purple-50">
-                  <CardContent className="p-6 space-y-4">
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-b from-white to-purple-50">
+                  <CardContent className="p-6 space-y-4 text-center">
                     <motion.div
-                      className="bg-purple-100 w-16 h-16 rounded-xl flex items-center justify-center mx-auto group-hover:bg-purple-200 transition-colors"
-                      whileHover={{ rotate: 10, scale: 1.1 }}
+                      className="bg-purple-100 w-14 h-14 rounded-xl flex items-center justify-center mx-auto group-hover:bg-purple-200 transition-colors will-change-transform"
+                      whileHover={{ rotate: 8, scale: 1.1 }}
                       transition={{ type: "spring", stiffness: 200 }}
                     >
-                      <method.icon className="h-8 w-8 text-purple-600" />
+                      <method.icon className="h-6 w-6 text-purple-600" />
                     </motion.div>
                     <div className="space-y-2">
-                      <h3 className="text-xl font-bold text-foreground">
-                        {method.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {method.description}
-                      </p>
+                      <h3 className="text-lg sm:text-xl font-bold text-foreground">{method.title}</h3>
+                      <p className="text-sm text-muted-foreground">{method.description}</p>
                     </div>
                     <div className="space-y-1">
-                      <div className="font-medium text-purple-600">
-                        {method.primary}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {method.secondary}
-                      </div>
+                      <div className="font-medium text-purple-600">{method.primary}</div>
+                      <div className="text-sm text-muted-foreground">{method.secondary}</div>
                       {method.available && (
-                        <div className="text-xs text-muted-foreground">
-                          {method.available}
-                        </div>
+                        <div className="text-xs text-muted-foreground">{method.available}</div>
                       )}
                     </div>
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white group-hover:scale-105 transition-transform">
+                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-transform">
                       Contact Now
                     </Button>
                   </CardContent>
@@ -471,30 +414,27 @@ export default function ContactSection() {
 
       {/* Contact Form & Map Section */}
       <motion.section
-        className="py-20 bg-gray-50 overflow-hidden relative"
+        className="py-16 bg-gray-50 relative overflow-hidden"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={container}
       >
         <motion.div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-500/10 blur-3xl rounded-full will-change-transform"
           animate={{
-            opacity: [0.2, 0.3, 0.2],
+            opacity: [0.15, 0.3, 0.15],
             scale: [1, 1.05, 1],
           }}
           transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            className="grid lg:grid-cols-2 gap-12"
-            variants={container}
-          >
+          <motion.div className="grid lg:grid-cols-2 gap-8" variants={container}>
             {/* Contact Form */}
             <motion.div className="space-y-6" variants={fadeUp} custom={0}>
               <motion.div className="space-y-4" variants={fadeUp} custom={0.1}>
-                <h2 className="text-4xl font-bold text-foreground">Send us a Message</h2>
-                <p className="text-xl text-muted-foreground">
+                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Send us a Message</h2>
+                <p className="text-lg sm:text-xl text-muted-foreground">
                   Fill out the form below and we'll get back to you within 24 hours
                 </p>
               </motion.div>
@@ -713,26 +653,23 @@ export default function ContactSection() {
 
       {/* Department Contacts */}
       <motion.section
-        className="py-20"
+        className="py-16"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={container}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div className="text-center space-y-4 mb-16" variants={item}>
-            <h2 className="text-4xl font-bold text-foreground">Department Contacts</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <motion.div className="text-center space-y-4 mb-12" variants={item}>
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Department Contacts</h2>
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
               Connect directly with the right department for faster and more specific assistance
             </p>
           </motion.div>
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-            variants={container}
-          >
+          <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" variants={container}>
             {departments.map((dept, index) => (
-              <motion.div key={index} variants={item}>
-                <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <motion.div key={index} variants={fadeUp} custom={index}>
+                <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-6 space-y-4">
                     <div className="space-y-2">
                       <h3 className="text-lg font-bold text-foreground">{dept.name}</h3>
@@ -768,17 +705,14 @@ export default function ContactSection() {
 
       {/* Social Media and FAQs */}
       <motion.section
-        className="py-20 bg-gray-50"
+        className="py-16 bg-gray-50"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
+        viewport={{ once: true, amount: 0.3 }}
         variants={container}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="grid lg:grid-cols-2 gap-12"
-            variants={container}
-          >
+          <motion.div className="grid lg:grid-cols-2 gap-8" variants={container}>
             <motion.div className="space-y-6" variants={item}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold text-foreground">Follow Us</h2>
@@ -788,8 +722,8 @@ export default function ContactSection() {
               </div>
               <div className="space-y-4">
                 {socialLinks.map((social, index) => (
-                  <motion.div key={index} variants={item}>
-                    <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-102">
+                  <motion.div key={index} variants={fadeUp} custom={index}>
+                    <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
@@ -849,7 +783,7 @@ export default function ContactSection() {
               </div>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <motion.div key={index} variants={item}>
+                  <motion.div key={index} variants={fadeUp} custom={index}>
                     <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
                       <CardContent className="p-6">
                         <div className="space-y-3">
@@ -872,7 +806,7 @@ export default function ContactSection() {
 
       {/* Emergency and Support */}
       <motion.section
-        className="py-20"
+        className="py-16"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}

@@ -192,10 +192,10 @@ const Navbar = () => {
                   <span>
                     Call us: {' '}
                     <a 
-                      href="tel:+25862323258" 
+                      href="tel:+919399345989" 
                       className="font-semibold hover:text-purple-600 transition-colors"
                     >
-                      +91 93993 45989
+                      +91 9399345989
                     </a>
                   </span>
                 </motion.div>

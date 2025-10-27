@@ -43,7 +43,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <form className="bg-white/10 backdrop-blur-lg rounded-2xl p-1 sm:p-2 flex gap-2 sm:gap-3 items-center border border-white/10 shadow-2xl">
+          {/* <form className="bg-white/10 backdrop-blur-lg rounded-2xl p-1 sm:p-2 flex gap-2 sm:gap-3 items-center border border-white/10 shadow-2xl">
             <input
               type="email"
               placeholder="Enter your email"
@@ -55,7 +55,7 @@ const Footer = () => {
             >
               Subscribe
             </button>
-          </form>
+          </form> */}
         </div>
       </div>
 
