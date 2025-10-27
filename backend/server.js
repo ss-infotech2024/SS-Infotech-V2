@@ -85,16 +85,14 @@ const startServer = async () => {
     // ------------------------
     // Serve Frontend (React/Vite build)
     // ------------------------
-    if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "frontend", "dist");
-      app.use(express.static(frontendPath));
+   if (process.env.NODE_ENV === "production") {
+  const frontendPath = join(__dirname, "..", "frontend", "dist");
+  app.use(express.static(frontendPath));
 
-      // ✅ FIXED FOR EXPRESS 5
-      // Use RegExp route instead of "*"
-      app.get(/.*/, (req, res) => {
-        res.sendFile(join(frontendPath, "index.html"));
-      });
-    }
+  app.get(/.*/, (req, res) => {
+    res.sendFile(join(frontendPath, "index.html"));
+  });
+}
 
     // ------------------------
     // Health check route
