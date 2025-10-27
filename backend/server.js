@@ -9,9 +9,9 @@ dotenv.config();
 // ------------------------
 import express from "express";
 import cors from "cors";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 import cloudinary from "cloudinary";
+import path, { dirname, join } from "path"; // ✅ FIXED: Added `path`
+import { fileURLToPath } from "url";
 
 // ------------------------
 // Local modules
@@ -86,13 +86,12 @@ const startServer = async () => {
     // Serve Frontend (React/Vite build)
     // ------------------------
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = path.join(__dirname, "../frontend/dist");
-app.use(express.static(frontendPath));
+      const frontendPath = join(__dirname, "../frontend/dist");
+      app.use(express.static(frontendPath));
 
-      // ✅ Express 5 fix: use a regex instead of "/*"
       app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+        res.sendFile(join(frontendPath, "index.html"));
+      });
     }
 
     // ------------------------
