@@ -85,14 +85,17 @@ const startServer = async () => {
     // ------------------------
     // Serve Frontend (React/Vite build)
     // ------------------------
-   if (process.env.NODE_ENV === "production") {
-  const frontendPath = join(__dirname, "..", "frontend", "dist");
+   // Serve frontend (React/Vite build)
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = join(__dirname, "../frontend/dist");
   app.use(express.static(frontendPath));
 
-  app.get(/.*/, (req, res) => {
+  // Catch-all route
+  app.get("/*", (req, res) => {
     res.sendFile(join(frontendPath, "index.html"));
   });
 }
+
 
     // ------------------------
     // Health check route
