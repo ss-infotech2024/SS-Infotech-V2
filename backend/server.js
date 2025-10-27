@@ -1,23 +1,23 @@
 // --- Load environment variables ---
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config(); // Always load .env first
 
 // --- Import dependencies ---
-import express from 'express';
-import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import cloudinary from 'cloudinary';
+import express from "express";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import cloudinary from "cloudinary";
 
 // --- Import local modules ---
-import connectDB from './config/db.js';
-import jobListingRoutes from './routes/jobListingRoutes.js';
-import jobRoutes from './routes/jobRoutes.js';
-import applicationRoutes from './routes/applicationRoutes.js';
-import slideRoutes from './routes/slideRoutes.js';
-import adminRoutes from './routes/adminRoutes.js';
-import candidateRoutes from './routes/candidateRoutes.js';
-import albumRoutes from './routes/albumRoutes.js';
+import connectDB from "./config/db.js";
+import jobListingRoutes from "./routes/jobListingRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
+import slideRoutes from "./routes/slideRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import candidateRoutes from "./routes/candidateRoutes.js";
+import albumRoutes from "./routes/albumRoutes.js";
 
 // --- Fix __dirname and __filename for ES Modules ---
 const __filename = fileURLToPath(import.meta.url);
@@ -33,17 +33,24 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// --- Connect to MongoDB ---
+// --- Start server function ---
 const startServer = async () => {
   try {
+    // --- Connect to MongoDB ---
     await connectDB();
     console.log("✅ MongoDB connected successfully");
 
     // --- Middleware ---
-    app.use(cors({
-      origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : ['http://localhost:5173', 'http://localhost:5174'],
-      credentials: true
-    }));
+    app.use(
+      cors({
+        origin:
+          process.env.NODE_ENV === "production"
+            ? process.env.FRONTEND_URL
+            : ["http://localhost:5173", "http://localhost:5174"],
+        credentials: true,
+      })
+    );
+
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
@@ -66,7 +73,8 @@ const startServer = async () => {
       const frontendPath = join(__dirname, "frontend", "dist");
       app.use(express.static(frontendPath));
 
-      app.get("*", (req, res) => {
+      // ✅ Fixed for Express 5: use "/*" instead of "*"
+      app.get("/*", (req, res) => {
         res.sendFile(join(frontendPath, "index.html"));
       });
     }
@@ -75,7 +83,10 @@ const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(
-        `🚀 Server running on port ${PORT} at ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`
+        `🚀 Server running on port ${PORT} at ${new Date().toLocaleString(
+          "en-IN",
+          { timeZone: "Asia/Kolkata" }
+        )}`
       );
     });
   } catch (err) {
@@ -84,6 +95,7 @@ const startServer = async () => {
   }
 };
 
+// --- Start the app ---
 startServer();
 
 // --- Global Error Handler ---
