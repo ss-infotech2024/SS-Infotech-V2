@@ -86,13 +86,13 @@ const startServer = async () => {
     // Serve Frontend (React/Vite build)
     // ------------------------
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist");
-      app.use(express.static(frontendPath));
+      const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
 
       // ✅ Express 5 fix: use a regex instead of "/*"
-      app.get(/.*/, (req, res) => {
-        res.sendFile(join(frontendPath, "index.html"));
-      });
+      app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
     }
 
     // ------------------------
