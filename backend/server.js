@@ -83,14 +83,15 @@ const startServer = async () => {
     app.use("/api/albums", albumRoutes);
 
     // ------------------------
-    // Serve Frontend (Vite build)
+    // Serve Frontend (React/Vite build)
     // ------------------------
     if (process.env.NODE_ENV === "production") {
       const frontendPath = join(__dirname, "frontend", "dist");
       app.use(express.static(frontendPath));
 
-      // ✅ Fixed for Express 5 (use "*", NOT "/*")
-      app.get("*", (req, res) => {
+      // ✅ FIXED FOR EXPRESS 5
+      // Use RegExp route instead of "*"
+      app.get(/.*/, (req, res) => {
         res.sendFile(join(frontendPath, "index.html"));
       });
     }
