@@ -34,36 +34,60 @@ cloudinary.v2.config({
 });
 
 // --- Connect to MongoDB ---
-connectDB()
-  .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log("✅ MongoDB connected successfully");
 
-// --- Middleware ---
-app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
-  credentials: true
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+    // --- Middleware ---
+    app.use(cors({
+      origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : ['http://localhost:5173', 'http://localhost:5174'],
+      credentials: true
+    }));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
-// --- Static folders ---
-app.use("/Uploads", express.static(join(__dirname, "Uploads")));
-app.use("/public", express.static(join(__dirname, "public")));
-app.use("/resumes", express.static(join(__dirname, "public")));
+    // --- Static folders ---
+    app.use("/Uploads", express.static(join(__dirname, "Uploads")));
+    app.use("/public", express.static(join(__dirname, "public")));
+    app.use("/resumes", express.static(join(__dirname, "public")));
 
-// --- API Routes ---
-app.use("/api/admin", adminRoutes);
-app.use("/api/joblistings", jobListingRoutes);
-app.use("/api/jobs", jobRoutes);
-app.use("/api/applications", applicationRoutes);
-app.use("/api/slides", slideRoutes);
-app.use("/api/candidate", candidateRoutes);
-app.use("/api/albums", albumRoutes);
+    // --- API Routes ---
+    app.use("/api/admin", adminRoutes);
+    app.use("/api/joblistings", jobListingRoutes);
+    app.use("/api/jobs", jobRoutes);
+    app.use("/api/applications", applicationRoutes);
+    app.use("/api/slides", slideRoutes);
+    app.use("/api/candidate", candidateRoutes);
+    app.use("/api/albums", albumRoutes);
 
-// --- Start server ---
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(
-    `🚀 Server running on port ${PORT} at ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`
-  );
+    // --- Serve frontend (React/Vite build) ---
+    if (process.env.NODE_ENV === "production") {
+      const frontendPath = join(__dirname, "frontend", "dist");
+      app.use(express.static(frontendPath));
+
+      app.get("*", (req, res) => {
+        res.sendFile(join(frontendPath, "index.html"));
+      });
+    }
+
+    // --- Start server ---
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(
+        `🚀 Server running on port ${PORT} at ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}`
+      );
+    });
+  } catch (err) {
+    console.error("❌ Server startup error:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+// --- Global Error Handler ---
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
 });
