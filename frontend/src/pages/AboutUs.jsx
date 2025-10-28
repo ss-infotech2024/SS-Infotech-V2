@@ -94,7 +94,7 @@ const AboutUs = () => {
         image: "aboutimg/allan sir.jpg",
         alt: "SS Infotech Director",
         content: [
-          '"As Director, my focus is on leading a team that blends creativity with technology to deliver practical, high-impact solutions. We are driven by curiosity and a shared belief that the best results come from collaboration, dedication, and continuous learning."' , '"In a fast-changing digital world, our commitment remains constant — to build software that is efficient, scalable, and tailored to every client’s unique vision. For us, success means seeing our work make a real difference." ','"— Mr. Allan Abraham, Director"'
+          '"As Director, my focus is on leading a team that blends creativity with technology to deliver practical, high-impact solutions. We are driven by curiosity and a shared belief that the best results come from collaboration, dedication, and continuous learning."' , '"In a fast-changing digital world, our commitment remains constant — to build software that is efficient, scalable, and tailored to every client’s unique vision. For us, success means seeing our work make a real difference." ','- Mr. Allan Abraham, Director'
         ],
       },
       {
@@ -104,10 +104,7 @@ const AboutUs = () => {
         image: "aboutimg/allvi sir.jpg",
         alt: "Overseas Director",
         content: [
-          '"As the Overseas Director, I bridge the gap between global technological trends and local business needs. Our international experience allows us to bring world-class solutions to our clients while understanding their unique regional challenges."',
-          '"We\'re constantly exploring new markets and technologies to ensure that SS Infotech remains at the forefront of global innovation. Our diverse team brings together the best practices from around the world to deliver exceptional results."',
-          "- Michael Lee, Overseas Director",
-        ],
+          '"My goal is to guide students and professionals toward global opportunities that expand their learning and career horizons. We connect ambitious minds with top international institutions, helping them achieve their dreams through the right guidance and support."',' "With a global outlook and a personal touch, our focus is on bridging education, innovation, and opportunity — creating pathways that empower individuals to grow, learn, and lead across borders." ','- Dr. N. G. Alvi, Overseas Director'        ],
         order: "md:order-2",
         contentOrder: "order-2 md:order-1",
       },
