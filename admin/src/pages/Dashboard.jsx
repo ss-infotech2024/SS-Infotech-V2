@@ -335,7 +335,7 @@ export default function Dashboard() {
 
       {/* Charts */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
+        {/* <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Albums Over Time</CardTitle>
@@ -356,7 +356,7 @@ export default function Dashboard() {
               </AreaChart>
             </ChartContainer>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* <Card>
           <CardHeader>
