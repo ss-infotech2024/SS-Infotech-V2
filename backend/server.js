@@ -10,7 +10,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import cloudinary from "cloudinary";
-import path, { dirname, join } from "path"; // ✅ FIXED: Added `path`
+import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 // ------------------------
@@ -26,7 +26,7 @@ import candidateRoutes from "./routes/candidateRoutes.js";
 import albumRoutes from "./routes/albumRoutes.js";
 
 // ------------------------
-// Fix __dirname and __filename for ES Modules
+// Fix __dirname and __filename
 // ------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -52,7 +52,7 @@ const startServer = async () => {
   try {
     // --- Connect to MongoDB ---
     await connectDB();
-    console.log("✅ MongoDB connected successfully");
+    console.log("MongoDB connected successfully");
 
     // --- Middleware ---
     app.use(
@@ -73,7 +73,7 @@ const startServer = async () => {
     app.use("/public", express.static(join(__dirname, "public")));
     app.use("/resumes", express.static(join(__dirname, "public")));
 
-    // --- API Routes ---
+    // --- API Routes (MUST COME BEFORE `app.get("*")`) ---
     app.use("/api/admin", adminRoutes);
     app.use("/api/joblistings", jobListingRoutes);
     app.use("/api/jobs", jobRoutes);
@@ -82,49 +82,44 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // ------------------------
-    // Serve Frontend (React/Vite build)
-    // ------------------------
+    // --- Health check ---
+    app.get("/api/health", (req, res) => {
+      res.status(200).json({ status: "OK", time: new Date().toISOString() });
+    });
+
+    // --- SERVE FRONTEND (PRODUCTION ONLY) ---
     if (process.env.NODE_ENV === "production") {
       const frontendPath = join(__dirname, "../frontend/dist");
+
+      // Serve static assets
       app.use(express.static(frontendPath));
 
+      // SPA Fallback: MUST BE LAST
       app.get("*", (req, res) => {
         res.sendFile(join(frontendPath, "index.html"));
       });
     }
 
-    // ------------------------
-    // Health check route
-    // ------------------------
-    app.get("/api/health", (req, res) => {
-      res.status(200).json({ status: "OK", time: new Date().toISOString() });
-    });
-
-    // ------------------------
-    // Global Error Handler
-    // ------------------------
+    // --- Global Error Handler ---
     app.use((err, req, res, next) => {
-      console.error("❌ Error Stack:", err.stack);
+      console.error("Error Stack:", err.stack);
       res
         .status(err.status || 500)
         .json({ message: err.message || "Something went wrong!" });
     });
 
-    // ------------------------
-    // Start Server
-    // ------------------------
+    // --- Start Server ---
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(
-        `🚀 Server running on port ${PORT} - ${new Date().toLocaleString(
+        `Server running on port ${PORT} - ${new Date().toLocaleString(
           "en-IN",
           { timeZone: "Asia/Kolkata" }
         )}`
       );
     });
   } catch (err) {
-    console.error("❌ Server startup error:", err);
+    console.error("Server startup error:", err);
     process.exit(1);
   }
 };
