@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFacebook, FaTwitter, FaLinkedinIn, FaBars, FaPhone } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaLinkedinIn, FaBars, FaPhone,FaInstagram ,FaWhatsapp} from 'react-icons/fa';
 import { NavLink } from "react-router-dom";
 
 // Data-driven approach for menu structure
@@ -33,21 +33,21 @@ const menuItems = [
 
 const socialLinks = [
   {
-    name: 'Facebook',
-    icon: FaFacebook,
-    href: 'https://www.facebook.com/',
+    name: 'Whatsapp',
+    icon: FaWhatsapp,
+    href: 'https://wa.link/rck1ie',
     color: 'hover:text-blue-400'
   },
   {
-    name: 'Twitter',
-    icon: FaTwitter,
-    href: 'https://x.com/',
+    name: 'Instagram',
+    icon: FaInstagram,
+    href: 'https://www.instagram.com/ss.infotech_?igsh=MTJvNHVqdGZ0aXM2bA==',
     color: 'hover:text-blue-400'
   },
   {
     name: 'LinkedIn',
     icon: FaLinkedinIn,
-    href: 'https://www.linkedin.com/',
+    href: 'https://www.linkedin.com/company/ss-infotech-co/',
     color: 'hover:text-blue-400'
   }
 ];
@@ -90,33 +90,63 @@ const NavItem = ({ item }) => (
 
 // Top Bar Component
 const TopBar = () => (
-  <motion.div 
-    className="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 lg:px-6 rounded-b-full shadow-lg"
-    initial={{ y: -50, opacity: 0 }}
-    animate={{ y: 0, opacity: 1 }}
-    transition={{ duration: 0.5 }}
-  >
-    <div className="w-full px-4 lg:px-6 py-2">
-      <div className="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-        {/* <div className="header-note flex items-center space-x-3">
-          <motion.span 
-            className="title font-bold text-purple-200 bg-purple-800 px-3 py-1 rounded-full text-xs"
-            whileHover={{ scale: 1.05 }}
+  <motion.div
+  className="relative overflow-hidden rounded-b-3xl shadow-2xl"
+  initial={{ y: -60, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.7, ease: "easeOut" }}
+>
+  {/* Background Video */}
+  <div className="absolute inset-0 overflow-hidden">
+    <video
+      src="/nav.mp4"                 // VIDEO PATH: /public/navbar.mp4
+      autoPlay
+      loop
+      muted
+      playsInline
+      className="w-full h-full object-cover"
+      style={{ filter: 'brightness(0.5) contrast(1.2)' }}
+    />
+  </div>
+
+  {/* Dark Gradient Overlay + Glass Effect */}
+  <div className="absolute inset-0 bg-gradient-to-r from-purple-900/95 via-purple-800/90 backdrop-blur-md" />
+
+  {/* Optional Subtle Pattern (for texture) */}
+  
+
+  {/* Content */}
+  <div className="relative z-10 w-full px-4 lg:px-8 py-3">
+    <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
+      
+      {/* Optional: Phone / Update Note */}
+      {/* <div className="flex items-center space-x-3 text-sm font-medium">
+        <Phone className="w-4 h-4" />
+        <span>Call: +91 77199 27774</span>
+      </div> */}
+
+      {/* Social Icons */}
+      <div className="header-social flex space-x-5">
+        {socialLinks.map((social, index) => (
+          <motion.a
+            key={social.name}
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group p-2.5 rounded-full bg-white/15 backdrop-blur border border-white/30 shadow-lg transition-all duration-300 hover:bg-white/25 hover:shadow-xl hover:scale-110"
+            whileHover={{ y: -3 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
           >
-            Update:
-          </motion.span>
-          <p className="text-sm text-white/90">
-            Sign Up and Receive up to 20% bonus discount on checkout
-          </p>
-        </div> */}
-        <div className="header-social flex space-x-6">
-          {socialLinks.map((social, index) => (
-            <SocialLink key={social.name} social={social} />
-          ))}
-        </div>
+            <social.icon className="w-5 h-5 text-white group-hover:text-purple-200 transition-colors" />
+            <span className="sr-only">{social.name}</span>
+          </motion.a>
+        ))}
       </div>
     </div>
-  </motion.div>
+  </div>
+</motion.div>
 );
 
 // Mobile Menu Toggle Component
@@ -192,10 +222,10 @@ const Navbar = () => {
                   <span>
                     Call us: {' '}
                     <a 
-                      href="tel:+919399345989" 
+                      href="tel:+9177199 27774" 
                       className="font-semibold hover:text-purple-600 transition-colors"
                     >
-                      +91 9399345989
+                      +91 77199 27774
                     </a>
                   </span>
                 </motion.div>

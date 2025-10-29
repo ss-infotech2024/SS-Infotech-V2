@@ -15,6 +15,7 @@
   animation: waveExpand 2.4s infinite ease-out;
 }
 
+
 .wave-ring:nth-child(1) {
   animation-delay: 0s;
 }

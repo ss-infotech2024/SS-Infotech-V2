@@ -100,7 +100,7 @@ export default function ContactUs() {
       title: "Call Us",
       description: "Speak directly with admissions team",
       primary: "+91 7720846048",
-      secondary: "+91 9399345989",
+      secondary: "+91 77199 27774",
       available: "Mon-Sat, 9 AM - 6 PM"
     },
     {
@@ -115,7 +115,7 @@ export default function ContactUs() {
       icon: MessageCircle,
       title: "WhatsApp Chat",
       description: "Quick support on WhatsApp",
-      primary: "+91 9399345989",
+      primary: "+91 77199 27774",
       secondary: "Quick Response",
       available: "Mon-Sun, 9 AM - 9 PM"
     },
@@ -132,19 +132,19 @@ export default function ContactUs() {
     {
       name: "Training Support",
       email: "hr@ssinfo.co",
-      phone: "+91 9399345989",
+      phone: "+91 77199 27774",
       description: "Technical support for ongoing training programs"
     },
     {
       name: "Internship Programs",
       email: "hr@ssinfo.co",
-      phone: "+91 9399345989",
+      phone: "+91 77199 27774",
       description: "Internship opportunities and project guidance"
     },
     {
       name: "Corporate Training",
       email: "hr@ssinfo.co",
-      phone: "+91 9399345989",
+      phone: "+91 77199 27774",
       description: "Custom training solutions for organizations"
     }
   ], []);
@@ -238,111 +238,94 @@ export default function ContactUs() {
   return (
     <div className="space-y-0" ref={sectionRef}>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-purple-800 to-purple-600 text-white">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src={bgPattern}
-            alt="Contact Banner"
-            className="w-full h-full object-cover opacity-30"
-            loading="lazy"
-            onError={(e) => (e.target.src = "/imgs/placeholder.jpg")} // Fallback image
-          />
-        </div>
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden text-white">
+  {/* Video Background */}
+  <div className="absolute inset-0 overflow-hidden">
+    <video
+      src="/contactus.mp4"
+      autoPlay
+      loop
+      muted
+      playsInline
+      className="w-full h-full object-cover"
+      style={{ filter: 'brightness(0.6) contrast(1.1)' }}
+    />
+  </div>
 
-        {/* Background Animations */}
-        <motion.div
-          className="absolute top-20 left-10 w-16 h-16 bg-purple-400/20 rounded-full blur-xl will-change-transform"
-          animate={{
-            y: [0, 20, 0],
-            x: [0, 10, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute bottom-32 right-20 w-24 h-24 bg-pink-400/30 rounded-full blur-2xl will-change-transform"
-          animate={{
-            y: [0, -30, 0],
-            x: [0, -15, 0],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 left-1/5 will-change-transform"
-          variants={floatingAnimation}
-          animate="animate"
-        >
-          <Stars className="h-5 w-5 text-purple-300" />
-        </motion.div>
+  {/* Professional Dark Gradient Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/80 to-pink-900/70" />
 
-        <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            style={{ y, opacity, scale }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            variants={container}
-            className="space-y-6"
-          >
-            <motion.div variants={item}>
-              <Badge className="bg-purple-400/20 backdrop-blur-sm text-purple-100 px-5 py-2 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 font-semibold">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Contact Us
-              </Badge>
-            </motion.div>
-            <motion.h1 variants={item} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              Let's Start Your{" "}
-              <motion.span
-                className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent inline-block"
-                animate={{
-                  backgroundPosition: ['0%', '100%', '0%'],
-                }}
-                transition={{
-                  duration: 3.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                style={{
-                  backgroundSize: '200% 200%'
-                }}
-              >
-                Success Journey
-              </motion.span>
-            </motion.h1>
-            <motion.p variants={item} className="text-lg sm:text-xl md:text-2xl text-purple-100 leading-relaxed max-w-3xl mx-auto">
-              Have questions about our programs? Need guidance on your career path?{" "}
-              <motion.span
-                className="font-semibold text-white"
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 1.8, repeat: Infinity }}
-              >
-                Our team is here to help you every step of the way.
-              </motion.span>{" "}
-              Get in touch with us today.
-            </motion.p>
-          </motion.div>
-        </div>
-        <motion.div
-          className="absolute bottom-6 left-1/2 transform -translate-x-1/2 will-change-transform"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
-        >
-          <div className="w-5 h-8 border-2 border-white/50 rounded-full flex justify-center">
-            <motion.div
-              className="w-1 h-2 bg-white/70 rounded-full mt-1"
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
-        <motion.div
-          className="absolute -top-1/2 -left-1/4 w-1/2 h-1/2 bg-purple-500/10 rounded-full blur-3xl will-change-transform"
-          variants={pulseAnimation}
-          animate="animate"
-        />
-      </section>
+  {/* Animated Blur Orbs (Subtle Glow) */}
+  <motion.div
+    className="absolute top-20 left-10 w-32 h-32 bg-purple-500/30 rounded-full blur-3xl"
+    animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
+    transition={{ repeat: Infinity, duration: 6 }}
+  />
+  <motion.div
+    className="absolute bottom-32 right-20 w-40 h-40 bg-pink-500/30 rounded-full blur-3xl"
+    animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
+    transition={{ repeat: Infinity, duration: 8, delay: 1 }}
+  />
+
+  {/* Content */}
+  <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ y: 50, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="space-y-8"
+    >
+      {/* Professional Glass Badge */}
+      <div className="inline-flex items-center bg-white/15 backdrop-blur-xl border border-white/40 rounded-full px-8 py-3.5 text-lg font-bold text-white shadow-2xl shadow-purple-900/50">
+        <Sparkles className="w-5 h-5 mr-2 text-yellow-300" />
+        Contact Us
+      </div>
+
+      {/* Hero Heading */}
+      <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight">
+        Let's Start Your{" "}
+        <span className="block bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent animate-gradient">
+          Success Journey
+        </span>
+      </h1>
+
+      {/* Paragraph */}
+      <p className="text-lg sm:text-xl md:text-2xl text-purple-50 leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-md">
+        Have questions about our programs? Need guidance on your career path?{" "}
+        <span className="text-white font-bold animate-pulse">
+          Our team is here to help you every step of the way.
+        </span>{" "}
+        Get in touch with us today.
+      </p>
+    </motion.div>
+  </div>
+
+  {/* Scroll Indicator */}
+  <motion.div
+    className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+    animate={{ y: [0, 10, 0] }}
+    transition={{ duration: 1.8, repeat: Infinity }}
+  >
+    <div className="w-6 h-10 border-2 border-white/70 rounded-full flex justify-center">
+      <motion.div
+        className="w-1.5 h-3 bg-white rounded-full mt-1.5"
+        animate={{ y: [0, 12, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity }}
+      />
+    </div>
+  </motion.div>
+  <style>{`
+@keyframes gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 4s ease infinite;
+}`}</style>
+</section>
 
       {/* Quick Contact Methods */}
       <motion.section
@@ -824,10 +807,10 @@ export default function ContactUs() {
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <a href="tel:+919399345989" target="_blank" rel="noopener noreferrer">
+                  <a href="tel:+9177199 27774" target="_blank" rel="noopener noreferrer">
                     <Button className="w-full bg-white text-red-600 hover:bg-gray-100">
                       <Phone className="mr-2 h-4 w-4" />
-                      Emergency Number: +91 9399345989
+                      Emergency Number: +91 77199 27774
                     </Button>
                   </a>
                   <a href="https://wa.link/rck1ie" target="_blank" rel="noopener noreferrer">

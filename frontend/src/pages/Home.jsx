@@ -16,8 +16,6 @@ const Home = () => {
   return (
     <div className="relative min-h-screen">
       
-    
-      
       {/* Soft Gradient Overlay */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50"></div>
 
@@ -46,7 +44,7 @@ const Home = () => {
         </section>
 
         {/* Services Section */}
-        <section className="py-0 px-4 md:px-12 mx-[-16px]">
+        <section className="py-0 px-4 md:px-4 mx-[-16px]">
           <WhyChooseUs />
         </section>
 

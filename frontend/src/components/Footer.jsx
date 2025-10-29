@@ -86,9 +86,9 @@ const Footer = () => {
             </h2>
             <ul className="space-y-2 text-sm">
               {[ 
-                { icon: FaLocationDot, text: "1234 Innovation Drive, Tech Valley, CA 94107" },
-                { icon: FaPhone, text: "+1 (555) 123-4567", href: "tel:+15551234567" },
-                { icon: FaEnvelope, text: "hello@SS Infotech.com", href: "mailto:hello@SS Infotech.com" },
+                { icon: FaLocationDot, text: "Plot No.26, Khandwekar Bunglow, 2nd Floor,Near Lendra park, Nagpur - 440012 Maharashtra, Indi" },
+                { icon: FaPhone, text: "+91 77199 27774", href: "+91 77199 27774" },
+                { icon: FaEnvelope, text: "hr@ssinfotech.com", href: "hr@ssinfotech.com" },
               ].map((item, index) => (
                 <li key={index} className="flex items-start gap-2">
                   <item.icon className="text-[#FF6B35] mt-1" />
@@ -112,7 +112,7 @@ const Footer = () => {
             <ul className="space-y-1 text-sm">
               {["Website Developments", "Mobile App Development", "App Development", "Machine LearninDigital Marketing", "Integration Services"].map((service, index) => (
                 <li key={index}>
-                  <a href="#" className="text-gray-300 hover:text-white">{service}</a>
+                  <p href="#" className="text-gray-300 hover:text-white">{service}</p>
                 </li>
               ))}
             </ul>
