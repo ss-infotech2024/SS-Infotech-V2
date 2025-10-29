@@ -52,7 +52,7 @@ const startServer = async () => {
   try {
     // --- Connect to MongoDB ---
     await connectDB();
-    console.log("MongoDB connected successfully");
+    console.log("✅ MongoDB connected successfully");
 
     // --- Middleware ---
     app.use(
@@ -73,7 +73,7 @@ const startServer = async () => {
     app.use("/public", express.static(join(__dirname, "public")));
     app.use("/resumes", express.static(join(__dirname, "public")));
 
-    // --- API Routes (MUST COME BEFORE `app.get("*")`) ---
+    // --- API Routes ---
     app.use("/api/admin", adminRoutes);
     app.use("/api/joblistings", jobListingRoutes);
     app.use("/api/jobs", jobRoutes);
@@ -87,22 +87,22 @@ const startServer = async () => {
       res.status(200).json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // --- SERVE FRONTEND (PRODUCTION ONLY) ---
+    // --- Serve frontend (production only) ---
     if (process.env.NODE_ENV === "production") {
       const frontendPath = join(__dirname, "../frontend/dist");
 
       // Serve static assets
       app.use(express.static(frontendPath));
 
-      // SPA Fallback: MUST BE LAST
-      app.get("*", (req, res) => {
+      // SPA fallback (fixed path issue for Express 5)
+      app.get("/*", (req, res) => {
         res.sendFile(join(frontendPath, "index.html"));
       });
     }
 
     // --- Global Error Handler ---
     app.use((err, req, res, next) => {
-      console.error("Error Stack:", err.stack);
+      console.error("❌ Error Stack:", err.stack);
       res
         .status(err.status || 500)
         .json({ message: err.message || "Something went wrong!" });
@@ -112,14 +112,14 @@ const startServer = async () => {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
       console.log(
-        `Server running on port ${PORT} - ${new Date().toLocaleString(
+        `🚀 Server running on port ${PORT} - ${new Date().toLocaleString(
           "en-IN",
           { timeZone: "Asia/Kolkata" }
         )}`
       );
     });
   } catch (err) {
-    console.error("Server startup error:", err);
+    console.error("❌ Server startup error:", err);
     process.exit(1);
   }
 };
