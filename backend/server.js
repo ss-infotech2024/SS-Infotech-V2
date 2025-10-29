@@ -9,9 +9,9 @@ dotenv.config();
 // ------------------------
 import express from "express";
 import cors from "cors";
-import cloudinary from "cloudinary";
-import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import cloudinary from "cloudinary";
 
 // ------------------------
 // Local modules
@@ -26,7 +26,7 @@ import candidateRoutes from "./routes/candidateRoutes.js";
 import albumRoutes from "./routes/albumRoutes.js";
 
 // ------------------------
-// Fix __dirname
+// Fix __dirname and __filename for ES Modules
 // ------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,7 +37,7 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // ------------------------
-// Cloudinary
+// Configure Cloudinary
 // ------------------------
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -46,14 +46,15 @@ cloudinary.v2.config({
 });
 
 // ------------------------
-// Start Server
+// Start Server Function
 // ------------------------
 const startServer = async () => {
   try {
+    // --- Connect to MongoDB ---
     await connectDB();
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected successfully");
 
-    // Middleware
+    // --- Middleware ---
     app.use(
       cors({
         origin:
@@ -63,15 +64,16 @@ const startServer = async () => {
         credentials: true,
       })
     );
+
     app.use(express.json({ limit: "10mb" }));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-    // Static
+    // --- Static folders ---
     app.use("/Uploads", express.static(join(__dirname, "Uploads")));
     app.use("/public", express.static(join(__dirname, "public")));
     app.use("/resumes", express.static(join(__dirname, "public")));
 
-    // API Routes
+    // --- API Routes ---
     app.use("/api/admin", adminRoutes);
     app.use("/api/joblistings", jobListingRoutes);
     app.use("/api/jobs", jobRoutes);
@@ -80,41 +82,57 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // Health
+    // ------------------------
+    // Serve Frontend (React/Vite build)
+    // ------------------------
+   // Serve frontend (React/Vite build)
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = join(__dirname, "../frontend/dist/index.html");
+  app.use(express.static(frontendPath));
+
+  // Catch-all route
+  app.get("/*", (req, res) => {
+    res.sendFile(join(frontendPath, "index.html"));
+  });
+}
+
+
+    // ------------------------
+    // Health check route
+    // ------------------------
     app.get("/api/health", (req, res) => {
-      res.json({ status: "OK", time: new Date().toISOString() });
+      res.status(200).json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // ------------------------------
-    // PRODUCTION: Serve Frontend
-    // ------------------------------
-    if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist"); // ← CORRECT
-
-      // Serve static files
-      app.use(express.static(frontendPath));
-
-      // SPA fallback (MUST BE LAST)
-      app.get("/*", (req, res) => {
-        res.sendFile(join(frontendPath, "index.html")); // ← FIXED: No nested /index.html
-      });
-    }
-
-    // Error Handler
+    // ------------------------
+    // Global Error Handler
+    // ------------------------
     app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.status(err.status || 500).json({ message: err.message || "Error" });
+      console.error("❌ Error Stack:", err.stack);
+      res
+        .status(err.status || 500)
+        .json({ message: err.message || "Something went wrong!" });
     });
 
-    // Start
+    // ------------------------
+    // Start Server
+    // ------------------------
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(
+        `🚀 Server running on port ${PORT} - ${new Date().toLocaleString(
+          "en-IN",
+          { timeZone: "Asia/Kolkata" }
+        )}`
+      );
     });
   } catch (err) {
-    console.error("Startup error:", err);
+    console.error("❌ Server startup error:", err);
     process.exit(1);
   }
 };
 
+// ------------------------
+// Start the App
+// ------------------------
 startServer();
