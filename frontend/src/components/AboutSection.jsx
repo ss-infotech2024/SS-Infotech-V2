@@ -17,6 +17,7 @@ const AboutSection = () => {
 
     let started = false;
     let animationFrameId;
+    
 
     const io = new IntersectionObserver(
       (entries) => {
