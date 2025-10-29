@@ -89,13 +89,13 @@ const startServer = async () => {
     // PRODUCTION: Serve Frontend
     // ------------------------------
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "frontend/dist"); // ← CORRECT
+      const frontendPath = join(__dirname, "../frontend/dist"); // ← CORRECT
 
       // Serve static files
       app.use(express.static(frontendPath));
 
       // SPA fallback (MUST BE LAST)
-      app.get("*", (req, res) => {
+      app.get("/*", (req, res) => {
         res.sendFile(join(frontendPath, "index.html")); // ← FIXED: No nested /index.html
       });
     }
