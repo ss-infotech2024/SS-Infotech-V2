@@ -89,7 +89,7 @@ const startServer = async () => {
 
     // --- Serve frontend (production only) ---
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist");
+      const frontendPath = join(__dirname, "../frontend/dist/index.html");
 
       // Serve static assets
       app.use(express.static(frontendPath));
