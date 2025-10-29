@@ -26,7 +26,7 @@ import candidateRoutes from "./routes/candidateRoutes.js";
 import albumRoutes from "./routes/albumRoutes.js";
 
 // ------------------------
-// Fix __dirname and __filename
+// Fix __dirname
 // ------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,7 +37,7 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // ------------------------
-// Configure Cloudinary
+// Cloudinary
 // ------------------------
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -46,15 +46,14 @@ cloudinary.v2.config({
 });
 
 // ------------------------
-// Start Server Function
+// Start Server
 // ------------------------
 const startServer = async () => {
   try {
-    // --- Connect to MongoDB ---
     await connectDB();
-    console.log("✅ MongoDB connected successfully");
+    console.log("MongoDB connected");
 
-    // --- Middleware ---
+    // Middleware
     app.use(
       cors({
         origin:
@@ -64,16 +63,15 @@ const startServer = async () => {
         credentials: true,
       })
     );
-
     app.use(express.json({ limit: "10mb" }));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-    // --- Static folders ---
+    // Static
     app.use("/Uploads", express.static(join(__dirname, "Uploads")));
     app.use("/public", express.static(join(__dirname, "public")));
     app.use("/resumes", express.static(join(__dirname, "public")));
 
-    // --- API Routes ---
+    // API Routes
     app.use("/api/admin", adminRoutes);
     app.use("/api/joblistings", jobListingRoutes);
     app.use("/api/jobs", jobRoutes);
@@ -82,49 +80,41 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // --- Health check ---
+    // Health
     app.get("/api/health", (req, res) => {
-      res.status(200).json({ status: "OK", time: new Date().toISOString() });
+      res.json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // --- Serve frontend (production only) ---
+    // ------------------------------
+    // PRODUCTION: Serve Frontend
+    // ------------------------------
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist/index.html");
+      const frontendPath = join(__dirname, "frontend/dist"); // ← CORRECT
 
-      // Serve static assets
+      // Serve static files
       app.use(express.static(frontendPath));
 
-      // SPA fallback (fixed path issue for Express 5)
-      app.get("/*", (req, res) => {
-        res.sendFile(join(frontendPath, "index.html"));
+      // SPA fallback (MUST BE LAST)
+      app.get("*", (req, res) => {
+        res.sendFile(join(frontendPath, "index.html")); // ← FIXED: No nested /index.html
       });
     }
 
-    // --- Global Error Handler ---
+    // Error Handler
     app.use((err, req, res, next) => {
-      console.error("❌ Error Stack:", err.stack);
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Something went wrong!" });
+      console.error(err.stack);
+      res.status(err.status || 500).json({ message: err.message || "Error" });
     });
 
-    // --- Start Server ---
+    // Start
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
-      console.log(
-        `🚀 Server running on port ${PORT} - ${new Date().toLocaleString(
-          "en-IN",
-          { timeZone: "Asia/Kolkata" }
-        )}`
-      );
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (err) {
-    console.error("❌ Server startup error:", err);
+    console.error("Startup error:", err);
     process.exit(1);
   }
 };
 
-// ------------------------
-// Start the App
-// ------------------------
 startServer();
