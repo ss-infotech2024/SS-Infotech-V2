@@ -192,7 +192,7 @@ const Navbar = () => {
               >
                 <NavLink to="/" className="block">
                   <img 
-                    src="/public/logo.png" 
+                    src="/logo.png" 
                     alt="SS Infotech Logo" 
                     className="h-16 w-auto sm:h-20 md:h-24 lg:h-28 xl:h-32 object-contain max-w-[200px] sm:max-w-[250px] lg:max-w-[300px]"
                     loading="eager"
