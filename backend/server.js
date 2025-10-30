@@ -61,19 +61,22 @@ const startServer = async () => {
       "https://ssinfotech-omega.vercel.app",
       "https://ssinfotech-xsq6.vercel.app",
       "https://ssinfotech-backend-k03q.onrender.com", // backend self URL
+      "https://ss-infotech-v2-y2i2.vercel.app", // ✅ newly added frontend
       process.env.FRONTEND_URL,
       "http://localhost:5173",
       "http://localhost:5174",
     ].filter(Boolean);
 
-    // --- Middleware ---
+    // ------------------------
+    // CORS Middleware
+    // ------------------------
     app.use(
       cors({
         origin: (origin, callback) => {
-          // Allow requests without origin (like server-to-server or Postman)
+          // Allow requests without origin (e.g., Postman, server-to-server)
           if (!origin) return callback(null, true);
 
-          // Allow same-origin requests from the backend itself
+          // Allow if in allowed list or backend itself
           if (
             origin === "https://ssinfotech-backend-k03q.onrender.com" ||
             allowedOrigins.includes(origin)
@@ -88,15 +91,22 @@ const startServer = async () => {
       })
     );
 
+    // ------------------------
+    // Middleware
+    // ------------------------
     app.use(express.json({ limit: "10mb" }));
     app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-    // --- Static folders ---
+    // ------------------------
+    // Static Folders
+    // ------------------------
     app.use("/Uploads", express.static(join(__dirname, "Uploads")));
     app.use("/public", express.static(join(__dirname, "public")));
     app.use("/resumes", express.static(join(__dirname, "public")));
 
-    // --- API Routes ---
+    // ------------------------
+    // API Routes
+    // ------------------------
     app.use("/api/admin", adminRoutes);
     app.use("/api/joblistings", jobListingRoutes);
     app.use("/api/jobs", jobRoutes);
@@ -105,12 +115,16 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // --- Health check ---
+    // ------------------------
+    // Health Check Route
+    // ------------------------
     app.get("/api/health", (req, res) => {
       res.status(200).json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // --- Serve Frontend (for production) ---
+    // ------------------------
+    // Serve Frontend in Production
+    // ------------------------
     if (process.env.NODE_ENV === "production") {
       const frontendPath = join(__dirname, "../frontend/dist");
       app.use(express.static(frontendPath));
@@ -122,7 +136,9 @@ const startServer = async () => {
       console.log(`🌐 Serving frontend from: ${frontendPath}`);
     }
 
-    // --- Global Error Handler ---
+    // ------------------------
+    // Global Error Handler
+    // ------------------------
     app.use((err, req, res, next) => {
       console.error("❌ Error Stack:", err.stack);
       res
@@ -130,7 +146,9 @@ const startServer = async () => {
         .json({ message: err.message || "Something went wrong!" });
     });
 
-    // --- Start Server ---
+    // ------------------------
+    // Start Server
+    // ------------------------
     const PORT = process.env.PORT || 10000;
     app.listen(PORT, () => {
       console.log(
