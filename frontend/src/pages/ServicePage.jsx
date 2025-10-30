@@ -253,40 +253,48 @@ export default function ServicePage() {
   ], []);
 
   // Company Products
-  const products = useMemo(() => [
-    {
-      id: "ecom",
-      name: "Enterprise E-commerce Platform",
-      description: "A scalable e-commerce solution for businesses with advanced inventory and order management.",
-      tech: ["React", "Node.js", "MongoDB", "AWS"],
-      image: "/imgs/bookmyfarm.jpg",
-      gradient: "from-blue-500 to-purple-600"
-    },
-    {
-      id: "crm",
-      name: "Business CRM System",
-      description: "Comprehensive customer relationship management system with analytics and automation.",
-      tech: ["Vue.js", "Python", "PostgreSQL", "Docker"],
-      image: "/imgs/onlinekharida.jpg",
-      gradient: "from-green-500 to-teal-600"
-    },
-    {
-      id: "analytics",
-      name: "Business Intelligence Dashboard",
-      description: "Real-time analytics and reporting platform for data-driven decision making.",
-      tech: ["React", "TypeScript", "GraphQL", "Azure"],
-      image: "/imgs/analytics.jpg",
-      gradient: "from-orange-500 to-red-600"
-    },
-    {
-      id: "mobile",
-      name: "Enterprise Mobile Suite",
-      description: "Cross-platform mobile applications for field service and customer engagement.",
-      tech: ["Flutter", "Firebase", "Node.js", "Redis"],
-      image: "/imgs/mobile.jpg",
-      gradient: "from-purple-500 to-pink-600"
-    }
-  ], []);
+ const products = useMemo(() => [
+  {
+    id: "bookmyfarm",
+    name: "BookMyFarm - Agricultural Booking Platform",
+    description: "A comprehensive farm booking and management system that connects farmers with customers. Features include real-time booking, payment integration, farm management tools, and customer reviews.",
+    tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
+    image: "/s1.png",
+    gradient: "from-green-500 to-emerald-600",
+    link: "https://bookmyfarm.co.in/",
+    features: ["Farm Booking System", "Payment Integration", "Real-time Availability", "Review System"]
+  },
+  {
+    id: "ayurveda",
+    name: "Ayurade - E-commerce Platform",
+    description: "A full-featured e-commerce website specializing in Ayurvedic products. Includes user authentication, product catalog, shopping cart, order tracking, and admin dashboard.",
+    tech: ["MongoDB", "React", "Node.js", "Express", "Tailwind CSS"],
+    image: "/s2.png",
+    gradient: "from-amber-500 to-orange-600",
+    link: "https://ayurade.example.com",
+    features: ["Product Catalog", "Shopping Cart", "User Authentication", "Order Management"]
+  },
+  {
+    id: "oversease",
+    name: "Oversease - Education Portal",
+    description: "An overseas education consulting platform helping students find and apply to international universities. Features include university search, application tracking, and counselor matching.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: "/s3.png",
+    gradient: "from-blue-500 to-indigo-600",
+    link: "https://ssoverseas.in/",
+    features: ["University Search", "Application Tracking", "Counselor Portal", "Document Management"]
+  },
+  {
+    id: "daanapaani",
+    name: "Daanapaani Foundation - Charity Platform",
+    description: "A noble initiative dedicated to social welfare and community development. The platform facilitates donations, volunteer management, and showcases the foundation's humanitarian projects and impact.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: "/s4.png",
+    gradient: "from-purple-500 to-indigo-600",
+    link: "https://daanapaanifoundation.com",
+    features: ["Donation System", "Volunteer Management", "Project Showcase", "Impact Tracking"]
+  }
+], []);
 
   // State management
   const [query, setQuery] = useState("");
@@ -675,66 +683,103 @@ export default function ServicePage() {
           <motion.div className="text-center space-y-6 mb-16" variants={staggerContainer}>
             <motion.div variants={scaleIn}>
               <Badge className="bg-blue-500/20 text-blue-700 px-6 py-2 text-sm border border-blue-500/30">
-                Our Products
+                Our Client Products
               </Badge>
             </motion.div>
-            <motion.h2 variants={scaleIn} className="text-4xl sm:text-5xl font-bold text-gray-900">
+            {/* <motion.h2 variants={scaleIn} className="text-4xl sm:text-5xl font-bold text-gray-900">
               Business Solutions
-            </motion.h2>
+            </motion.h2> */}
             <motion.p variants={scaleIn} className="text-xl text-gray-600 max-w-3xl mx-auto">
               Innovative products built to solve complex business challenges and drive digital transformation.
             </motion.p>
           </motion.div>
 
           <motion.div className="grid md:grid-cols-2 gap-8" variants={staggerContainer}>
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                variants={index % 2 === 0 ? slideInLeft : slideInRight}
-                custom={index}
-                whileHover={{ y: -10 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="group"
-              >
-                <Card className="border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-3xl">
-                  <CardContent className="p-0">
-                    <div className={`bg-gradient-to-r ${product.gradient} h-48 flex items-center justify-center relative overflow-hidden`}>
-                      <motion.div
-                        className="absolute inset-0 bg-black/20"
-                        whileHover={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                      <img 
-                        src={product.image} 
-                        alt={product.name}
-                        className="h-32 w-auto object-contain relative z-10 group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <div className="p-8 space-y-4">
-                      <h3 className="text-2xl font-bold text-gray-900">{product.name}</h3>
-                      <p className="text-gray-600 leading-relaxed">{product.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {product.tech.map((tech, i) => (
-                          <motion.span
-                            key={i}
-                            initial={{ opacity: 0, scale: 0 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
-                          >
-                            {tech}
-                          </motion.span>
-                        ))}
-                      </div>
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold">
-                        View Case Study
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
+  {products.map((product, index) => (
+    <motion.div
+      key={product.id}
+      variants={index % 2 === 0 ? slideInLeft : slideInRight}
+      custom={index}
+      whileHover={{ y: -10 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      className="group"
+    >
+      <Card className="border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-3xl">
+        <CardContent className="p-0">
+          <div className={`bg-gradient-to-r ${product.gradient} h-48 flex items-center justify-center relative overflow-hidden`}>
+            <motion.div
+              className="absolute inset-0 bg-black/20"
+              whileHover={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
+            <img 
+              src={product.image} 
+              alt={product.name}
+              className="h-[400px] w-auto object-contain relative z-10 group-hover:scale-110 transition-transform duration-500"
+            />
+          </div>
+          <div className="p-8 space-y-6">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
+              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+            </div>
+            
+            {/* Features List */}
+            <div className="space-y-2">
+              <h4 className="font-semibold text-gray-800">Key Features:</h4>
+              <div className="flex flex-wrap gap-2">
+                {product.features.map((feature, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 }}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium border"
+                  >
+                    {feature}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+            
+            {/* Technology Stack */}
+            <div className="space-y-2">
+              <h4 className="font-semibold text-gray-800">Tech Stack:</h4>
+              <div className="flex flex-wrap gap-2">
+                {product.tech.map((tech, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.1 + 0.3 }}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+            </div>
+            
+            {/* Action Button */}
+            <motion.a
+              href={product.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="block w-full"
+            >
+              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                <Globe className="w-4 h-4 mr-2" />
+                View Live Project
+              </Button>
+            </motion.a>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  ))}
+</motion.div>
         </div>
       </motion.section>
 
