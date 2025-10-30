@@ -69,7 +69,7 @@ const apiService = {
   },
 
   async getAlbumById(id) {
-    const response = await fetch(`/api/album/${id}`);
+    const response = await fetch(`https://ssinfotech-backend-k03q.onrender.com/api/album/${id}`);
     if (!response.ok) throw new Error('Failed to fetch album');
     return response.json();
   },
@@ -84,7 +84,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch('/api/album-post', {
+    const response = await fetch('https://ssinfotech-backend-k03q.onrender.com/api/album-post', {
       method: 'POST',
       body: formData,
     });
@@ -102,7 +102,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch(`/api/album/${id}`, {
+    const response = await fetch(`https://ssinfotech-backend-k03q.onrender.com/api/album/${id}`, {
       method: 'PATCH',
       body: formData,
     });
@@ -111,7 +111,7 @@ const apiService = {
   },
 
   async deleteAlbum(id) {
-    const response = await fetch(`/api/album/${id}`, {
+    const response = await fetch(`https://ssinfotech-backend-k03q.onrender.com/api/album/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete album');
