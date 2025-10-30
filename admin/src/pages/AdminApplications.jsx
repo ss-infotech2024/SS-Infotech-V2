@@ -11,7 +11,7 @@ export default function AdminApplications() {
   const fetchApplications = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/applications/recive-applications"
+        "https://ssinfotech-backend-k03q.onrender.com/api/applications/recive-applications"
       );
       setApplications(res.data.applications || []);
     } catch (err) {

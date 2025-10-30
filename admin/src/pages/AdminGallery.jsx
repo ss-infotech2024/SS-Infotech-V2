@@ -58,7 +58,7 @@ const AdminGallery = () => {
   useEffect(() => {
     const fetchAlbums = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/albums/album-getall');
+        const response = await axios.get('https://ssinfotech-backend-k03q.onrender.com/api/albums/album-getall');
         setAlbums(response.data);
       } catch (err) {
         message.error('Failed to load albums. Please try again.');
@@ -133,13 +133,13 @@ const AdminGallery = () => {
 
     try {
       if (isEditing) {
-        const response = await axios.patch(`http://localhost:3000/api/albums/album/${editId}`, data, {
+        const response = await axios.patch(`https://ssinfotech-backend-k03q.onrender.com/api/albums/album/${editId}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setAlbums((prev) => prev.map((album) => (album._id === editId ? response.data.album : album)));
         message.success('Album updated successfully!');
       } else {
-        const response = await axios.post('http://localhost:3000/api/albums/album-post', data, {
+        const response = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/albums/album-post', data, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setAlbums((prev) => [...prev, response.data.album]);
@@ -177,7 +177,7 @@ const AdminGallery = () => {
   const handleDelete = async (_id) => {
     if (!confirm('Are you sure you want to delete this album?')) return;
     try {
-      await axios.delete(`http://localhost:3000/api/albums/album/${_id}`);
+      await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/albums/album/${_id}`);
       setAlbums((prev) => prev.filter((album) => album._id !== _id));
       message.success('Album deleted successfully!');
     } catch (err) {

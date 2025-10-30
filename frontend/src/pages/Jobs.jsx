@@ -124,7 +124,7 @@ function JobApplicationModal({ job, isOpen, onClose }) {
     formDataToSend.append("resume", formData.resume);
 
     try {
-      const response = await fetch("http://localhost:3000/api/applications/fill-applications", {
+      const response = await fetch("https://ssinfotech-backend-k03q.onrender.com/api/applications/fill-applications", {
         method: "POST",
         body: formDataToSend,
       });
