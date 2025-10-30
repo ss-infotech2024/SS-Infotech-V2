@@ -26,7 +26,7 @@ import candidateRoutes from "./routes/candidateRoutes.js";
 import albumRoutes from "./routes/albumRoutes.js";
 
 // ------------------------
-// Fix __dirname and __filename for ES Modules
+// Fix __dirname for ES Modules
 // ------------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -82,31 +82,24 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // ------------------------
-    // Serve Frontend (React/Vite build)
-    // ------------------------
-    if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist");
-
-      // Serve all built static files
-      app.use(express.static(frontendPath));
-
-      // Catch-all for React Router
-      app.get("*", (req, res) => {
-        res.sendFile(join(frontendPath, "index.html"));
-      });
-    }
-
-    // ------------------------
-    // Health check route
-    // ------------------------
+    // --- Health check ---
     app.get("/api/health", (req, res) => {
       res.status(200).json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // ------------------------
-    // Global Error Handler
-    // ------------------------
+    // --- Serve Frontend (for production) ---
+    if (process.env.NODE_ENV === "production") {
+      const frontendPath = join(__dirname, "../frontend/dist");
+      app.use(express.static(frontendPath));
+
+      app.get("*", (req, res) => {
+        res.sendFile(join(frontendPath, "index.html"));
+      });
+
+      console.log(`🌐 Serving frontend from: ${frontendPath}`);
+    }
+
+    // --- Global Error Handler ---
     app.use((err, req, res, next) => {
       console.error("❌ Error Stack:", err.stack);
       res
@@ -114,18 +107,18 @@ const startServer = async () => {
         .json({ message: err.message || "Something went wrong!" });
     });
 
-
-    // ------------------------
-    // Start Server
-    // ------------------------
-    const PORT = process.env.PORT || 3000;
+    // --- Start Server ---
+    const PORT = process.env.PORT || 10000;
     app.listen(PORT, () => {
       console.log(
-        `🚀 Server running on port ${PORT} - ${new Date().toLocaleString(
+        `🚀 Backend API running on port ${PORT} - ${new Date().toLocaleString(
           "en-IN",
           { timeZone: "Asia/Kolkata" }
         )}`
       );
+      if (process.env.NODE_ENV === "production") {
+        console.log(`🌐 CORS allowed from: ${process.env.FRONTEND_URL}`);
+      }
     });
   } catch (err) {
     console.error("❌ Server startup error:", err);
@@ -133,7 +126,4 @@ const startServer = async () => {
   }
 };
 
-// ------------------------
-// Start the App
-// ------------------------
 startServer();
