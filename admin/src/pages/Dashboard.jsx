@@ -28,23 +28,23 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const [albumRes, appRes, candRes, jobRes, slideRes] = await Promise.all([
-          axios.get('http://localhost:3000/api/albums/album-getall').catch((err) => {
+          axios.get('https://ssinfotech-backend-k03q.onrender.com/api/albums/album-getall').catch((err) => {
             console.error('Album Fetch Error:', err);
             return { data: [] };
           }),
-          axios.get('http://localhost:3000/api/applications/recive-applications').catch((err) => {
+          axios.get('https://ssinfotech-backend-k03q.onrender.com/api/applications/recive-applications').catch((err) => {
             console.error('Application Fetch Error:', err);
             return { data: [] };
           }),
-          axios.get('http://localhost:3000/api/candidate/candidates').catch((err) => {
+          axios.get('https://ssinfotech-backend-k03q.onrender.com/api/candidate/candidates').catch((err) => {
             console.error('Candidate Fetch Error:', err);
             return { data: [] };
           }),
-          axios.get('http://localhost:3000/api/jobs/show-jobs').catch((err) => {
+          axios.get('https://ssinfotech-backend-k03q.onrender.com/api/jobs/show-jobs').catch((err) => {
             console.error('Job Fetch Error:', err);
             return { data: [] };
           }),
-          axios.get('http://localhost:3000/api/slides').catch((err) => {
+          axios.get('https://ssinfotech-backend-k03q.onrender.com/api/slides').catch((err) => {
             console.error('Slide Fetch Error:', err);
             return { data: [] };
           }),
