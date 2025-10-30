@@ -59,7 +59,7 @@ const startServer = async () => {
       cors({
         origin:
           process.env.NODE_ENV === "production"
-            ? process.env.FRONTEND_URL // Render Frontend URL
+            ? process.env.FRONTEND_URL
             : ["http://localhost:5173", "http://localhost:5174"],
         credentials: true,
       })
@@ -82,16 +82,12 @@ const startServer = async () => {
     app.use("/api/candidate", candidateRoutes);
     app.use("/api/albums", albumRoutes);
 
-    // ------------------------
-    // Health check route
-    // ------------------------
+    // --- Health check ---
     app.get("/api/health", (req, res) => {
       res.status(200).json({ status: "OK", time: new Date().toISOString() });
     });
 
-    // ------------------------
-    // Serve Frontend (Production)
-    // ------------------------
+    // --- Serve Frontend (for production) ---
     if (process.env.NODE_ENV === "production") {
       const frontendPath = join(__dirname, "../frontend/dist");
       app.use(express.static(frontendPath));
@@ -99,12 +95,11 @@ const startServer = async () => {
       app.get("*", (req, res) => {
         res.sendFile(join(frontendPath, "index.html"));
       });
+
       console.log(`🌐 Serving frontend from: ${frontendPath}`);
     }
 
-    // ------------------------
-    // Global Error Handler
-    // ------------------------
+    // --- Global Error Handler ---
     app.use((err, req, res, next) => {
       console.error("❌ Error Stack:", err.stack);
       res
@@ -112,10 +107,8 @@ const startServer = async () => {
         .json({ message: err.message || "Something went wrong!" });
     });
 
-    // ------------------------
-    // Start Server
-    // ------------------------
-    const PORT = process.env.PORT || 3000;
+    // --- Start Server ---
+    const PORT = process.env.PORT || 10000;
     app.listen(PORT, () => {
       console.log(
         `🚀 Backend API running on port ${PORT} - ${new Date().toLocaleString(
@@ -133,7 +126,4 @@ const startServer = async () => {
   }
 };
 
-// ------------------------
-// Start the App
-// ------------------------
 startServer();
