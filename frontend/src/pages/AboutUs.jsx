@@ -219,7 +219,7 @@ const AboutUs = () => {
       </motion.div>
 
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-800 text-white">
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-gradient-to-r from-slate-900 via-purple-900 to-slate-80  text-white">
         <motion.div
           className="absolute -top-1/2 -left-1/4 w-1/2 h-1/2 bg-purple-500/15 rounded-full blur-3xl will-change-transform"
           animate={{

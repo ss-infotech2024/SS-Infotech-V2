@@ -270,7 +270,7 @@ export default function JobSearch() {
       try {
         setLoading(true);
 
-        let url = "http://localhost:3000/api/jobs/show-jobs";
+        let url = "https://ssinfotech-backend-k03q.onrender.com/api/jobs/show-jobs";
 
         const params = new URLSearchParams();
         if (query) params.append("query", query);

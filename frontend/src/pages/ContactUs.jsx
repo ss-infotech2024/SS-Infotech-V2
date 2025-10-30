@@ -253,7 +253,7 @@ export default function ContactUs() {
   </div>
 
   {/* Professional Dark Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/90 via-purple-800/80 to-pink-900/70" />
+  <div className="absolute inset-0 bg-gradient-to-r from-purple-800/95 via-purple-700/90 " />
 
   {/* Animated Blur Orbs (Subtle Glow) */}
   <motion.div
@@ -285,7 +285,7 @@ export default function ContactUs() {
       {/* Hero Heading */}
       <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight">
         Let's Start Your{" "}
-        <span className="block bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent animate-gradient">
+        <span className="block bg-gradient-to-r from-purple-900/95 via-purple-700/90  bg-clip-text text-transparent animate-gradient">
           Success Journey
         </span>
       </h1>
