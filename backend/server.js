@@ -54,13 +54,29 @@ const startServer = async () => {
     await connectDB();
     console.log("✅ MongoDB connected successfully");
 
+    // ------------------------
+    // Allowed Origins for CORS
+    // ------------------------
+    const allowedOrigins =
+      process.env.NODE_ENV === "production"
+        ? [
+            process.env.FRONTEND_URL,
+            "https://ssinfotech-omega.vercel.app",
+            "https://ssinfotech-xsq6.vercel.app",
+          ]
+        : ["http://localhost:5173", "http://localhost:5174"];
+
     // --- Middleware ---
     app.use(
       cors({
-        origin:
-          process.env.NODE_ENV === "production"
-            ? process.env.FRONTEND_URL
-            : ["http://localhost:5173", "http://localhost:5174"],
+        origin: function (origin, callback) {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            console.warn(`🚫 Blocked by CORS: ${origin}`);
+            callback(new Error("Not allowed by CORS"));
+          }
+        },
         credentials: true,
       })
     );
@@ -117,7 +133,8 @@ const startServer = async () => {
         )}`
       );
       if (process.env.NODE_ENV === "production") {
-        console.log(`🌐 CORS allowed from: ${process.env.FRONTEND_URL}`);
+        console.log(`🌐 CORS allowed from:`);
+        allowedOrigins.forEach((url) => console.log(`   → ${url}`));
       }
     });
   } catch (err) {
@@ -126,4 +143,7 @@ const startServer = async () => {
   }
 };
 
+// ------------------------
+// Start the Server
+// ------------------------
 startServer();
