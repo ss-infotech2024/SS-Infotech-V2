@@ -154,10 +154,10 @@ export default function Dashboard() {
     try {
       if (activeSection === 'albums') {
         if (isEditing) {
-          const res = await axios.patch(`/api/albums/album/${editId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
+          const res = await axios.patch(`https://ssinfotech-backend-k03q.onrender.com/api/albums/album/${editId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
           setAlbums((prev) => prev.map((item) => (item._id === editId ? res.data.album : item)));
         } else {
-          const res = await axios.post('/api/albums/album-post', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+          const res = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/albums/album-post', data, { headers: { 'Content-Type': 'multipart/form-data' } });
           setAlbums((prev) => [...prev, res.data.album]);
         }
       } else if (activeSection === 'applications') {
@@ -165,21 +165,21 @@ export default function Dashboard() {
           setError('Editing applications is not supported.');
           return;
         }
-        const res = await axios.post('/api/applications/fill-applications', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const res = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/applications/fill-applications', data, { headers: { 'Content-Type': 'multipart/form-data' } });
         setApplications((prev) => [...prev, res.data]);
       } else if (activeSection === 'candidates') {
         if (isEditing) {
           setError('Editing candidates is not supported.');
           return;
         }
-        const res = await axios.post('/api/candidate/upload-excel', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const res = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/candidate/upload-excel', data, { headers: { 'Content-Type': 'multipart/form-data' } });
         setCandidates((prev) => [...prev, ...res.data]);
       } else if (activeSection === 'jobs') {
         if (isEditing) {
-          const res = await axios.put(`/api/jobs/update-jobs/${editId}`, formData);
+          const res = await axios.put(`https://ssinfotech-backend-k03q.onrender.com/api/jobs/update-jobs/${editId}`, formData);
           setJobs((prev) => prev.map((item) => (item._id === editId ? res.data : item)));
         } else {
-          const res = await axios.post('/api/jobs/add-jobs', formData);
+          const res = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/jobs/add-jobs', formData);
           setJobs((prev) => [...prev, res.data]);
         }
       } else if (activeSection === 'slides') {
@@ -187,7 +187,7 @@ export default function Dashboard() {
           setError('Editing slides is not supported.');
           return;
         }
-        const res = await axios.post('/api/slides', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+        const res = await axios.post('https://ssinfotech-backend-k03q.onrender.com/api/slides', data, { headers: { 'Content-Type': 'multipart/form-data' } });
         setSlides((prev) => [...prev, res.data]);
       }
       setFormData({});
@@ -211,19 +211,19 @@ export default function Dashboard() {
     if (!confirm(`Are you sure you want to delete this ${activeSection.slice(0, -1)}?`)) return;
     try {
       if (activeSection === 'albums') {
-        await axios.delete(`/api/albums/album/${id}`);
+        await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/albums/album/${id}`);
         setAlbums((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'applications') {
-        await axios.delete(`/api/applications/delete/${id}`);
+        await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/applications/delete/${id}`);
         setApplications((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'candidates') {
-        await axios.delete(`/api/candidate/candidate/${id}`);
+        await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/candidate/candidate/${id}`);
         setCandidates((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'jobs') {
-        await axios.delete(`/api/jobs/delete-jobs/${id}`);
+        await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/jobs/delete-jobs/${id}`);
         setJobs((prev) => prev.filter((item) => item._id !== id));
       } else if (activeSection === 'slides') {
-        await axios.delete(`/api/slides/delete/${id}`);
+        await axios.delete(`https://ssinfotech-backend-k03q.onrender.com/api/slides/delete/${id}`);
         setSlides((prev) => prev.filter((item) => item._id !== id));
       }
       setError('');
@@ -234,7 +234,7 @@ export default function Dashboard() {
 
   const handleDownloadResume = async (publicId) => {
     try {
-      const response = await axios.get(`/api/applications/download/${publicId}`, {
+      const response = await axios.get(`https://ssinfotech-backend-k03q.onrender.com/api/applications/download/${publicId}`, {
         headers: { Authorization: 'Bearer YOUR_TOKEN_HERE' },
         responseType: 'blob',
       });
