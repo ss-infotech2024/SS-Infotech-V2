@@ -85,22 +85,36 @@ const Footer = () => {
               Get In Touch
             </h2>
             <ul className="space-y-2 text-sm">
-              {[ 
-                { icon: FaLocationDot, text: "Plot No.26, Khandwekar Bunglow, 2nd Floor,Near Lendra park, Nagpur - 440012 Maharashtra, Indi" },
-                { icon: FaPhone, text: "+91 77199 27774", href: "+91 77199 27774" },
-                { icon: FaEnvelope, text: "hr@ssinfotech.co.in", href: "hr@ssinfotech.co.in" },
-              ].map((item, index) => (
-                <li key={index} className="flex items-start gap-2">
-                  <item.icon className="text-[#FF6B35] mt-1" />
-                  {item.href ? (
-                    <a href={item.href} className="text-gray-300 hover:text-white text-sm">
-                      {item.text}
-                    </a>
-                  ) : (
-                    <span className="text-gray-300 text-sm">{item.text}</span>
-                  )}
-                </li>
-              ))}
+             {[
+  {
+    icon: FaLocationDot,
+    text: "Plot No. 26, Khandwekar Bunglow, 2nd Floor, Near Lendra Park, Nagpur - 440012, Maharashtra, India",
+  },
+  {
+    icon: FaPhone,
+    text: "+91 77199 27774",
+    href: "tel:+917719927774",
+  },
+  {
+    icon: FaEnvelope,
+    text: "hr@ssinfotech.co.in",
+    href: "mailto:hr@ssinfotech.co.in",
+  },
+].map((item, index) => (
+  <li key={index} className="flex items-start gap-2">
+    <item.icon className="text-[#FF6B35] mt-1" />
+    {item.href ? (
+      <a
+        href={item.href}
+        className="hover:text-[#FF6B35] transition-colors"
+      >
+        {item.text}
+      </a>
+    ) : (
+      <span>{item.text}</span>
+    )}
+  </li>
+))}
             </ul>
           </div>
 
