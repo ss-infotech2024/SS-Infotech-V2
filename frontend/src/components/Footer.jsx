@@ -97,7 +97,7 @@ const Footer = () => {
   },
   {
     icon: FaEnvelope,
-    text: "hr@ssinfotech.co.in",
+    text: "hr@ssinfotech.co.in", 
     href: "mailto:hr@ssinfotech.co.in",
   },
 ].map((item, index) => (
