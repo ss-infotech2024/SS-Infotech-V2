@@ -62,6 +62,7 @@ const startServer = async () => {
       "https://ssinfotech-xsq6.vercel.app",
       "https://ssinfotech-backend-k03q.onrender.com", // backend self URL
       "https://ss-infotech-v2-y2i2.vercel.app", // ✅ newly added frontend
+      "https://ssinfotech.co.in",
       process.env.FRONTEND_URL,
       "http://localhost:5173",
       "http://localhost:5174",
