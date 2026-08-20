@@ -14,7 +14,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/slides");
+        const response = await fetch("https://ssinfotech-backend-k03q.onrender.com/api/slides");
         if (!response.ok) throw new Error("Failed to fetch slides");
         const data = await response.json();
         setSlides(data.slides || []);
@@ -154,9 +154,65 @@ const Hero = () => {
       </button>
 
       {/* Main Content */}
-      {/* <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"> */}
-       
-      {/* </div> */}
+      {/* Main Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-3xl text-white">
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-sm md:text-base uppercase tracking-[0.3em] font-semibold mb-4"
+          >
+            SS Infotech
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
+          >
+            Empowering Businesses
+            <span className="block text-blue-300">
+              Through Technology
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl leading-relaxed mb-8"
+          >
+            We provide innovative IT solutions, software development,
+            digital services, training, and technology-driven solutions
+            to help businesses grow and succeed.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="flex flex-wrap gap-4"
+          >
+            <a
+              href="/services"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              Explore Our Services
+            </a>
+
+            <a
+              href="/contact"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/40 text-white font-semibold backdrop-blur-sm transition-all duration-300 hover:scale-105"
+            >
+              Contact Us
+            </a>
+          </motion.div>
+
+        </div>
+      </div>
     </section>
   );
 };
