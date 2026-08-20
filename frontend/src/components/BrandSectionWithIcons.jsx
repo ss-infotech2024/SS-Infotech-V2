@@ -27,7 +27,7 @@ const BrandSectionWithIcons = () => {
   const row2 = technologies.slice(6);
 
   return (
-    <section className="section-spacing w-3/4 md:w-10/12  mb-10 md:mb-[70px]">
+    <section className="section-spacing w-3/4 md:w-10/12 mt-10 md:mt-[70px] mb-10 md:mb-[70px]">
       <div className=" mx-auto  px-0 sm:px-2 animate-fade-in">
         <div className="border border-blue-500 rounded-2xl md:rounded-[30px] bg-[#EBEDF5] p-4 sm:p-6 md:p-10 lg:p-16">
           <div className="text-center mb-6 md:mb-10">

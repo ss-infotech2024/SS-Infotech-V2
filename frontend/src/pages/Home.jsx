@@ -3,7 +3,7 @@ import Hero from "../components/Hero";
 import SsGbranch from "../components/SsGbranch";
 // import BoardAdvisory from "../components/BoardAdvisory";
 // import OurTeam from "../components/OurTeam";
-import LogoSlider from "../components/Logoslider";
+// import LogoSlider from "../components/Logoslider";
 import ContactForm from "../components/ContactForm";
 import Services from "../components/Services";
 // import AnimatedBackground from '../components/AnimatedBackground';
@@ -49,9 +49,9 @@ const Home = () => {
         </section>
 
         {/* Client Logos */}
-        <section className="py-0 px-4 md:px-12 flex flex-col items-center justify-center space-y-12">
+        {/* <section className="py-0 px-4 md:px-12 flex flex-col items-center justify-center space-y-12">
           <LogoSlider />
-        </section>
+        </section> */}
 
         {/* Contact Form */}
         <section className="px-4 md:px-12 flex flex-col items-center justify-center">

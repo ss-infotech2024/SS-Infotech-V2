@@ -49,64 +49,64 @@ export default function LogoSlider({ imagesProp, duration = 10, visibleCount = 6
   return (
     <section className="text-center space-y-8 py-16 px-10 rounded-4xl bg-gray-50">
           <h2 className="text-3xl font-bold bg-gradient-to-br from-purple-900 via-purple-800 to-purple-600 bg-clip-text text-transparent">
-    Our Client
-  </h2>
-    <div className="relative w-full bg-white py-6 rounded-3xl border border-gray-200">
-      <div
-        className="logo-track overflow-hidden"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-        aria-label="Company logos marquee"
-        // expose visible count to CSS and a gap variable
-        style={{ ["--visible-count"]: visibleCount, ["--gap"]: "1rem" }}
-      >
-        {/* marquee:= wide container (200% of track) with two groups inside */}
-        <div
-          className="marquee flex items-center"
-          style={{
-            animationDuration: `${duration}s`,
-            animationPlayState: playState,
-            willChange: "transform",
-            opacity: imagesLoaded ? 1 : 0,
-          }}
-        >
-          {/* group 1 (original) */}
-          <div className="marquee-group flex items-center" role="presentation">
-            {images.map((src, idx) => (
+          Our Client
+        </h2>
+          <div className="relative w-full bg-white py-6 rounded-3xl border border-gray-200">
+            <div
+              className="logo-track overflow-hidden"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+              onTouchStart={() => setIsPaused(true)}
+              onTouchEnd={() => setIsPaused(false)}
+              aria-label="Company logos marquee"
+              // expose visible count to CSS and a gap variable
+              style={{ ["--visible-count"]: visibleCount, ["--gap"]: "1rem" }}
+            >
+              {/* marquee:= wide container (200% of track) with two groups inside */}
               <div
-                key={`g1-${idx}`}
-                className="logo-item flex-shrink-0 flex justify-center items-center"
+                className="marquee flex items-center"
+                style={{
+                  animationDuration: `${duration}s`,
+                  animationPlayState: playState,
+                  willChange: "transform",
+                  opacity: imagesLoaded ? 1 : 0,
+                }}
               >
-                <img
-                  src={src}
-                  alt={`logo-${idx}`}
-                  className="logo-img"
-                  draggable={false}
-                />
-              </div>
-            ))}
-          </div>
+                {/* group 1 (original) */}
+                <div className="marquee-group flex items-center" role="presentation">
+                  {images.map((src, idx) => (
+                    <div
+                      key={`g1-${idx}`}
+                      className="logo-item flex-shrink-0 flex justify-center items-center"
+                    >
+                      <img
+                        src={src}
+                        alt={`logo-${idx}`}
+                        className="logo-img"
+                        draggable={false}
+                      />
+                    </div>
+                  ))}
+                </div>
 
-          {/* group 2 (duplicate) - visually identical, used to create perfect loop */}
-          <div className="marquee-group flex items-center" aria-hidden="true" role="presentation">
-            {images.map((src, idx) => (
-              <div
-                key={`g2-${idx}`}
-                className="logo-item flex-shrink-0 flex justify-center items-center"
-              >
-                <img
-                  src={src}
-                  alt={`logo-duplicate-${idx}`}
-                  className="logo-img"
-                  draggable={false}
-                />
+                {/* group 2 (duplicate) - visually identical, used to create perfect loop */}
+                <div className="marquee-group flex items-center" aria-hidden="true" role="presentation">
+                  {images.map((src, idx) => (
+                    <div
+                      key={`g2-${idx}`}
+                      className="logo-item flex-shrink-0 flex justify-center items-center"
+                    >
+                      <img
+                        src={src}
+                        alt={`logo-duplicate-${idx}`}
+                        className="logo-img"
+                        draggable={false}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            </div>
 
       {/* component-specific CSS */}
       <style>{`
