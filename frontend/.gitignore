@@ -28,3 +28,7 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
+
+# Build output
+frontend/dist/
+frontend/dist.zip
