@@ -6,6 +6,7 @@ node_modules/
 .env
 **/.env
 
+
 # Build
 dist/
 build/
@@ -13,3 +14,7 @@ build/
 # Logs
 *.log
 npm-debug.log*
+
+frontend/dist/
+frontend/dist.zip
+*.zip
