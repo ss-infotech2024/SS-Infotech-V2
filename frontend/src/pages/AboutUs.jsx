@@ -80,7 +80,7 @@ const AboutUs = () => {
         title: "Our Founder's Vision",
         subtitle: "Founder",
         icon: Sparkles,
-        image: "aboutimg/mangesh sir.jpg",
+        image: "aboutimg/mangesh sir.png",
         alt: "Founder - Mr. Mangesh Ingle",
         content: [
           "Our journey began with a simple yet powerful idea — to build technology that transforms possibilities into progress. I've always believed that true innovation lies in understanding real problems and solving them with precision and creativity.",
@@ -94,7 +94,7 @@ const AboutUs = () => {
         title: "Driving Innovation Forward",
         subtitle: "Director - SS Infotech",
         icon: Target,
-        image: "aboutimg/allan sir.jpg",
+        image: "aboutimg/allan sir.png",
         alt: "Director - Mr. Allan Abraham",
         content: [
           "As Director, my focus is on leading a team that blends creativity with technology to deliver practical, high-impact solutions. We are driven by curiosity and a shared belief that the best results come from collaboration, dedication, and continuous learning.",
