@@ -18,3 +18,10 @@ npm-debug.log*
 frontend/dist/
 frontend/dist.zip
 *.zip
+frontend/dist/
+frontend/dist.zip
+*.zip
+
+frontend/dist/
+frontend/dist.zip
+*.zip
