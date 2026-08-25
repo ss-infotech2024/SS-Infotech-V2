@@ -141,7 +141,7 @@ const AboutSection = () => {
               
             >
               <img
-                src="/director.jpg"
+                src="/director.png"
                 alt="Business consulting"
                 className="w-full h-full object-cover"
               />

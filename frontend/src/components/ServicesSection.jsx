@@ -11,6 +11,9 @@ import { FaShieldAlt, FaCloud, FaHeadset } from 'react-icons/fa';
 
 // Import images (ensure these are optimized, e.g., WebP format, ~200-300KB)
 import bgPattern from '../../public/service/service/bg.png';
+import service1 from '../../public/service/service/service-4.png';
+import service2 from '../../public/service/service/service-5.png';
+import service3 from '../../public/service/service/service-6.png';
 import service4 from '../../public/service/service/service-1.png';
 import service5 from '../../public/service/service/service-2.png';
 import service6 from '../../public/service/service/service-3.png';
@@ -50,7 +53,7 @@ const services = [
     icon: FaSearchengin,
     title: "Search Engine Optimization (SEO)",
     description: "We enhance your online visibility with expert SEO strategies, improving search rankings and driving organic traffic to your website.",
-    image: service4,
+    image: service1,
     link: "/service-details",
     gradient: "from-orange-500 to-pink-600",
   },
@@ -59,7 +62,7 @@ const services = [
     icon: BsDatabaseGear,
     title: "Backend & Database Development",
     description: "We build secure and scalable backend systems with optimized databases to ensure smooth and reliable operations for your applications.",
-    image: service5,
+    image: service2,
     link: "/service-details",
     gradient: "from-cyan-500 to-indigo-600",
   },
@@ -68,7 +71,7 @@ const services = [
     icon: PiPlugsConnectedBold,
     title: "Integration Services",
     description: "We connect your applications with third-party APIs and platforms to create seamless, efficient, and automated workflows across systems.",
-    image: service6,
+    image: service3,
     link: "/service-details",
     gradient: "from-violet-500 to-fuchsia-600",
   },
