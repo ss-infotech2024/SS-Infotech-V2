@@ -7,7 +7,7 @@ const HeroWithLogo = () => {
       {/* Main Image Container with Wave */}
       <div className="relative">
         <img
-          src="/office.jpg"
+          src="/office.png"
           alt="About Section"
           className="rounded-[0px] object-cover min-h-[200px] w-full  h-[750px]"
         />

@@ -95,7 +95,7 @@ const AboutSection = () => {
                 }}
               >
                 <img
-                  src="/employe.jpg"
+                  src="/employe.png"
                   alt="About our company"
                   className="w-full h-full object-cover"
                 />
