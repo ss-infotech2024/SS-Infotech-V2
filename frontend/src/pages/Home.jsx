@@ -1,12 +1,5 @@
 import React from "react";
 import Hero from "../components/Hero";
-import SsGbranch from "../components/SsGbranch";
-// import BoardAdvisory from "../components/BoardAdvisory";
-// import OurTeam from "../components/OurTeam";
-// import LogoSlider from "../components/Logoslider";
-import ContactForm from "../components/ContactForm";
-import Services from "../components/Services";
-// import AnimatedBackground from '../components/AnimatedBackground';
 import ServicesSection from "../components/ServicesSection";
 import AboutSection from "../components/AboutSection";
 import HeroWithLogo from "../components/HeroWithLogo";
@@ -39,7 +32,6 @@ const Home = () => {
 
         {/* Branches Section */}
         <section className="py-0 mx-[-16px] px-4 md:px-12 flex flex-col items-center justify-center space-y-12 ">
-         
           <HeroWithLogo/>
         </section>
 

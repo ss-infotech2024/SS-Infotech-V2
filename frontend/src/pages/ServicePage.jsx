@@ -340,7 +340,7 @@ export default function ServicePage() {
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-4 py-1.5 text-sm font-medium tracking-wide inline-flex items-center gap-2 shadow-sm">
-              <Sparkles className="w-4 h-4 text-purple-600" />
+              {/* <Sparkles className="w-4 h-4 text-purple-600" /> */}
               Scalable Tech Architecture
             </Badge>
           </motion.div>

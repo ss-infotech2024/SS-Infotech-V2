@@ -124,7 +124,7 @@ function JobApplicationModal({ job, isOpen, onClose }) {
     formDataToSend.append("resume", formData.resume);
 
     try {
-      const response = await fetch("https://ss-infotech-v2-2.onrender.com/api/applications/fill-applications", {
+      const response = await fetch("http://localhost:5000/api/applications/fill-applications", {
         method: "POST",
         body: formDataToSend,
       });
@@ -270,7 +270,7 @@ export default function JobSearch() {
       try {
         setLoading(true);
 
-        let url = "https://ss-infotech-v2-2.onrender.com/api/jobs/show-jobs";
+        let url = "http://localhost:5000/api/jobs/show-jobs";
 
         const params = new URLSearchParams();
         if (query) params.append("query", query);
@@ -417,7 +417,7 @@ export default function JobSearch() {
         animate="animate"
         style={{ animationDelay: '2s' }}
       >
-        <Sparkles className="h-4 w-4 text-pink-300" />
+        {/* <Sparkles className="h-4 w-4 text-pink-300" /> */}
       </motion.div>
 
       <ToastContainer position="top-right" autoClose={3000} />
@@ -435,7 +435,7 @@ export default function JobSearch() {
             variants={item}
           >
             <div className="bg-purple-400/20 backdrop-blur-sm text-purple-700 px-6 py-2 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 rounded-full font-semibold">
-              <Sparkles className="w-4 h-4 mr-2 inline" />
+              {/* <Sparkles className="w-4 h-4 mr-2 inline" /> */}
               Job Opportunities
             </div>
           </motion.div>
@@ -535,7 +535,7 @@ export default function JobSearch() {
               whileHover={{ y: -5 }}
             >
               <h2 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
-                <Sparkles className="w-4 h-4 mr-2 text-purple-600" />
+                {/* <Sparkles className="w-4 h-4 mr-2 text-purple-600" /> */}
                 Filters
               </h2>
               <div className="space-y-6">

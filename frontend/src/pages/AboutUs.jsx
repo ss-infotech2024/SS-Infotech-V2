@@ -203,7 +203,7 @@ const AboutUs = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.3 }}
               >
-                <Sparkles className="w-4 h-4 text-[#a78bfa]" />
+                {/* <Sparkles className="w-4 h-4 text-[#a78bfa]" /> */}
                 About Our Journey
               </motion.div>
             </motion.div>

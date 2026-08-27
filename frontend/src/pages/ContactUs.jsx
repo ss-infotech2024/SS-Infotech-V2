@@ -278,7 +278,7 @@ export default function ContactUs() {
     >
       {/* Professional Glass Badge */}
       <div className="inline-flex items-center bg-white/15 backdrop-blur-xl border border-white/40 rounded-full px-8 py-3.5 text-lg font-bold text-white shadow-2xl shadow-purple-900/50">
-        <Sparkles className="w-5 h-5 mr-2 text-yellow-300" />
+        {/* <Sparkles className="w-5 h-5 mr-2 text-yellow-300" /> */}
         Contact Us
       </div>
 

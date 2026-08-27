@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaFacebook, FaTwitter, FaLinkedinIn, FaBars, FaPhone,FaInstagram ,FaWhatsapp} from 'react-icons/fa';
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation  } from "react-router-dom";
 
 // Data-driven approach for menu structure
 const menuItems = [
@@ -74,19 +74,30 @@ const SocialLink = ({ social }) => {
 // Navigation Item Component
 const MotionNavLink = motion(NavLink);
 
-const NavItem = ({ item }) => (
-  <li className="relative">
-    <MotionNavLink
-      to={item.link}
-      className={({ isActive }) =>
-        `font-semibold transition-colors py-2 block ${isActive ? 'text-purple-600' : 'text-gray-800 hover:text-purple-600'}`
-      }
-      whileHover={{ color: '#7c3aed', scale: 1.02 }}
-    >
-      {item.title}
-    </MotionNavLink>
-  </li>
-);
+const NavItem = ({ item }) => {
+  const location = useLocation();
+
+  const isActive =
+    item.link === "/"
+      ? location.pathname === "/"
+      : location.pathname === item.link;
+
+  return (
+    <li className="relative">
+      <MotionNavLink
+        to={item.link}
+        className={`font-semibold transition-colors py-2 block ${
+          isActive
+            ? "text-purple-600"
+            : "text-gray-800 hover:text-purple-600"
+        }`}
+        whileHover={{ scale: 1.02 }}
+      >
+        {item.title}
+      </MotionNavLink>
+    </li>
+  );
+};
 
 // Top Bar Component
 const TopBar = () => (
@@ -163,6 +174,7 @@ const MobileMenuToggle = ({ onClick }) => (
 );
 
 const Navbar = () => {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = useCallback(() => {
@@ -261,9 +273,15 @@ const Navbar = () => {
                     <NavLink
                       to={item.link}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={({ isActive }) =>
-                        `font-semibold text-gray-800 text-lg hover:text-purple-600 transition-colors block ${isActive ? 'text-purple-600' : ''}`
-                      }
+                      className={`font-semibold text-lg transition-colors block ${
+                        (
+                          item.link === "/"
+                            ? location.pathname === "/"
+                            : location.pathname === item.link
+                        )
+                          ? "text-purple-600"
+                          : "text-gray-800 hover:text-purple-600"
+                      }`}
                     >
                       {item.title}
                     </NavLink>
