@@ -1,341 +1,251 @@
 import React, { useMemo, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/UI/Card";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent } from "../components/UI/Card";
 import { Badge } from "../components/UI/Badge";
 import { Button } from "../components/UI/Button";
 import { Input } from "../components/UI/Input";
 import { Textarea } from "../components/UI/Textarea";
-import { Label } from "../components/UI/Lable ";
+import { Label } from "../components/UI/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/UI/Select";
 import { toast } from "../Hooks/use-toast";
-import emailjs from '@emailjs/browser';
+import emailjs from "@emailjs/browser";
 import {
-  Code, Cpu, Smartphone, Megaphone, Stars, Sparkles, Globe, Mail,
-  Share2, Network, Search, ShoppingCart, MessageCircle, BarChart3,
-  Cloud, Phone, MapPin, Clock, Send, ArrowRight, CheckCircle,
-  Rocket, Target, Users, Award, Zap, Shield, TrendingUp
+  Code,
+  Smartphone,
+  Megaphone,
+  Sparkles,
+  Globe,
+  Cloud,
+  Send,
+  Rocket,
+  Target,
+  Users,
+  Award,
+  Zap,
+  Shield,
+  TrendingUp,
+  Search,
+  ChevronDown,
+  ExternalLink,
+  CheckCircle2
 } from "lucide-react";
-import bgPattern from '../../public/service/service/bg.png';
 
-// Initialize EmailJS outside the component
-emailjs.init('uo8vZ7IYM4nQArKtj');
+// Initialize EmailJS
+emailjs.init("uo8vZ7IYM4nQArKtj");
+
+const floatingAnimation = {
+  animate: {
+    y: [0, -12, 0],
+    x: [0, 6, 0],
+    transition: {
+      duration: 5,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  }
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  })
+};
 
 export default function ServicePage() {
-  const sectionRef = useRef(null);
   const formRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
 
-  // Enhanced Scroll-based animations
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const opacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 0.95]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
-
-  // Enhanced Animation Variants
-  const floatingAnimation = {
-    animate: {
-      y: [0, -20, 0],
-      x: [0, 10, 0],
-      transition: {
-        duration: 6,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const pulseAnimation = {
-    animate: {
-      scale: [1, 1.1, 1],
-      opacity: [0.3, 0.6, 0.3],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const bounceAnimation = {
-    animate: {
-      y: [0, -15, 0],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
-
-  const fadeUp = {
-    hidden: { opacity: 0, y: 60 },
-    visible: (i) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.15,
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    }),
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        when: "beforeChildren"
-      },
-    },
-  };
-
-  const scaleIn = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  };
-
-  const slideInLeft = {
-    hidden: { opacity: 0, x: -60 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.8, ease: "easeOut" }
-    }
-  };
-
-  const slideInRight = {
-    hidden: { opacity: 0, x: 60 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.8, ease: "easeOut" }
-    }
-  };
-
-  // Company Stats Data
   const companyStats = useMemo(() => [
-    { icon: Users, value: "50+", label: "Happy Clients", color: "from-blue-500 to-cyan-500" },
-    { icon: Award, value: "100+", label: "Projects Completed", color: "from-purple-500 to-pink-500" },
-    { icon: Zap, value: "24/7", label: "Support", color: "from-green-500 to-emerald-500" },
-    { icon: TrendingUp, value: "98%", label: "Success Rate", color: "from-orange-500 to-red-500" }
+    { icon: Users, value: "50+", label: "Happy Clients", color: "from-blue-600 to-cyan-500", bg: "bg-blue-50 text-blue-600" },
+    { icon: Award, value: "100+", label: "Projects Completed", color: "from-purple-600 to-indigo-500", bg: "bg-purple-50 text-purple-600" },
+    { icon: Zap, value: "24/7", label: "Dedicated Support", color: "from-emerald-600 to-teal-500", bg: "bg-emerald-50 text-emerald-600" },
+    { icon: TrendingUp, value: "98%", label: "Client Satisfaction", color: "from-amber-500 to-orange-500", bg: "bg-amber-50 text-amber-600" }
   ], []);
 
-  // Enhanced Services Data with Company Focus
   const services = useMemo(() => [
     {
       id: "website-development",
-      title: "Enterprise Website Development",
+      category: "development",
+      title: "Enterprise Web Development",
       icon: Globe,
-      description: "Scalable web solutions for businesses of all sizes with enterprise-grade security and performance.",
-      highlights: ["Corporate Websites", "E-commerce", "Web Applications", "Enterprise Solutions"],
-      gradient: "from-blue-500 to-purple-600",
-      features: ["SEO Optimized", "Mobile Responsive", "Fast Loading", "Secure Hosting"],
+      description: "High-performance, secure, and scalable web platforms built using modern full-stack architectures.",
+      highlights: ["Corporate Portals", "Custom Web Apps", "E-Commerce Engines", "API Integrations"],
+      gradient: "from-blue-600 to-indigo-600",
+      features: ["SEO Optimized", "Mobile First", "Sub-second Load", "High Security"],
       details: [
-        {
-          title: "Corporate Website Development",
-          description: "Professional websites that represent your brand and drive business growth."
-        },
-        {
-          title: "E-commerce Solutions",
-          description: "Complete online store development with payment integration and inventory management."
-        },
-        {
-          title: "Web Application Development",
-          description: "Custom web applications tailored to your business processes and requirements."
-        }
+        { title: "Corporate Web Apps", description: "Bespoke digital architecture representing your enterprise brand." },
+        { title: "E-Commerce Systems", description: "Full-scale storefronts with secure payment gateways and inventory engines." },
+        { title: "Custom SaaS Development", description: "Cloud-native web applications built for reliability and scale." }
       ]
     },
     {
       id: "mobile-app",
+      category: "development",
       title: "Mobile App Development",
       icon: Smartphone,
-      description: "Native and cross-platform mobile applications that drive user engagement and business growth.",
-      highlights: ["iOS & Android", "Enterprise Apps", "Cross-platform", "Performance"],
-      gradient: "from-green-500 to-teal-600",
-      features: ["Native Performance", "Offline Capability", "Push Notifications", "App Store Deployment"],
+      description: "Intuitive cross-platform and native mobile apps designed for seamless user engagement and conversion.",
+      highlights: ["iOS & Android", "React Native / Flutter", "Enterprise Mobility", "PWA"],
+      gradient: "from-emerald-600 to-teal-600",
+      features: ["Offline Support", "Push Notifications", "Biometric Auth", "Store Deployment"],
       details: [
-        {
-          title: "Enterprise Mobile Applications",
-          description: "Secure and scalable mobile solutions for your workforce and customers."
-        },
-        {
-          title: "Consumer-Facing Apps",
-          description: "Engaging mobile experiences that connect you with your customers."
-        }
-      ]
-    },
-    {
-      id: "digital-marketing",
-      title: "Digital Marketing",
-      icon: Megaphone,
-      description: "Data-driven marketing strategies that increase brand visibility and drive qualified leads.",
-      highlights: ["SEO", "Social Media", "PPC", "Content Marketing"],
-      gradient: "from-orange-500 to-red-600",
-      features: ["ROI Tracking", "Analytics", "Campaign Management", "Lead Generation"],
-      details: [
-        {
-          title: "Search Engine Optimization",
-          description: "Improve your search rankings and drive organic traffic to your website."
-        },
-        {
-          title: "Social Media Marketing",
-          description: "Build brand awareness and engage with your audience across social platforms."
-        }
+        { title: "Enterprise Apps", description: "Empower field teams and enterprise workflows on mobile." },
+        { title: "Customer-Centric Apps", description: "Engaging, responsive UX tailored for app store success." }
       ]
     },
     {
       id: "cloud-services",
-      title: "Cloud Solutions",
+      category: "cloud",
+      title: "Cloud & DevOps Solutions",
       icon: Cloud,
-      description: "Scalable cloud infrastructure and services to support your business growth and digital transformation.",
-      highlights: ["Cloud Migration", "Infrastructure", "Security", "Scalability"],
-      gradient: "from-indigo-500 to-blue-600",
-      features: ["Cloud Migration", "Infrastructure Setup", "Security", "24/7 Monitoring"],
+      description: "Robust cloud infrastructure, automated CI/CD pipelines, and microservices for resilient operations.",
+      highlights: ["AWS / Azure Setup", "Cloud Migration", "Containerization", "Cost Optimization"],
+      gradient: "from-indigo-600 to-purple-600",
+      features: ["Auto Scaling", "24/7 Monitoring", "Zero Downtime", "Data Backup"],
       details: [
-        {
-          title: "Cloud Infrastructure",
-          description: "Reliable and scalable cloud infrastructure to support your business operations."
-        },
-        {
-          title: "Cloud Security",
-          description: "Comprehensive security measures to protect your data and applications."
-        }
+        { title: "Cloud Migration", description: "Seamless transition of legacy workloads to modern cloud infrastructure." },
+        { title: "DevOps & CI/CD", description: "Automate build, test, and release cycles with enterprise reliability." }
+      ]
+    },
+    {
+      id: "digital-marketing",
+      category: "marketing",
+      title: "Growth & Digital Marketing",
+      icon: Megaphone,
+      description: "Data-driven organic and paid marketing frameworks engineered to scale inbound acquisition.",
+      highlights: ["Technical SEO", "Performance Ads", "Content Strategy", "Conversion Rate Opt."],
+      gradient: "from-orange-500 to-rose-600",
+      features: ["ROI Focused", "Funnel Analytics", "Lead Attribution", "Multi-Channel"],
+      details: [
+        { title: "Search Engine Optimization", description: "Rank high for commercial-intent keywords and organic lead generation." },
+        { title: "Paid Acquisition", description: "High-yield Google Ads and Meta campaigns targeted to your ideal ICP." }
       ]
     },
     {
       id: "software-development",
-      title: "Custom Software",
+      category: "development",
+      title: "Custom Software Engineering",
       icon: Code,
-      description: "Bespoke software solutions that automate processes and improve business efficiency.",
-      highlights: ["Custom ERP", "CRM Systems", "Automation", "Integration"],
-      gradient: "from-purple-500 to-pink-600",
-      features: ["Custom Development", "System Integration", "API Development", "Maintenance"],
+      description: "Bespoke internal tools, CRM/ERP systems, and workflow automations to streamline complex business logic.",
+      highlights: ["Custom ERP/CRM", "Legacy Modernization", "Workflow Automation", "Microservices"],
+      gradient: "from-purple-600 to-pink-600",
+      features: ["Tailored Workflows", "Third-party APIs", "Role-Based Access", "Modular Code"],
       details: [
-        {
-          title: "Business Process Automation",
-          description: "Automate repetitive tasks and streamline your business operations."
-        },
-        {
-          title: "System Integration",
-          description: "Connect your existing systems and create a unified workflow."
-        }
+        { title: "Business Automation", description: "Eliminate repetitive tasks and unify operations under single dashboards." },
+        { title: "API Ecosystems", description: "Connect heterogeneous services via robust, authenticated endpoints." }
       ]
     },
     {
       id: "consulting",
-      title: "IT Consulting",
+      category: "cloud",
+      title: "IT Strategy & Consulting",
       icon: Users,
-      description: "Strategic IT consulting to align technology with your business objectives and drive digital transformation.",
-      highlights: ["Strategy", "Planning", "Implementation", "Support"],
-      gradient: "from-cyan-500 to-blue-600",
-      features: ["IT Strategy", "Digital Transformation", "Technology Audit", "Implementation Support"],
+      description: "End-to-end technical leadership and roadmap planning aligned with your long-term business goals.",
+      highlights: ["Architecture Audit", "Tech Stack Planning", "Security Auditing", "Vendor Assessment"],
+      gradient: "from-cyan-600 to-blue-600",
+      features: ["Tech Roadmaps", "Security Reviews", "Cost Engineering", "Process Advisory"],
       details: [
-        {
-          title: "Digital Transformation",
-          description: "Guide your business through digital transformation with expert consulting."
-        },
-        {
-          title: "Technology Strategy",
-          description: "Develop a comprehensive technology strategy aligned with business goals."
-        }
+        { title: "Digital Roadmapping", description: "Modernize legacy tech debt into scalable, test-covered platforms." },
+        { title: "Architecture Reviews", description: "System design evaluations to guarantee multi-tenant resilience." }
       ]
     }
   ], []);
 
-  // Company Products
- const products = useMemo(() => [
-  {
-    id: "bookmyfarm",
-    name: "BookMyFarm - Agricultural Booking Platform",
-    description: "A comprehensive farm booking and management system that connects farmers with customers. Features include real-time booking, payment integration, farm management tools, and customer reviews.",
-    tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
-    image: "/s1.png",
-    gradient: "from-green-500 to-emerald-600",
-    link: "https://bookmyfarm.co.in/",
-    features: ["Farm Booking System", "Payment Integration", "Real-time Availability", "Review System"]
-  },
-  {
-    id: "ayurveda",
-    name: "Ayurade - E-commerce Platform",
-    description: "A full-featured e-commerce website specializing in Ayurvedic products. Includes user authentication, product catalog, shopping cart, order tracking, and admin dashboard.",
-    tech: ["MongoDB", "React", "Node.js", "Express", "Tailwind CSS"],
-    image: "/s2.png",
-    gradient: "from-amber-500 to-orange-600",
-    link: "https://ayurade.example.com",
-    features: ["Product Catalog", "Shopping Cart", "User Authentication", "Order Management"]
-  },
-  {
-    id: "oversease",
-    name: "Oversease - Education Portal",
-    description: "An overseas education consulting platform helping students find and apply to international universities. Features include university search, application tracking, and counselor matching.",
-    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
-    image: "/s3.png",
-    gradient: "from-blue-500 to-indigo-600",
-    link: "https://ssoverseas.in/",
-    features: ["University Search", "Application Tracking", "Counselor Portal", "Document Management"]
-  },
-  {
-    id: "daanapaani",
-    name: "Daanapaani Foundation - Charity Platform",
-    description: "A noble initiative dedicated to social welfare and community development. The platform facilitates donations, volunteer management, and showcases the foundation's humanitarian projects and impact.",
-    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
-    image: "/s4.png",
-    gradient: "from-purple-500 to-indigo-600",
-    link: "https://daanapaanifoundation.com",
-    features: ["Donation System", "Volunteer Management", "Project Showcase", "Impact Tracking"]
-  }
-], []);
+  const products = useMemo(() => [
+    {
+      id: "bookmyfarm",
+      name: "BookMyFarm",
+      tagline: "Agri-Tourism & Farm Booking Ecosystem",
+      description: "Real-time reservation platform connecting farm stay owners with travellers, featuring calendar sync and automated payouts.",
+      tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
+      image: "/s1.png",
+      gradient: "from-emerald-500 to-teal-600",
+      link: "https://bookmyfarm.co.in/",
+      features: ["Real-time Slot Booking", "Gateway Integration", "Host Dashboard", "Verified Reviews"]
+    },
+    {
+      id: "ayurveda",
+      name: "Ayurade",
+      tagline: "D2C Ayurvedic Commerce Platform",
+      description: "High-conversion e-commerce ecosystem with tailored cart flows, variant matrixes, and end-to-end order logistics.",
+      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+      image: "/s2.png",
+      gradient: "from-amber-500 to-orange-500",
+      link: "https://ayurade.example.com",
+      features: ["Custom Checkout", "Inventory Tracking", "Customer Portal", "Discount Logic"]
+    },
+    {
+      id: "oversease",
+      name: "SS Overseas",
+      tagline: "Global Education Consultancy Portal",
+      description: "Student recruitment and document tracking system connecting overseas aspirants directly with university liaisons.",
+      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+      image: "/s3.png",
+      gradient: "from-blue-600 to-indigo-600",
+      link: "https://ssoverseas.in/",
+      features: ["Course Matchmaking", "Document Vault", "Status Tracker", "Advisor CRM"]
+    },
+    {
+      id: "daanapaani",
+      name: "Daanapaani Foundation",
+      tagline: "Non-Profit Transparency & Donor Engine",
+      description: "A digital impact tracker and donation portal empowering social programs with real-time audit logging.",
+      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+      image: "/s4.png",
+      gradient: "from-purple-600 to-indigo-600",
+      link: "https://daanapaanifoundation.com",
+      features: ["Micro-Donations", "Volunteer CRM", "Live Audit Trail", "Impact Metrics"]
+    }
+  ], []);
 
-  // State management
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [form, setForm] = useState({
-    name: "", email: "", message: "", service: "", phone: "", company: "", budget: "", timeline: ""
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    service: "",
+    budget: "",
+    message: ""
   });
   const [submitting, setSubmitting] = useState(false);
   const [expandedService, setExpandedService] = useState(null);
   const [errors, setErrors] = useState({});
-  const [hoveredCard, setHoveredCard] = useState(null);
 
-  // Enhanced filtering
-  const filtered = useMemo(() => {
+  const filteredServices = useMemo(() => {
     const q = query.trim().toLowerCase();
     return services.filter((s) => {
-      if (activeCategory !== "all") {
-        if (activeCategory === "development" && !["website-development", "software-development", "mobile-app"].includes(s.id)) return false;
-        if (activeCategory === "marketing" && s.id !== "digital-marketing") return false;
-        if (activeCategory === "cloud" && s.id !== "cloud-services") return false;
-      }
-      if (!q) return true;
-      return (s.title + " " + s.description + " " + s.highlights.join(" ")).toLowerCase().includes(q);
+      const matchesCategory = activeCategory === "all" || s.category === activeCategory;
+      const matchesQuery =
+        !q ||
+        s.title.toLowerCase().includes(q) ||
+        s.description.toLowerCase().includes(q) ||
+        s.highlights.some((h) => h.toLowerCase().includes(q));
+      return matchesCategory && matchesQuery;
     });
   }, [query, activeCategory, services]);
 
-  // Form validation
   const validateForm = () => {
     const newErrors = {};
-    if (!form.name.trim()) newErrors.name = "Name is required";
+    if (!form.name.trim()) newErrors.name = "Full name is required";
     if (!form.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email address is required";
     } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      newErrors.email = "Email format is invalid";
+      newErrors.email = "Please enter a valid email";
     }
     if (!form.phone.trim()) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^\+91\d{10}$/.test(form.phone)) {
-      newErrors.phone = "Phone must start with +91 and be 12 digits total";
+    } else if (!/^(?:\+91|0)?[6-9]\d{9}$/.test(form.phone.replace(/\s+/g, ""))) {
+      newErrors.phone = "Enter a valid 10-digit mobile number";
     }
-    if (!form.service) newErrors.service = "Service is required";
+    if (!form.service) newErrors.service = "Please select a service";
     return newErrors;
   };
 
@@ -350,28 +260,30 @@ export default function ServicePage() {
     setSubmitting(true);
     setErrors({});
 
-    // EmailJS implementation
-    emailjs.sendForm(
-      'YOUR_SERVICE_ID',
-      'YOUR_TEMPLATE_ID',
-      formRef.current
-    )
+    emailjs
+      .sendForm("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", formRef.current)
       .then(() => {
         toast({
-          title: "Request sent successfully!",
-          description: `We'll contact you at ${form.email} regarding ${form.service}.`
+          title: "Inquiry Submitted!",
+          description: `Thanks ${form.name}. Our technical team will get back to you within 24 hours.`
         });
         setForm({
-          name: "", email: "", message: "", service: "", phone: "", company: "", budget: "", timeline: ""
+          name: "",
+          email: "",
+          phone: "",
+          company: "",
+          service: "",
+          budget: "",
+          message: ""
         });
       })
       .catch((error) => {
         toast({
-          title: "Error",
-          description: "Failed to send message. Please try again later.",
+          title: "Submission Error",
+          description: "Something went wrong while dispatching your request. Please try again.",
           variant: "destructive"
         });
-        console.error('EmailJS error:', error);
+        console.error("EmailJS Error:", error);
       })
       .finally(() => {
         setSubmitting(false);
@@ -380,571 +292,494 @@ export default function ServicePage() {
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setForm((s) => ({ ...s, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: null }));
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSelect = (field, value) => {
-    setForm((s) => ({ ...s, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: null }));
-  };
-
-  const toggleServiceDetails = (serviceId) => {
-    setExpandedService(expandedService === serviceId ? null : serviceId);
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: null }));
   };
 
   return (
-    <div className="space-y-0" ref={sectionRef}>
-      {/* Enhanced Hero Section */}
-      <section className="relative h-[80vh] flex items-center justify-center overflow-hidden text-white">
-  {/* Background Video */}
-  <div className="absolute inset-0 w-full h-full">
-    <video
-      autoPlay
-      muted
-      loop
-      playsInline
-      className="w-full h-full object-cover"
-      poster="/services.jpg"   // Fixed: poster should be image, not video
-    >
-      <source src="/services.mp4" type="video/mp4" />
-      <source src="/services.webm" type="video/webm" />
-    </video>
-  </div>
-
-  {/* GRADIENT OVERLAY (Your Requested Color) */}
-  <div className="absolute inset-0 bg-gradient-to-r from-purple-900/95 via-purple-700/90 " />
-  
-  {/* Optional: Subtle blur for glass effect */}
-  <div className="absolute inset-0 backdrop-blur-[1px]" />
-
-  {/* Animated Background Elements */}
-  <div className="absolute inset-0">
-    <motion.div
-      className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"
-      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <motion.div
-      className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
-      animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.2, 0.4] }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-    />
-  </div>
-
-  {/* Floating Icons */}
-  <motion.div className="absolute top-20 left-20" variants={floatingAnimation} animate="animate">
-    <Rocket className="h-8 w-8 text-purple-300" />
-  </motion.div>
-  <motion.div className="absolute top-40 right-32" variants={floatingAnimation} animate="animate" transition={{ delay: 1 }}>
-    <Target className="h-6 w-6 text-blue-300" />
-  </motion.div>
-  <motion.div className="absolute bottom-40 left-32" variants={floatingAnimation} animate="animate" transition={{ delay: 2 }}>
-    <Shield className="h-7 w-7 text-green-300" />
-  </motion.div>
-
-  {/* Content */}
-  <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
-      variants={staggerContainer}
-      className="space-y-8"
-    >
-      {/* Badge */}
-      <motion.div variants={scaleIn}>
-        <Badge className="bg-white/20 backdrop-blur-md text-white px-8 py-4 text-lg border border-white/30 shadow-2xl font-semibold">
-          <Sparkles className="w-6 h-6 mr-2" />
-          Enterprise-Grade Solutions
-        </Badge>
-      </motion.div>
-      
-      {/* Heading */}
-      <motion.div>
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold leading-tight">
-          Transform Your{" "}
-          <motion.span
-            className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent inline-block"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            Business
-          </motion.span>
-        </h1>
-      </motion.div>
-      
-      {/* Subtitle */}
-      <motion.div>
-        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white leading-relaxed max-w-5xl mx-auto font-medium drop-shadow-lg">
-          We deliver <span className="font-bold">cutting-edge digital solutions</span> that drive 
-          growth, efficiency, and innovation for forward-thinking companies.
-        </p>
-      </motion.div>
-
-      {/* Buttons */}
-      <motion.div className="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button className="bg-white text-gray-900 hover:bg-gray-100 px-10 py-6 text-xl font-semibold rounded-2xl shadow-2xl">
-            <Rocket className="w-6 h-6 mr-3" />
-            Start Your Project
-          </Button>
-        </motion.div>
-        
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button variant="outline" className="border-2 border-white text-white hover:bg-white/20 px-10 py-6 text-xl font-semibold rounded-2xl backdrop-blur-sm">
-            View Our Work
-          </Button>
-        </motion.div>
-      </motion.div>
-    </motion.div>
-  </div>
-</section>
-
-      {/* Company Stats Section */}
-      <motion.section
-        className="py-16 bg-gradient-to-br from-gray-50 to-white"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-purple-600 selection:text-white font-sans antialiased">
+      {/* Hero Section */}
+      <section
+        className="relative min-h-[80vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-20 bg-slate-950"
+        style={{
+          backgroundImage: "url('/hero-tech-bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
+        {/* Subtle Ambient Background Gradients */}
+        {/* Dark overlay for better text readability */}
+<div className="absolute inset-0 bg-slate-950/70 pointer-events-none" />
+
+{/* Purple / Blue atmospheric glow */}
+<div className="absolute inset-0 bg-gradient-to-br from-purple-950/50 via-blue-950/30 to-slate-950/70 pointer-events-none" />
+
+        {/* Floating Badges */}
+        <motion.div
+          className="hidden lg:flex items-center gap-2 absolute top-24 left-20 px-4 py-2.5 bg-white/10 border border-white/20 rounded-2xl shadow-xl backdrop-blur-xl text-white text-sm font-medium"
+          variants={floatingAnimation}
+          animate="animate"
+        >
+          <Rocket className="w-5 h-5 text-purple-400" />
+          <span>Agile Delivery</span>
+        </motion.div>
+        <motion.div className="hidden lg:flex items-center gap-2 absolute top-36 right-24 px-4 py-2.5 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl shadow-md backdrop-blur-md text-white text-sm font-medium" variants={floatingAnimation} animate="animate">
+          <Target className="w-5 h-5 text-blue-600" />
+          <span>Result Focused</span>
+        </motion.div>
+        <motion.div className="hidden lg:flex items-center gap-2 absolute bottom-24 left-28 px-4 py-2.5 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl shadow-md backdrop-blur-md text-white text-sm font-medium" variants={floatingAnimation} animate="animate">
+          <Shield className="w-5 h-5 text-emerald-600" />
+          <span>Enterprise Secure</span>
+        </motion.div>
+
+        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-4 py-1.5 text-sm font-medium tracking-wide inline-flex items-center gap-2 shadow-sm">
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              Scalable Tech Architecture
+            </Badge>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.15]"
+          >
+            Empower Your Business With{" "}
+            <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              Modern Technology
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto font-normal leading-relaxed"
+          >
+            We design, develop, and deploy scalable web apps, mobile solutions, and cloud architectures built for speed and measurable growth.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-wrap items-center justify-center gap-4 pt-2"
+          >
+            <Button
+              onClick={() => document.getElementById("inquiry-section")?.scrollIntoView({ behavior: "smooth" })}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-6 rounded-xl text-base font-semibold shadow-lg shadow-purple-600/20 hover:shadow-purple-600/30 transition-all duration-300"
+            >
+              <Rocket className="w-5 h-5 mr-2" />
+              Start Your Project
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => document.getElementById("client-products")?.scrollIntoView({ behavior: "smooth" })}
+              className="border-slate-300 bg-white hover:bg-slate-100 text-slate-800 px-8 py-6 rounded-xl text-base font-semibold shadow-sm"
+            >
+              View Our Work
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-14 border-y border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-8" variants={staggerContainer}>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {companyStats.map((stat, index) => (
               <motion.div
                 key={stat.label}
                 variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
                 custom={index}
-                className="text-center group"
-                whileHover={{ y: -10 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                className="flex flex-col items-center text-center group"
               >
-                <motion.div
-                  className={`bg-gradient-to-r ${stat.color} w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                >
-                  <stat.icon className="h-10 w-10 text-white" />
-                </motion.div>
-                <motion.h3 
-                  className="text-3xl font-bold text-gray-900 mb-2"
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ delay: index * 0.1 + 0.5, type: "spring" }}
-                >
-                  {stat.value}
-                </motion.h3>
-                <p className="text-gray-600 font-medium">{stat.label}</p>
+                <div className={`p-4 rounded-2xl ${stat.bg} mb-3 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
+                  <stat.icon className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{stat.value}</h3>
+                <p className="text-sm font-medium text-slate-500 mt-1">{stat.label}</p>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* Enhanced Services Section */}
-      <motion.section
-        className="py-20 bg-gradient-to-b from-[#4B0082] to-[#6A0DAD] relative overflow-hidden"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
-      >
-        {/* Background Elements */}
-        <motion.div
-          className="absolute top-0 left-0 w-full h-72 bg-gradient-to-b from-white/5 to-transparent"
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div className="text-center space-y-6 mb-16" variants={staggerContainer}>
-            <motion.div variants={scaleIn}>
-              <Badge className="bg-purple-500/20 text-purple-300 px-6 py-2 text-sm border border-purple-500/30">
-                Our Services
-              </Badge>
-            </motion.div>
-            <motion.h2 variants={scaleIn} className="text-4xl sm:text-5xl font-bold text-white">
-              Enterprise Solutions
-            </motion.h2>
-            <motion.p variants={scaleIn} className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Comprehensive digital services designed to scale with your business and drive measurable results.
-            </motion.p>
-          </motion.div>
+      {/* Services Section */}
+      <section id="services-section" className="py-24 bg-slate-50/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
+            <Badge className="bg-purple-100 text-purple-700 border-purple-200 px-3.5 py-1 text-sm font-medium">
+              Core Capabilities
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+              End-to-End Digital Services
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg">
+              High-impact development, performance marketing, and enterprise IT strategy.
+            </p>
 
-          <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" variants={staggerContainer}>
-            {services.map((service, index) => (
-              <motion.div
-                key={service.id}
-                variants={fadeUp}
-                custom={index}
-                onHoverStart={() => setHoveredCard(service.id)}
-                onHoverEnd={() => setHoveredCard(null)}
-                className="relative group"
-              >
-                {/* Animated Background */}
-                <motion.div
-                  className={`absolute inset-0 bg-gradient-to-br ${service.gradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                  animate={{ scale: hoveredCard === service.id ? 1.02 : 1 }}
+            {/* Filter & Search Bar */}
+            <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 bg-white border border-slate-200 rounded-xl shadow-sm">
+                {[
+                  { key: "all", label: "All Services" },
+                  { key: "development", label: "Development" },
+                  { key: "cloud", label: "Cloud & Ops" },
+                  { key: "marketing", label: "Marketing" }
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveCategory(tab.key)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      activeCategory === tab.key
+                        ? "bg-purple-600 text-white shadow-sm"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search capabilities..."
+                  className="pl-10 bg-white border-slate-300 text-slate-900 placeholder:text-slate-400 rounded-xl focus-visible:ring-purple-500 shadow-sm"
                 />
-                
-                <Card className="border-0 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden  border-white/10 group-hover:border-white/20 transition-all duration-500">
-                  <CardContent className="p-8 space-y-6 relative z-10">
-                    {/* Icon */}
-                    <motion.div
-                      className={`bg-gradient-to-r ${service.gradient} w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <service.icon className="h-8 w-8 text-white" />
-                    </motion.div>
+              </div>
+            </div>
+          </div>
 
-                    {/* Content */}
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 transition-all duration-300">
-                        {service.title}
-                      </h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        {service.description}
-                      </p>
-                    </div>
+          {/* Service Cards Grid */}
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <AnimatePresence>
+              {filteredServices.map((service, index) => (
+                <motion.div
+                  layout
+                  key={service.id}
+                  variants={fadeUp}
+                  initial="hidden"
+                  animate="visible"
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  custom={index}
+                >
+                  <Card className="h-full bg-white border border-slate-200/90 hover:border-purple-400/80 rounded-2xl shadow-sm hover:shadow-xl hover:shadow-purple-500/5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+                    <CardContent className="p-7 space-y-6">
+                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 text-white`}>
+                        <service.icon className="w-7 h-7" />
+                      </div>
 
-                    {/* Features */}
-                    <div className="flex flex-wrap gap-2">
-                      {service.features.map((feature, i) => (
-                        <motion.span
-                          key={i}
-                          initial={{ opacity: 0, scale: 0 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: index * 0.1 + i * 0.1 }}
-                          className="px-3 py-1 bg-white/10 rounded-full text-xs text-white border border-white/20"
-                        >
-                          {feature}
-                        </motion.span>
-                      ))}
-                    </div>
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-purple-600 transition-colors">
+                          {service.title}
+                        </h3>
+                        <p className="text-slate-600 text-sm leading-relaxed">
+                          {service.description}
+                        </p>
+                      </div>
 
-                    {/* CTA */}
-                    <motion.div
-                      whileHover={{ x: 5 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Button
-                        onClick={() => toggleServiceDetails(service.id)}
-                        variant="outline"
-                        className="w-full bg-white/10 text-white border-white/20 hover:bg-white/20 hover:border-white/40"
-                      >
-                        {expandedService === service.id ? 'Hide Details' : 'Explore Service'}
-                      </Button>
-                    </motion.div>
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {service.features.map((feat) => (
+                          <span
+                            key={feat}
+                            className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 mr-1.5" />
+                            {feat}
+                          </span>
+                        ))}
+                      </div>
 
-                    {/* Expandable Details */}
-                    <AnimatePresence>
+                      {/* Expandable Technical Details */}
                       {expandedService === service.id && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
+                          animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="space-y-4 border-t border-white/10 pt-4"
+                          className="pt-4 border-t border-slate-100 space-y-3"
                         >
-                          {service.details.map((detail, idx) => (
-                            <motion.div
-                              key={idx}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: idx * 0.1 }}
-                              className="space-y-2"
-                            >
-                              <h4 className="font-semibold text-white text-sm">{detail.title}</h4>
-                              <p className="text-xs text-gray-300">{detail.description}</p>
-                            </motion.div>
+                          {service.details.map((d, i) => (
+                            <div key={i} className="text-xs space-y-1">
+                              <span className="font-semibold text-purple-700">{d.title}</span>
+                              <p className="text-slate-600">{d.description}</p>
+                            </div>
                           ))}
                         </motion.div>
                       )}
-                    </AnimatePresence>
-                  </CardContent>
+                    </CardContent>
+
+                    <div className="p-7 pt-0">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setExpandedService(expandedService === service.id ? null : service.id)}
+                        className="w-full justify-between text-slate-700 hover:text-purple-700 hover:bg-purple-50 text-sm font-medium rounded-lg border border-slate-200"
+                      >
+                        <span>{expandedService === service.id ? "Hide Details" : "View Scope & Details"}</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${expandedService === service.id ? "rotate-180 text-purple-600" : ""}`} />
+                      </Button>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Featured Projects Section */}
+      <section id="client-products" className="py-24 bg-white border-t border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+            <Badge className="bg-blue-100 text-blue-800 border-blue-200 px-3.5 py-1 text-sm font-medium">
+              Featured Work
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+              Client Projects & Platforms
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg">
+              Enterprise software platforms and client solutions delivered with modern architecture.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {products.map((product, index) => (
+              <motion.div
+                key={product.id}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                custom={index}
+              >
+                <Card className="h-full bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                  <div>
+                    <div className={`h-52 bg-gradient-to-r ${product.gradient} p-6 flex items-center justify-center relative overflow-hidden`}>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="max-h-44 w-auto object-contain relative z-10 transition-transform duration-500 group-hover:scale-105 drop-shadow-xl"
+                      />
+                    </div>
+                    <CardContent className="p-8 space-y-6">
+                      <div>
+                        <div className="text-xs uppercase tracking-wider font-semibold text-purple-700 mb-1">
+                          {product.tagline}
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-900">{product.name}</h3>
+                        <p className="text-slate-600 text-sm mt-2 leading-relaxed">{product.description}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-slate-800 uppercase tracking-wide">Key Features</div>
+                        <div className="flex flex-wrap gap-2">
+                          {product.features.map((feat) => (
+                            <span key={feat} className="text-xs px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md border border-slate-200 font-medium">
+                              {feat}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="text-xs font-semibold text-slate-800 uppercase tracking-wide">Tech Stack</div>
+                        <div className="flex flex-wrap gap-2">
+                          {product.tech.map((t) => (
+                            <span key={t} className="text-xs font-medium px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-md">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </div>
+
+                  <div className="p-8 pt-0">
+                    <a href={product.link} target="_blank" rel="noopener noreferrer" className="block w-full">
+                      <Button className="w-full bg-slate-900 hover:bg-purple-600 text-white rounded-xl py-6 flex items-center justify-center gap-2 transition-colors duration-300 font-medium shadow-sm">
+                        <span>Visit Live Platform</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </a>
+                  </div>
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Enhanced Products Section */}
-      <motion.section
-        className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 relative overflow-hidden"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div className="text-center space-y-6 mb-16" variants={staggerContainer}>
-            <motion.div variants={scaleIn}>
-              <Badge className="bg-blue-500/20 text-blue-700 px-6 py-2 text-sm border border-blue-500/30">
-                Our Client Products
-              </Badge>
-            </motion.div>
-            {/* <motion.h2 variants={scaleIn} className="text-4xl sm:text-5xl font-bold text-gray-900">
-              Business Solutions
-            </motion.h2> */}
-            <motion.p variants={scaleIn} className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Innovative products built to solve complex business challenges and drive digital transformation.
-            </motion.p>
-          </motion.div>
-
-          <motion.div className="grid md:grid-cols-2 gap-8" variants={staggerContainer}>
-  {products.map((product, index) => (
-    <motion.div
-      key={product.id}
-      variants={index % 2 === 0 ? slideInLeft : slideInRight}
-      custom={index}
-      whileHover={{ y: -10 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      className="group"
-    >
-      <Card className="border-0 shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden bg-gradient-to-br from-white to-gray-50 rounded-3xl">
-        <CardContent className="p-0">
-          <div className={`bg-gradient-to-r ${product.gradient} h-48 flex items-center justify-center relative overflow-hidden`}>
-            <motion.div
-              className="absolute inset-0 bg-black/20"
-              whileHover={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-            <img 
-              src={product.image} 
-              alt={product.name}
-              className="h-[400px] w-auto object-contain relative z-10 group-hover:scale-110 transition-transform duration-500"
-            />
           </div>
-          <div className="p-8 space-y-6">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h3>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
-            </div>
-            
-            {/* Features List */}
-            <div className="space-y-2">
-              <h4 className="font-semibold text-gray-800">Key Features:</h4>
-              <div className="flex flex-wrap gap-2">
-                {product.features.map((feature, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium border"
-                  >
-                    {feature}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-            
-            {/* Technology Stack */}
-            <div className="space-y-2">
-              <h4 className="font-semibold text-gray-800">Tech Stack:</h4>
-              <div className="flex flex-wrap gap-2">
-                {product.tech.map((tech, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 + 0.3 }}
-                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
-                  >
-                    {tech}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-            
-            {/* Action Button */}
-            <motion.a
-              href={product.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="block w-full"
-            >
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                <Globe className="w-4 h-4 mr-2" />
-                View Live Project
-              </Button>
-            </motion.a>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  ))}
-</motion.div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Inquiry Form Section */}
-      <motion.section
-        className="py-20 bg-gradient-to-b from-[#4B0082] to-[#6A0DAD] relative overflow-hidden"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerContainer}
-      >
+      <section id="inquiry-section" className="py-24 bg-gradient-to-b from-slate-50 to-purple-50/50 border-t border-slate-200 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div className="text-center space-y-6 mb-12" variants={staggerContainer}>
-            <motion.div variants={scaleIn}>
-              <Badge className="bg-blue-500/20 text-blue-300 px-6 py-2 text-sm border border-blue-500/30">
-                Get In Touch
-              </Badge>
-            </motion.div>
-            <motion.h2 variants={scaleIn} className="text-4xl sm:text-5xl font-bold text-white">
-              Start Your Project
-            </motion.h2>
-            <motion.p variants={scaleIn} className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Ready to transform your business? Let's discuss your project and create something amazing together.
-            </motion.p>
-          </motion.div>
+          <div className="text-center space-y-4 mb-14">
+            <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-3.5 py-1 text-sm font-medium">
+              Start a Conversation
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-900">
+              Let's Build Something Great
+            </h2>
+            <p className="text-slate-600 text-base sm:text-lg max-w-xl mx-auto">
+              Share your project requirements to receive a detailed scope and technical consultation.
+            </p>
+          </div>
 
-          <motion.div variants={scaleIn}>
-            <Card className="border-0 bg-white/5 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border-white/10">
-              <CardContent className="p-8">
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-white">Full Name *</Label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={form.name}
-                        onChange={handleFormChange}
-                        placeholder="Enter your full name"
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      />
-                      {errors.name && <p className="text-red-400 text-sm">{errors.name}</p>}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="text-white">Email Address *</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={form.email}
-                        onChange={handleFormChange}
-                        placeholder="Enter your email"
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      />
-                      {errors.email && <p className="text-red-400 text-sm">{errors.email}</p>}
-                    </div>
+          <Card className="bg-white border border-slate-200/80 rounded-3xl shadow-xl p-6 sm:p-10">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+              <input type="hidden" name="service" value={form.service} />
+              <input type="hidden" name="budget" value={form.budget} />
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-slate-800 text-sm font-medium">
+                    Full Name *
+                  </Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleFormChange}
+                    placeholder="John Doe"
+                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                  />
+                  {errors.name && <p className="text-xs text-rose-600 mt-1">{errors.name}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-slate-800 text-sm font-medium">
+                    Work Email *
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleFormChange}
+                    placeholder="john@company.com"
+                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                  />
+                  {errors.email && <p className="text-xs text-rose-600 mt-1">{errors.email}</p>}
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-slate-800 text-sm font-medium">
+                    Phone Number *
+                  </Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleFormChange}
+                    placeholder="+91 98765 43210"
+                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                  />
+                  {errors.phone && <p className="text-xs text-rose-600 mt-1">{errors.phone}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="company" className="text-slate-800 text-sm font-medium">
+                    Company / Organization
+                  </Label>
+                  <Input
+                    id="company"
+                    name="company"
+                    value={form.company}
+                    onChange={handleFormChange}
+                    placeholder="Your Company Name"
+                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="service" className="text-slate-800 text-sm font-medium">
+                    Service Required *
+                  </Label>
+                  <Select value={form.service} onValueChange={(val) => handleSelect("service", val)}>
+                    <SelectTrigger className="bg-slate-50/50 border-slate-300 text-slate-900 rounded-xl focus:ring-purple-500">
+                      <SelectValue placeholder="Select Service" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-slate-200 text-slate-900">
+                      {services.map((s) => (
+                        <SelectItem key={s.id} value={s.title}>
+                          {s.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.service && <p className="text-xs text-rose-600 mt-1">{errors.service}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="budget" className="text-slate-800 text-sm font-medium">
+                    Estimated Budget
+                  </Label>
+                  <Select value={form.budget} onValueChange={(val) => handleSelect("budget", val)}>
+                    <SelectTrigger className="bg-slate-50/50 border-slate-300 text-slate-900 rounded-xl focus:ring-purple-500">
+                      <SelectValue placeholder="Select Budget Range" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-slate-200 text-slate-900">
+                      <SelectItem value="₹25k - ₹50k">₹25K – ₹50K</SelectItem>
+                      <SelectItem value="₹50k - ₹1.5L">₹50K – ₹1.5L</SelectItem>
+                      <SelectItem value="₹1.5L - ₹5L">₹1.5L – ₹5L</SelectItem>
+                      <SelectItem value="₹5L+">₹5L+</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="message" className="text-slate-800 text-sm font-medium">
+                  Project Overview
+                </Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  value={form.message}
+                  onChange={handleFormChange}
+                  placeholder="Tell us about your project goals, scope, timeline, and expectations..."
+                  className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6 rounded-xl text-base font-semibold shadow-lg shadow-purple-600/20 transition-all"
+              >
+                {submitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    <span>Submitting Request...</span>
                   </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-white">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        value={form.phone}
-                        onChange={handleFormChange}
-                        placeholder="+91 1234567890"
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      />
-                      {errors.phone && <p className="text-red-400 text-sm">{errors.phone}</p>}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="company" className="text-white">Company</Label>
-                      <Input
-                        id="company"
-                        name="company"
-                        value={form.company}
-                        onChange={handleFormChange}
-                        placeholder="Your company name"
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-400"
-                      />
-                    </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <Send className="w-4 h-4" />
+                    <span>Send Project Request</span>
                   </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="service" className="text-white">Service Interested In *</Label>
-                      <Select value={form.service} onValueChange={(value) => handleSelect('service', value)}>
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                          <SelectValue placeholder="Select a service" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-white/20 text-white">
-                          {services.map((service) => (
-                            <SelectItem key={service.id} value={service.id}>
-                              {service.title}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.service && <p className="text-red-400 text-sm">{errors.service}</p>}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="budget" className="text-white">Budget Range</Label>
-                      <Select value={form.budget} onValueChange={(value) => handleSelect('budget', value)}>
-                        <SelectTrigger className="bg-white/10 border-white/20 text-white">
-                          <SelectValue placeholder="Select budget" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-gray-900 border-white/20 text-white">
-                          <SelectItem value="5k-20k">₹5K - ₹20K</SelectItem>
-                          <SelectItem value="20k-50k">₹20K - ₹50K</SelectItem>
-                          <SelectItem value="50k-1L">₹50K - ₹1L</SelectItem>
-                          <SelectItem value="1L+">₹1L+</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message" className="text-white">Project Details</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={form.message}
-                      onChange={handleFormChange}
-                      placeholder="Tell us about your project requirements, goals, and any specific details..."
-                      rows={5}
-                      className="bg-white/10 border-white/20 text-white placeholder-gray-400 resize-none"
-                    />
-                  </div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Button
-                      type="submit"
-                      disabled={submitting}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold text-lg"
-                    >
-                      {submitting ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
-                          />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5 mr-2" />
-                          Send Inquiry
-                        </>
-                      )}
-                    </Button>
-                  </motion.div>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
+                )}
+              </Button>
+            </form>
+          </Card>
         </div>
-      </motion.section>
+      </section>
     </div>
   );
 }
