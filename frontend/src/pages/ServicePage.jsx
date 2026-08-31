@@ -303,36 +303,36 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-purple-600 selection:text-white font-sans antialiased">
-      {/* Hero Section */}
+      {/* Hero Section — LIGHT THEME */}
       <section
-        className="relative min-h-[80vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-20 bg-slate-950"
+        className="relative min-h-[80vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 py-20 bg-white"
         style={{
-          backgroundImage: "url('/hero-tech-bg.jpg')",
+          backgroundImage: "url('/images/service.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
+          backgroundAttachment: "fixed"
         }}
       >
-        {/* Subtle Ambient Background Gradients */}
-        {/* Dark overlay for better text readability */}
-<div className="absolute inset-0 bg-slate-950/70 pointer-events-none" />
+        {/* Light overlay for readability */}
+        <div className="absolute inset-0 bg-white/70 pointer-events-none" />
+        
+        {/* Soft purple/blue atmospheric glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-100/60 via-blue-50/40 to-white/80 pointer-events-none" />
 
-{/* Purple / Blue atmospheric glow */}
-<div className="absolute inset-0 bg-gradient-to-br from-purple-950/50 via-blue-950/30 to-slate-950/70 pointer-events-none" />
-
-        {/* Floating Badges */}
+        {/* Floating Badges — Light Theme */}
         <motion.div
-          className="hidden lg:flex items-center gap-2 absolute top-24 left-20 px-4 py-2.5 bg-white/10 border border-white/20 rounded-2xl shadow-xl backdrop-blur-xl text-white text-sm font-medium"
+          className="hidden lg:flex items-center gap-2 absolute top-24 left-20 px-4 py-2.5 bg-white/90 border border-purple-200 rounded-2xl shadow-lg backdrop-blur-xl text-slate-700 text-sm font-medium"
           variants={floatingAnimation}
           animate="animate"
         >
-          <Rocket className="w-5 h-5 text-purple-400" />
+          <Rocket className="w-5 h-5 text-purple-600" />
           <span>Agile Delivery</span>
         </motion.div>
-        <motion.div className="hidden lg:flex items-center gap-2 absolute top-36 right-24 px-4 py-2.5 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl shadow-md backdrop-blur-md text-white text-sm font-medium" variants={floatingAnimation} animate="animate">
+        <motion.div className="hidden lg:flex items-center gap-2 absolute top-36 right-24 px-4 py-2.5 bg-white/90 border border-blue-200 backdrop-blur-xl rounded-2xl shadow-md text-slate-700 text-sm font-medium" variants={floatingAnimation} animate="animate">
           <Target className="w-5 h-5 text-blue-600" />
           <span>Result Focused</span>
         </motion.div>
-        <motion.div className="hidden lg:flex items-center gap-2 absolute bottom-24 left-28 px-4 py-2.5 bg-white/10 border border-white/20 backdrop-blur-xl rounded-2xl shadow-md backdrop-blur-md text-white text-sm font-medium" variants={floatingAnimation} animate="animate">
+        <motion.div className="hidden lg:flex items-center gap-2 absolute bottom-24 left-28 px-4 py-2.5 bg-white/90 border border-emerald-200 backdrop-blur-xl rounded-2xl shadow-md text-slate-700 text-sm font-medium" variants={floatingAnimation} animate="animate">
           <Shield className="w-5 h-5 text-emerald-600" />
           <span>Enterprise Secure</span>
         </motion.div>
@@ -340,7 +340,6 @@ export default function ServicePage() {
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-4 py-1.5 text-sm font-medium tracking-wide inline-flex items-center gap-2 shadow-sm">
-              {/* <Sparkles className="w-4 h-4 text-purple-600" /> */}
               Scalable Tech Architecture
             </Badge>
           </motion.div>
@@ -349,10 +348,10 @@ export default function ServicePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.15]"
+            className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.15]"
           >
             Empower Your Business With{" "}
-            <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent">
               Modern Technology
             </span>
           </motion.h1>
@@ -623,8 +622,18 @@ export default function ServicePage() {
       </section>
 
       {/* Inquiry Form Section */}
-      <section id="inquiry-section" className="py-24 bg-gradient-to-b from-slate-50 to-purple-50/50 border-t border-slate-200 relative">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        id="inquiry-section"
+        className="py-24 border-t border-slate-200 relative overflow-hidden"
+        style={{
+          backgroundImage: "url('/images/service.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <div className="absolute inset-0 bg-white/65 pointer-events-none z-0" />
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-14">
             <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-3.5 py-1 text-sm font-medium">
               Start a Conversation
@@ -637,7 +646,7 @@ export default function ServicePage() {
             </p>
           </div>
 
-          <Card className="bg-white border border-slate-200/80 rounded-3xl shadow-xl p-6 sm:p-10">
+          <Card className="bg-white/20 backdrop-blur-2xl backdrop-saturate-150 border border-white/40 rounded-3xl shadow-2xl shadow-black/10 ring-1 ring-white/20 p-6 sm:p-10">
             <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <input type="hidden" name="service" value={form.service} />
               <input type="hidden" name="budget" value={form.budget} />
@@ -653,7 +662,7 @@ export default function ServicePage() {
                     value={form.name}
                     onChange={handleFormChange}
                     placeholder="John Doe"
-                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                    className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
                   />
                   {errors.name && <p className="text-xs text-rose-600 mt-1">{errors.name}</p>}
                 </div>
@@ -669,7 +678,7 @@ export default function ServicePage() {
                     value={form.email}
                     onChange={handleFormChange}
                     placeholder="john@company.com"
-                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                    className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
                   />
                   {errors.email && <p className="text-xs text-rose-600 mt-1">{errors.email}</p>}
                 </div>
@@ -686,7 +695,7 @@ export default function ServicePage() {
                     value={form.phone}
                     onChange={handleFormChange}
                     placeholder="+91 98765 43210"
-                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                    className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
                   />
                   {errors.phone && <p className="text-xs text-rose-600 mt-1">{errors.phone}</p>}
                 </div>
@@ -701,7 +710,7 @@ export default function ServicePage() {
                     value={form.company}
                     onChange={handleFormChange}
                     placeholder="Your Company Name"
-                    className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
+                    className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl"
                   />
                 </div>
               </div>
@@ -712,7 +721,7 @@ export default function ServicePage() {
                     Service Required *
                   </Label>
                   <Select value={form.service} onValueChange={(val) => handleSelect("service", val)}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-300 text-slate-900 rounded-xl focus:ring-purple-500">
+                    <SelectTrigger className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 rounded-xl focus:ring-purple-500">
                       <SelectValue placeholder="Select Service" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-slate-200 text-slate-900">
@@ -731,7 +740,7 @@ export default function ServicePage() {
                     Estimated Budget
                   </Label>
                   <Select value={form.budget} onValueChange={(val) => handleSelect("budget", val)}>
-                    <SelectTrigger className="bg-slate-50/50 border-slate-300 text-slate-900 rounded-xl focus:ring-purple-500">
+                    <SelectTrigger className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 rounded-xl focus:ring-purple-500">
                       <SelectValue placeholder="Select Budget Range" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-slate-200 text-slate-900">
@@ -755,14 +764,14 @@ export default function ServicePage() {
                   value={form.message}
                   onChange={handleFormChange}
                   placeholder="Tell us about your project goals, scope, timeline, and expectations..."
-                  className="bg-slate-50/50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl resize-none"
+                  className="bg-white/25 backdrop-blur-xl border-white/40 text-slate-900 placeholder:text-slate-400 focus-visible:ring-purple-500 rounded-xl resize-none"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-6 rounded-xl text-base font-semibold shadow-lg shadow-purple-600/20 transition-all"
+                className="w-full bg-purple-600/80 hover:bg-purple-600/90 backdrop-blur-xl backdrop-saturate-150 border border-purple-300/50 text-white py-6 rounded-xl text-base font-semibold shadow-xl shadow-purple-600/30 ring-1 ring-white/10 transition-all duration-300 hover:scale-[1.01]"
               >
                 {submitting ? (
                   <div className="flex items-center gap-2">
