@@ -149,18 +149,18 @@ function JobApplicationModal({ job, isOpen, onClose }) {
   if (!isOpen || !job) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="bg-white rounded-lg p-6 max-w-lg w-full mx-4 shadow-2xl"
+        className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 shadow-2xl border border-slate-200"
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-purple-900">Apply for {job.title || 'Untitled Job'}</h2>
+          <h2 className="text-xl font-semibold text-slate-900">Apply for {job.title || 'Untitled Job'}</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-purple-700 transition-colors"
+            className="text-slate-400 hover:text-purple-600 transition-colors"
             disabled={submitting}
           >
             <X className="h-6 w-6" />
@@ -168,53 +168,53 @@ function JobApplicationModal({ job, isOpen, onClose }) {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-purple-900">Full Name</label>
+            <label className="block text-sm font-medium text-slate-700">Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+              className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
               placeholder="Enter your full name"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-purple-900">Email</label>
+            <label className="block text-sm font-medium text-slate-700">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+              className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
               placeholder="Enter your email"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-purple-900">Phone</label>
+            <label className="block text-sm font-medium text-slate-700">Phone</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleInputChange}
               required
-              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+              className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900 placeholder:text-slate-400"
               placeholder="Enter your phone number"
               disabled={submitting}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-purple-900">Resume</label>
+            <label className="block text-sm font-medium text-slate-700">Resume</label>
             <input
               type="file"
               name="resume"
               onChange={handleInputChange}
               accept=".pdf,.doc,.docx"
               required
-              className="w-full mt-1 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
+              className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900 file:text-slate-600"
               disabled={submitting}
             />
           </div>
@@ -225,7 +225,7 @@ function JobApplicationModal({ job, isOpen, onClose }) {
               disabled={submitting}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 bg-purple-200 text-purple-900 rounded-md hover:bg-purple-300 disabled:opacity-50 transition-colors"
+              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 disabled:opacity-50 transition-colors font-medium"
             >
               Cancel
             </motion.button>
@@ -234,7 +234,7 @@ function JobApplicationModal({ job, isOpen, onClose }) {
               disabled={submitting}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 disabled:opacity-50 transition-colors"
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 transition-colors font-medium shadow-lg shadow-purple-600/20"
             >
               {submitting ? "Submitting..." : "Submit Application"}
             </motion.button>
@@ -380,10 +380,10 @@ export default function JobSearch() {
   }, [filtered]);
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 to-purple-100 min-h-screen relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="bg-slate-50 min-h-screen relative overflow-hidden">
+      {/* Animated Background Elements — Light Theme */}
       <motion.div
-        className="absolute top-20 left-10 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"
+        className="absolute top-20 left-10 w-20 h-20 bg-purple-200/30 rounded-full blur-xl"
         animate={{
           y: [0, 30, 0],
           x: [0, 15, 0],
@@ -393,7 +393,7 @@ export default function JobSearch() {
       />
 
       <motion.div
-        className="absolute bottom-32 right-20 w-32 h-32 bg-pink-400/30 rounded-full blur-2xl"
+        className="absolute bottom-32 right-20 w-32 h-32 bg-blue-200/30 rounded-full blur-2xl"
         animate={{
           y: [0, -40, 0],
           x: [0, -20, 0],
@@ -417,10 +417,10 @@ export default function JobSearch() {
         animate="animate"
         style={{ animationDelay: '2s' }}
       >
-        {/* <Sparkles className="h-4 w-4 text-pink-300" /> */}
+        <Sparkles className="h-4 w-4 text-purple-300" />
       </motion.div>
 
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
       
       <motion.div
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10"
@@ -434,19 +434,18 @@ export default function JobSearch() {
             className="inline-flex items-center justify-center mb-6"
             variants={item}
           >
-            <div className="bg-purple-400/20 backdrop-blur-sm text-purple-700 px-6 py-2 text-lg border border-purple-300/30 shadow-lg shadow-purple-500/20 rounded-full font-semibold">
-              {/* <Sparkles className="w-4 h-4 mr-2 inline" /> */}
+            <div className="bg-purple-100 text-purple-800 px-6 py-2 text-lg border border-purple-200 shadow-md rounded-full font-semibold">
               Job Opportunities
             </div>
           </motion.div>
 
           <motion.h1 
-            className="text-4xl md:text-6xl font-bold text-purple-900 mb-6"
+            className="text-4xl md:text-6xl font-bold text-slate-900 mb-6"
             variants={item}
           >
             Find Your Dream{" "}
             <motion.span
-              className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block"
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent inline-block"
               animate={{
                 backgroundPosition: ['0%', '100%', '0%'],
               }}
@@ -464,12 +463,12 @@ export default function JobSearch() {
           </motion.h1>
 
           <motion.p 
-            className="text-xl text-purple-700 max-w-3xl mx-auto leading-relaxed"
+            className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed"
             variants={item}
           >
             Discover exciting job opportunities that match your skills and aspirations.{" "}
             <motion.span
-              className="font-semibold text-purple-800"
+              className="font-semibold text-purple-700"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
@@ -485,12 +484,12 @@ export default function JobSearch() {
         >
           <motion.div className="lg:col-span-2 flex items-center space-x-2" variants={item}>
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by job title, company, or skills"
-                className="w-full pl-10 pr-3 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 hover:shadow-lg bg-white/80 backdrop-blur-sm"
+                className="w-full pl-10 pr-3 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 hover:shadow-lg bg-white text-slate-900 placeholder:text-slate-400 shadow-sm"
               />
             </div>
             <motion.button
@@ -506,19 +505,19 @@ export default function JobSearch() {
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-3 bg-purple-200 text-purple-900 rounded-lg font-medium text-sm hover:bg-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-200"
+              className="px-4 py-3 bg-white text-slate-700 border border-slate-300 rounded-xl font-medium text-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-200 shadow-sm"
             >
               Reset
             </motion.button>
           </motion.div>
           <motion.div variants={item}>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Enter location (e.g., Pune, India)"
-                className="w-full pl-10 pr-3 py-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 hover:shadow-lg bg-white/80 backdrop-blur-sm"
+                className="w-full pl-10 pr-3 py-3 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 hover:shadow-lg bg-white text-slate-900 placeholder:text-slate-400 shadow-sm"
               />
             </div>
           </motion.div>
@@ -531,19 +530,19 @@ export default function JobSearch() {
           {/* Filters Sidebar */}
           <motion.aside className="space-y-4" variants={item}>
             <motion.div 
-              className="bg-white/80 backdrop-blur-sm border border-purple-100 rounded-lg shadow-lg p-4 hover:shadow-xl transition-all duration-300"
-              whileHover={{ y: -5 }}
+              className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300"
+              whileHover={{ y: -3 }}
             >
-              <h2 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
-                {/* <Sparkles className="w-4 h-4 mr-2 text-purple-600" /> */}
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                <Sparkles className="w-4 h-4 mr-2 text-purple-600" />
                 Filters
               </h2>
               <div className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Category</label>
+                  <label className="text-sm font-medium text-slate-700">Category</label>
                   <select
                     onChange={(e) => setCategory(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 bg-white"
+                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900"
                   >
                     <option value="__any">Any</option>
                     {categories.map((cat) => (
@@ -554,10 +553,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Experience</label>
+                  <label className="text-sm font-medium text-slate-700">Experience</label>
                   <select
                     onChange={(e) => setExperience(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 bg-white"
+                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900"
                   >
                     <option value="__any">Any</option>
                     {experiences.map((exp) => (
@@ -568,10 +567,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Job Type</label>
+                  <label className="text-sm font-medium text-slate-700">Job Type</label>
                   <select
                     onChange={(e) => setJobType(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 bg-white"
+                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900"
                   >
                     <option value="__any">Any</option>
                     {types.map((t) => (
@@ -582,7 +581,7 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Skills</label>
+                  <label className="text-sm font-medium text-slate-700">Skills</label>
                   <div className="mt-2 space-y-2 max-h-40 overflow-y-auto">
                     {skills.map((skill) => (
                       <label key={skill} className="flex items-center space-x-2 text-sm cursor-pointer hover:bg-purple-50 p-1 rounded transition-colors">
@@ -590,18 +589,18 @@ export default function JobSearch() {
                           type="checkbox"
                           checked={selectedSkills.includes(skill)}
                           onChange={() => toggleSkill(skill)}
-                          className="w-4 h-4 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
+                          className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
                         />
-                        <span className="text-purple-800">{skill}</span>
+                        <span className="text-slate-700">{skill}</span>
                       </label>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Salary Range</label>
+                  <label className="text-sm font-medium text-slate-700">Salary Range</label>
                   <select
                     onChange={(e) => setSalaryRange(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 bg-white"
+                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900"
                   >
                     <option value="__any">Any</option>
                     {salaryRanges.map((range) => (
@@ -612,10 +611,10 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-purple-900">Posted Within</label>
+                  <label className="text-sm font-medium text-slate-700">Posted Within</label>
                   <select
                     onChange={(e) => setPostedWithin(e.target.value === "__any" ? undefined : e.target.value)}
-                    className="w-full mt-2 px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 bg-white"
+                    className="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-slate-50 text-slate-900"
                   >
                     <option value="__any">Any</option>
                     {postedWithinOptions.map((option) => (
@@ -626,22 +625,22 @@ export default function JobSearch() {
                   </select>
                 </div>
                 <div>
-                  <p className="text-sm text-purple-600">
-                    Saved <strong>{Object.keys(saved).filter((k) => saved[k]).length}</strong> jobs
+                  <p className="text-sm text-slate-600">
+                    Saved <strong className="text-purple-700">{Object.keys(saved).filter((k) => saved[k]).length}</strong> jobs
                   </p>
                 </div>
               </div>
             </motion.div>
 
             <motion.div 
-              className="bg-white/80 backdrop-blur-sm border border-purple-100 rounded-lg shadow-lg p-4 hover:shadow-xl transition-all duration-300"
-              whileHover={{ y: -5 }}
+              className="bg-white border border-slate-200 rounded-xl shadow-sm p-4 hover:shadow-md transition-all duration-300"
+              whileHover={{ y: -3 }}
             >
-              <h2 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
                 <Stars className="w-4 h-4 mr-2 text-purple-600" />
                 Tips
               </h2>
-              <ul className="list-disc ml-5 text-sm text-purple-600 space-y-2">
+              <ul className="list-disc ml-5 text-sm text-slate-600 space-y-2">
                 <li>Use specific keywords (e.g., nurse, accountant) to narrow results.</li>
                 <li>Apply quickly to new listings — save them for later review.</li>
                 <li>Filter by category and salary to find the best fit.</li>
@@ -657,12 +656,12 @@ export default function JobSearch() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <p className="text-purple-600 text-lg">Loading jobs...</p>
+                <p className="text-slate-600 text-lg">Loading jobs...</p>
               </motion.div>
             )}
             {error && (
               <motion.div 
-                className="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-md"
+                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -671,15 +670,15 @@ export default function JobSearch() {
             )}
             {!loading && !error && (
               <motion.div variants={container}>
-                <motion.h3 className="text-2xl font-semibold text-purple-900 mb-4" variants={item}>
+                <motion.h3 className="text-2xl font-semibold text-slate-900 mb-4" variants={item}>
                   Job Opportunities
                 </motion.h3>
                 <motion.div className="flex items-center justify-between mb-4" variants={item}>
-                  <p className="text-sm text-purple-600">
-                    Showing <strong>{filtered.length}</strong> results
+                  <p className="text-sm text-slate-600">
+                    Showing <strong className="text-slate-900">{filtered.length}</strong> results
                   </p>
-                  <div className="text-sm text-purple-600">
-                    Sorted by <strong>Relevance</strong>
+                  <div className="text-sm text-slate-600">
+                    Sorted by <strong className="text-slate-900">Relevance</strong>
                   </div>
                 </motion.div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -687,7 +686,7 @@ export default function JobSearch() {
                     <motion.div
                       key={job.id}
                       ref={(el) => (cardRefs.current[index] = el)}
-                      className="bg-white/80 backdrop-blur-sm border border-purple-100 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                      className="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
                       variants={item}
                       whileHover={{ y: -5 }}
                     >
@@ -695,49 +694,49 @@ export default function JobSearch() {
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-4">
-                              <div className="bg-purple-100 rounded-xl p-3 shadow-inner">
-                                <Briefcase className="h-6 w-6 text-purple-700" />
+                              <div className="bg-purple-50 rounded-xl p-3 shadow-sm">
+                                <Briefcase className="h-6 w-6 text-purple-600" />
                               </div>
                               <div>
-                                <h3 className="text-xl font-semibold text-purple-900">{job.title}</h3>
-                                <p className="text-sm text-purple-600">
+                                <h3 className="text-xl font-semibold text-slate-900">{job.title}</h3>
+                                <p className="text-sm text-slate-600">
                                   {job.company} • {job.location}
                                 </p>
                               </div>
                             </div>
                             <div className="mt-3 flex items-center gap-2 flex-wrap">
-                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full border border-purple-300 text-purple-700 bg-purple-50">
+                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full border border-purple-200 text-purple-700 bg-purple-50">
                                 {job.experience}
                               </span>
-                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full border border-purple-300 text-purple-700 bg-purple-50">
+                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full border border-slate-200 text-slate-700 bg-slate-50">
                                 {job.type}
                               </span>
-                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                              <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                                 {job.category}
                               </span>
                               {job.skills.slice(0, 3).map((s) => (
                                 <span
                                   key={s}
-                                  className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-purple-200 text-purple-900"
+                                  className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200"
                                 >
                                   {s}
                                 </span>
                               ))}
                             </div>
-                            <div className="mt-4 text-sm text-purple-600 flex items-center gap-4">
+                            <div className="mt-4 text-sm text-slate-600 flex items-center gap-4">
                               <span className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
+                                <Clock className="h-4 w-4 text-slate-400" />
                                 {timeAgo(job.postedAt)}
                               </span>
                               {job.salary && (
                                 <span className="flex items-center gap-1">
-                                  <IndianRupee className="h-4 w-4" />
+                                  <IndianRupee className="h-4 w-4 text-slate-400" />
                                   {job.salary}
                                 </span>
                               )}
                             </div>
                             <div className="mt-4">
-                              <p className="text-sm text-purple-700 line-clamp-3">{job.description}</p>
+                              <p className="text-sm text-slate-600 line-clamp-3">{job.description}</p>
                             </div>
                           </div>
                           <div className="flex flex-col items-end space-y-2 ml-4">
@@ -745,7 +744,7 @@ export default function JobSearch() {
                               onClick={() => handleViewApply(job)}
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              className="px-4 py-2 bg-purple-700 text-white rounded-md font-medium text-sm hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-all duration-200 shadow-lg shadow-purple-500/30"
+                              className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium text-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 shadow-lg shadow-purple-600/20"
                             >
                               View & Apply
                             </motion.button>
@@ -753,7 +752,11 @@ export default function JobSearch() {
                               onClick={() => toggleSave(job.id)}
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              className="px-4 py-2 bg-transparent text-purple-700 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-300 rounded-md font-medium text-sm transition-all duration-200 border border-purple-300"
+                              className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 border ${
+                                saved[job.id]
+                                  ? "bg-purple-50 text-purple-700 border-purple-300"
+                                  : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50"
+                              }`}
                             >
                               {saved[job.id] ? "Saved" : "Save"}
                             </motion.button>
@@ -765,11 +768,11 @@ export default function JobSearch() {
                 </div>
                 {filtered.length === 0 && (
                   <motion.div 
-                    className="bg-white/80 backdrop-blur-sm border border-purple-100 rounded-lg shadow-lg p-8 text-center"
+                    className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
-                    <p className="text-lg text-purple-600">
+                    <p className="text-lg text-slate-600">
                       No jobs matched your search. Try adjusting filters or keywords.
                     </p>
                   </motion.div>
@@ -780,7 +783,7 @@ export default function JobSearch() {
                       onClick={() => setVisible((v) => v + 4)}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 bg-purple-700 text-white rounded-lg font-medium text-sm hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-purple-600 transition-all duration-200 shadow-lg shadow-purple-500/30"
+                      className="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium text-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 shadow-lg shadow-purple-600/20"
                     >
                       Load More Opportunities
                     </motion.button>
