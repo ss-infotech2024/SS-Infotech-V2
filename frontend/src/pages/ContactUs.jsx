@@ -10,7 +10,7 @@ import { Button } from "../components/UI/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/UI/Card";
 import { Badge } from "../components/UI/Badge";
 import { Input } from "../components/UI/Input";
-import { Label } from "../components/UI/Lable ";
+import { Label } from "../components/UI/Label";
 import { Textarea } from "../components/UI/Textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
@@ -32,16 +32,16 @@ export default function ContactUs() {
     target: sectionRef,
     offset: ["start end", "end start"]
   });
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80]); // Reduced amplitude
-  const opacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0]); // Smoother opacity transition
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 0.95]); // Subtler scale
+  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const opacity = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0, 1, 1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1, 0.95]);
 
   // Animation variants
   const floatingAnimation = {
     animate: {
-      y: [0, -15, 0], // Reduced amplitude for smoother motion
+      y: [0, -15, 0],
       transition: {
-        duration: 5, // Faster for snappier feel
+        duration: 5,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -50,7 +50,7 @@ export default function ContactUs() {
 
   const pulseAnimation = {
     animate: {
-      scale: [1, 1.03, 1], // Subtler scale for less CPU strain
+      scale: [1, 1.03, 1],
       opacity: [0.2, 0.4, 0.2],
       transition: {
         duration: 3.5,
@@ -66,8 +66,8 @@ export default function ContactUs() {
       opacity: 1,
       y: 0,
       transition: {
-        delay: i * 0.1, // Tighter stagger
-        duration: 0.6, // Faster for smoother flow
+        delay: i * 0.1,
+        duration: 0.6,
         ease: "easeOut",
       },
     }),
@@ -78,7 +78,7 @@ export default function ContactUs() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15, // Tighter stagger
+        staggerChildren: 0.15,
         when: "beforeChildren"
       },
     },
@@ -100,7 +100,7 @@ export default function ContactUs() {
       title: "Call Us",
       description: "Speak directly with admissions team",
       primary: "+91 7720846048",
-      secondary: "+91 77199 27774",
+      secondary: "+91 93993 45989",
       available: "Mon-Sat, 9 AM - 6 PM"
     },
     {
@@ -115,7 +115,7 @@ export default function ContactUs() {
       icon: MessageCircle,
       title: "WhatsApp Chat",
       description: "Quick support on WhatsApp",
-      primary: "+91 77199 27774",
+      primary: "+91 93993 45989",
       secondary: "Quick Response",
       available: "Mon-Sun, 9 AM - 9 PM"
     },
@@ -131,20 +131,20 @@ export default function ContactUs() {
   const departments = useMemo(() => [
     {
       name: "Training Support",
-      email: "hr@ssinfo.co",
-      phone: "+91 77199 27774",
+      email: "hr@ssinfotech.co.in",
+      phone: "+91 93993 45989",
       description: "Technical support for ongoing training programs"
     },
     {
       name: "Internship Programs",
-      email: "hr@ssinfo.co",
-      phone: "+91 77199 27774",
+      email: "hr@ssinfotech.co.in",
+      phone: "+91 77208 46048",
       description: "Internship opportunities and project guidance"
     },
     {
       name: "Corporate Training",
-      email: "hr@ssinfo.co",
-      phone: "+91 77199 27774",
+      email: "hr@ssinfotech.co.in",
+      phone: "+91 82629 08256",
       description: "Custom training solutions for organizations"
     }
   ], []);
@@ -218,8 +218,8 @@ export default function ContactUs() {
     setErrors({});
 
     emailjs.sendForm(
-      'YOUR_SERVICE_ID', // Replace with your EmailJS Service ID
-      'YOUR_TEMPLATE_ID', // Replace with your EmailJS Template ID
+      'YOUR_SERVICE_ID',
+      'YOUR_TEMPLATE_ID',
       formRef.current
     )
       .then(() => {
@@ -236,86 +236,85 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="space-y-0" ref={sectionRef}>
-      {/* Hero Section */}
-    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden text-white">
-  {/* Video Background */}
-  <div className="absolute inset-0 overflow-hidden">
-    <video
-      src="/contactus.mp4"
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="w-full h-full object-cover"
-      style={{ filter: 'brightness(0.6) contrast(1.1)' }}
-    />
-  </div>
+    <div className="space-y-0 bg-white" ref={sectionRef}>
+      {/* Hero Section — LIGHT THEME */}
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden bg-white">
+        {/* Video Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <video
+            src="/contactus.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover"
+            style={{ filter: 'brightness(1.1) contrast(1.05)' }}
+          />
+        </div>
 
-  {/* Professional Dark Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-r from-purple-800/95 via-purple-700/90 " />
+        {/* Professional Light Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-100/90 via-white/85 to-blue-50/90" />
 
-  {/* Animated Blur Orbs (Subtle Glow) */}
-  <motion.div
-    className="absolute top-20 left-10 w-32 h-32 bg-purple-500/30 rounded-full blur-3xl"
-    animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
-    transition={{ repeat: Infinity, duration: 6 }}
-  />
-  <motion.div
-    className="absolute bottom-32 right-20 w-40 h-40 bg-pink-500/30 rounded-full blur-3xl"
-    animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
-    transition={{ repeat: Infinity, duration: 8, delay: 1 }}
-  />
+        {/* Animated Blur Orbs (Subtle Glow) */}
+        <motion.div
+          className="absolute top-20 left-10 w-32 h-32 bg-purple-400/20 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ repeat: Infinity, duration: 6 }}
+        />
+        <motion.div
+          className="absolute bottom-32 right-20 w-40 h-40 bg-pink-400/20 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
+          transition={{ repeat: Infinity, duration: 8, delay: 1 }}
+        />
 
-  {/* Content */}
-  <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ y: 50, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="space-y-8"
-    >
-      {/* Professional Glass Badge */}
-      <div className="inline-flex items-center bg-white/15 backdrop-blur-xl border border-white/40 rounded-full px-8 py-3.5 text-lg font-bold text-white shadow-2xl shadow-purple-900/50">
-        {/* <Sparkles className="w-5 h-5 mr-2 text-yellow-300" /> */}
-        Contact Us
-      </div>
+        {/* Content */}
+        <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-8"
+          >
+            {/* Professional Glass Badge */}
+            <div className="inline-flex items-center bg-white/90 backdrop-blur-xl border border-purple-200 rounded-full px-8 py-3.5 text-lg font-bold text-purple-800 shadow-xl">
+              Contact Us
+            </div>
 
-      {/* Hero Heading */}
-      <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight">
-        Let's Start Your{" "}
-        <span className="block bg-gradient-to-r from-purple-900/95 via-purple-700/90  bg-clip-text text-transparent animate-gradient">
-          Success Journey
-        </span>
-      </h1>
+            {/* Hero Heading */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-tight tracking-tight text-slate-900">
+              Let's Start Your{" "}
+              <span className="block bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 bg-clip-text text-transparent animate-gradient">
+                Success Journey
+              </span>
+            </h1>
 
-      {/* Paragraph */}
-      <p className="text-lg sm:text-xl md:text-2xl text-purple-50 leading-relaxed max-w-3xl mx-auto font-medium drop-shadow-md">
-        Have questions about our programs? Need guidance on your career path?{" "}
-        <span className="text-white font-bold animate-pulse">
-          Our team is here to help you every step of the way.
-        </span>{" "}
-        Get in touch with us today.
-      </p>
-    </motion.div>
-  </div>
+            {/* Paragraph */}
+            <p className="text-lg sm:text-xl md:text-2xl text-slate-600 leading-relaxed max-w-3xl mx-auto font-medium">
+              Have questions about our programs? Need guidance on your career path?{" "}
+              <span className="text-purple-700 font-bold animate-pulse">
+                Our team is here to help you every step of the way.
+              </span>{" "}
+              Get in touch with us today.
+            </p>
+          </motion.div>
+        </div>
 
-  {/* Scroll Indicator */}
-  <motion.div
-    className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-    animate={{ y: [0, 10, 0] }}
-    transition={{ duration: 1.8, repeat: Infinity }}
-  >
-    <div className="w-6 h-10 border-2 border-white/70 rounded-full flex justify-center">
-      <motion.div
-        className="w-1.5 h-3 bg-white rounded-full mt-1.5"
-        animate={{ y: [0, 12, 0] }}
-        transition={{ duration: 1.8, repeat: Infinity }}
-      />
-    </div>
-  </motion.div>
-  <style>{`
+        {/* Scroll Indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity }}
+        >
+          <div className="w-6 h-10 border-2 border-slate-400/70 rounded-full flex justify-center">
+            <motion.div
+              className="w-1.5 h-3 bg-slate-500 rounded-full mt-1.5"
+              animate={{ y: [0, 12, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
+        <style>{`
 @keyframes gradient {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -325,11 +324,11 @@ export default function ContactUs() {
   background-size: 200% 200%;
   animation: gradient 4s ease infinite;
 }`}</style>
-</section>
+      </section>
 
       {/* Quick Contact Methods */}
       <motion.section
-        className="py-16 bg-background relative overflow-hidden"
+        className="py-16 bg-white relative overflow-hidden"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -346,10 +345,10 @@ export default function ContactUs() {
         />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div className="text-center space-y-4 mb-12" variants={item}>
-            <motion.h2 className="text-3xl sm:text-4xl font-bold text-foreground" variants={item}>
+            <motion.h2 className="text-3xl sm:text-4xl font-bold text-slate-900" variants={item}>
               Get in Touch
             </motion.h2>
-            <motion.p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto" variants={item}>
+            <motion.p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto" variants={item}>
               Choose the best way to reach us — we're here to help with all your questions
             </motion.p>
           </motion.div>
@@ -364,7 +363,7 @@ export default function ContactUs() {
                   transition: { type: "spring", stiffness: 300 }
                 }}
               >
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all bg-gradient-to-b from-white to-purple-50">
+                <Card className="border border-slate-200 shadow-lg hover:shadow-xl transition-all bg-gradient-to-b from-white to-purple-50">
                   <CardContent className="p-6 space-y-4 text-center">
                     <motion.div
                       className="bg-purple-100 w-14 h-14 rounded-xl flex items-center justify-center mx-auto group-hover:bg-purple-200 transition-colors will-change-transform"
@@ -374,14 +373,14 @@ export default function ContactUs() {
                       <method.icon className="h-6 w-6 text-purple-600" />
                     </motion.div>
                     <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold text-foreground">{method.title}</h3>
-                      <p className="text-sm text-muted-foreground">{method.description}</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900">{method.title}</h3>
+                      <p className="text-sm text-slate-600">{method.description}</p>
                     </div>
                     <div className="space-y-1">
-                      <div className="font-medium text-purple-600">{method.primary}</div>
-                      <div className="text-sm text-muted-foreground">{method.secondary}</div>
+                      <div className="font-medium text-purple-700">{method.primary}</div>
+                      <div className="text-sm text-slate-600">{method.secondary}</div>
                       {method.available && (
-                        <div className="text-xs text-muted-foreground">{method.available}</div>
+                        <div className="text-xs text-slate-500">{method.available}</div>
                       )}
                     </div>
                     <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white transition-transform">
@@ -397,7 +396,7 @@ export default function ContactUs() {
 
       {/* Contact Form & Map Section */}
       <motion.section
-        className="py-16 bg-gray-50 relative overflow-hidden"
+        className="py-16 bg-slate-50 relative overflow-hidden"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -416,19 +415,19 @@ export default function ContactUs() {
             {/* Contact Form */}
             <motion.div className="space-y-6" variants={fadeUp} custom={0}>
               <motion.div className="space-y-4" variants={fadeUp} custom={0.1}>
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Send us a Message</h2>
-                <p className="text-lg sm:text-xl text-muted-foreground">
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">Send us a Message</h2>
+                <p className="text-lg sm:text-xl text-slate-600">
                   Fill out the form below and we'll get back to you within 24 hours
                 </p>
               </motion.div>
               <motion.div variants={fadeUp} custom={0.2}>
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
+                <Card className="border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
+                    <CardTitle className="flex items-center space-x-2 text-slate-900">
                       <MessageCircle className="h-5 w-5 text-purple-600" />
                       <span>Contact Form</span>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-slate-600">
                       Please provide as much detail as possible so we can assist you better
                     </CardDescription>
                   </CardHeader>
@@ -436,36 +435,36 @@ export default function ContactUs() {
                     <form ref={formRef} onSubmit={sendEmail}>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="firstName">First Name *</Label>
-                          <Input id="firstName" name="firstName" placeholder="Enter first name" required />
+                          <Label htmlFor="firstName" className="text-slate-800">First Name *</Label>
+                          <Input id="firstName" name="firstName" placeholder="Enter first name" required className="bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400" />
                           {errors.firstName && <p className="text-red-600 text-sm mt-1">{errors.firstName}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="lastName">Last Name *</Label>
-                          <Input id="lastName" name="lastName" placeholder="Enter last name" required />
+                          <Label htmlFor="lastName" className="text-slate-800">Last Name *</Label>
+                          <Input id="lastName" name="lastName" placeholder="Enter last name" required className="bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400" />
                           {errors.lastName && <p className="text-red-600 text-sm mt-1">{errors.lastName}</p>}
                         </div>
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="email">Email Address *</Label>
-                          <Input id="email" name="email" type="email" placeholder="your.email@example.com" required />
+                          <Label htmlFor="email" className="text-slate-800">Email Address *</Label>
+                          <Input id="email" name="email" type="email" placeholder="your.email@example.com" required className="bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400" />
                           {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="phone">Phone Number *</Label>
-                          <Input id="phone" name="phone" type="tel" placeholder="+91 xxxxx xxxxx" required />
+                          <Label htmlFor="phone" className="text-slate-800">Phone Number *</Label>
+                          <Input id="phone" name="phone" type="tel" placeholder="+91 xxxxx xxxxx" required className="bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400" />
                           {errors.phone && <p className="text-red-600 text-sm mt-1">{errors.phone}</p>}
                         </div>
                       </div>
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="subject">Subject *</Label>
+                          <Label htmlFor="subject" className="text-slate-800">Subject *</Label>
                           <Select name="subject" required>
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-slate-50 border-slate-300 text-slate-900">
                               <SelectValue placeholder="Select inquiry type" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white border-slate-200 text-slate-900">
                               <SelectItem value="admissions">Course Admissions</SelectItem>
                               <SelectItem value="placement">Placement Assistance</SelectItem>
                               <SelectItem value="internship">Internship Programs</SelectItem>
@@ -477,12 +476,12 @@ export default function ContactUs() {
                           {errors.subject && <p className="text-red-600 text-sm mt-1">{errors.subject}</p>}
                         </div>
                         <div>
-                          <Label htmlFor="program">Interested Program</Label>
+                          <Label htmlFor="program" className="text-slate-800">Interested Program</Label>
                           <Select name="program">
-                            <SelectTrigger>
+                            <SelectTrigger className="bg-slate-50 border-slate-300 text-slate-900">
                               <SelectValue placeholder="Select program (optional)" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white border-slate-200 text-slate-900">
                               <SelectItem value="web-dev">Web Development</SelectItem>
                               <SelectItem value="ai-ml">AI/ML</SelectItem>
                               <SelectItem value="cloud">Cloud Computing</SelectItem>
@@ -493,19 +492,20 @@ export default function ContactUs() {
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="message">Your Message *</Label>
+                        <Label htmlFor="message" className="text-slate-800">Your Message *</Label>
                         <Textarea
                           id="message"
                           name="message"
                           placeholder="Please describe your inquiry in detail..."
                           rows={5}
                           required
+                          className="bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 resize-none"
                         />
                         {errors.message && <p className="text-red-600 text-sm mt-1">{errors.message}</p>}
                       </div>
                       <div className="flex items-center space-x-2">
-                        <input type="checkbox" id="newsletter" name="newsletter" className="rounded" />
-                        <Label htmlFor="newsletter" className="text-sm">
+                        <input type="checkbox" id="newsletter" name="newsletter" className="rounded border-slate-300 text-purple-600 focus:ring-purple-500" />
+                        <Label htmlFor="newsletter" className="text-sm text-slate-700">
                           I would like to receive updates about courses and events
                         </Label>
                       </div>
@@ -527,7 +527,7 @@ export default function ContactUs() {
                         </p>
                       )}
                     </form>
-                    <p className="text-sm text-muted-foreground text-center">
+                    <p className="text-sm text-slate-500 text-center">
                       We'll respond to your inquiry within 24 hours during business days.
                     </p>
                   </CardContent>
@@ -537,7 +537,7 @@ export default function ContactUs() {
             {/* Map and Location Info */}
             <motion.div className="space-y-6" variants={fadeUp} custom={0.4}>
               <motion.div variants={fadeUp} custom={0.5}>
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                <Card className="border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                   <CardContent className="p-0">
                     <div className="h-64 w-full">
                       <iframe
@@ -559,8 +559,8 @@ export default function ContactUs() {
                             <MapPin className="h-5 w-5 text-purple-600" />
                           </div>
                           <div>
-                            <h3 className="font-bold text-foreground">SS Infotech</h3>
-                            <p className="text-sm text-muted-foreground">Plot No.26, Khandwekar Bunglow, Nagpur</p>
+                            <h3 className="font-bold text-slate-900">SS Infotech</h3>
+                            <p className="text-sm text-slate-600">Plot No.26, Khandwekar Bunglow, Nagpur</p>
                           </div>
                         </div>
                         <Button
@@ -583,11 +583,11 @@ export default function ContactUs() {
                 </Card>
               </motion.div>
               <motion.div variants={fadeUp} custom={0.6}>
-                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Card className="border border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
                   <CardHeader>
-                    <CardTitle className="flex items-center space-x-2">
+                    <CardTitle className="flex items-center space-x-2 text-slate-900">
                       <Building className="h-5 w-5 text-purple-600" />
-                      <span>company Information</span>
+                      <span>Company Information</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -595,8 +595,8 @@ export default function ContactUs() {
                       <div className="flex items-start space-x-3">
                         <MapPin className="h-5 w-5 text-purple-600 mt-0.5" />
                         <div>
-                          <div className="font-medium">Address</div>
-                          <div className="text-sm text-muted-foreground">
+                          <div className="font-medium text-slate-900">Address</div>
+                          <div className="text-sm text-slate-600">
                             Plot No.26, Khandwekar Bunglow, 2nd Floor,<br />
                             Near Lendra park, Nagpur - 440012<br />
                             Maharashtra, India
@@ -606,15 +606,15 @@ export default function ContactUs() {
                       <div className="flex items-start space-x-3">
                         <Clock className="h-5 w-5 text-purple-600 mt-0.5" />
                         <div>
-                          <div className="font-medium">company Hours</div>
-                          <div className="text-sm text-muted-foreground space-y-1">
+                          <div className="font-medium text-slate-900">Company Hours</div>
+                          <div className="text-sm text-slate-600 space-y-1">
                             <div>Monday - Saturday: 9:00 AM - 6:00 PM</div>
                             <div>Sunday: Closed</div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="pt-4 border-t">
+                    <div className="pt-4 border-t border-slate-100">
                       <a
                         href="https://wa.link/njdbdn"
                         target="_blank"
@@ -622,7 +622,7 @@ export default function ContactUs() {
                       >
                         <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white group">
                           <Calendar className="mr-2 h-4 w-4 group-hover:rotate-12 transition-transform" />
-                          Schedule company Visit
+                          Schedule Company Visit
                         </Button>
                       </a>
                     </div>
@@ -636,7 +636,7 @@ export default function ContactUs() {
 
       {/* Department Contacts */}
       <motion.section
-        className="py-16"
+        className="py-16 bg-white"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -644,26 +644,26 @@ export default function ContactUs() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div className="text-center space-y-4 mb-12" variants={item}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground">Department Contacts</h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">Department Contacts</h2>
+            <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto">
               Connect directly with the right department for faster and more specific assistance
             </p>
           </motion.div>
           <motion.div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" variants={container}>
             {departments.map((dept, index) => (
               <motion.div key={index} variants={fadeUp} custom={index}>
-                <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                <Card className="border border-slate-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white">
                   <CardContent className="p-6 space-y-4">
                     <div className="space-y-2">
-                      <h3 className="text-lg font-bold text-foreground">{dept.name}</h3>
-                      <p className="text-sm text-muted-foreground">{dept.description}</p>
+                      <h3 className="text-lg font-bold text-slate-900">{dept.name}</h3>
+                      <p className="text-sm text-slate-600">{dept.description}</p>
                     </div>
                     <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-sm">
+                      <div className="flex items-center space-x-2 text-sm text-slate-700">
                         <Phone className="h-4 w-4 text-purple-600" />
                         <span>{dept.phone}</span>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm">
+                      <div className="flex items-center space-x-2 text-sm text-slate-700">
                         <Mail className="h-4 w-4 text-purple-600" />
                         <span>{dept.email}</span>
                       </div>
@@ -688,7 +688,7 @@ export default function ContactUs() {
 
       {/* Social Media and FAQs */}
       <motion.section
-        className="py-16 bg-gray-50"
+        className="py-16 bg-slate-50"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -698,15 +698,15 @@ export default function ContactUs() {
           <motion.div className="grid lg:grid-cols-2 gap-8" variants={container}>
             <motion.div className="space-y-6" variants={item}>
               <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-foreground">Follow Us</h2>
-                <p className="text-muted-foreground">
+                <h2 className="text-3xl font-bold text-slate-900">Follow Us</h2>
+                <p className="text-slate-600">
                   Stay connected with us on social media for updates, tips, and success stories
                 </p>
               </div>
               <div className="space-y-4">
                 {socialLinks.map((social, index) => (
                   <motion.div key={index} variants={fadeUp} custom={index}>
-                    <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                    <Card className="border border-slate-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
@@ -714,7 +714,7 @@ export default function ContactUs() {
                               <social.icon className="h-5 w-5 text-purple-600" />
                             </div>
                             <div>
-                              <div className="font-medium">{social.name}</div>
+                              <div className="font-medium text-slate-900">{social.name}</div>
                             </div>
                           </div>
                           <Button
@@ -739,17 +739,17 @@ export default function ContactUs() {
                 ))}
               </div>
               <motion.div variants={item}>
-                <Card className="border-0 shadow-lg bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+                <Card className="border border-purple-200 shadow-lg bg-purple-50 text-purple-900">
                   <CardContent className="p-6 text-center space-y-4">
-                    <h3 className="text-xl font-bold">Subscribe to Our Newsletter</h3>
-                    <p className="text-purple-100">Get updates on new courses, events, and career opportunities</p>
+                    <h3 className="text-xl font-bold text-purple-900">Subscribe to Our Newsletter</h3>
+                    <p className="text-purple-700">Get updates on new courses, events, and career opportunities</p>
                     <div className="flex space-x-2">
                       <Input
                         type="email"
                         placeholder="Enter your email"
-                        className="bg-white/10 border-white/30 text-white placeholder-white/70"
+                        className="bg-white border-purple-300 text-slate-900 placeholder:text-slate-400"
                       />
-                      <Button className="bg-white hover:bg-purple-800 text-purple-700 hover:text-white">
+                      <Button className="bg-purple-600 hover:bg-purple-700 text-white">
                         Subscribe
                       </Button>
                     </div>
@@ -759,19 +759,19 @@ export default function ContactUs() {
             </motion.div>
             <motion.div className="space-y-6" variants={item}>
               <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-foreground">Frequently Asked Questions</h2>
-                <p className="text-muted-foreground">
+                <h2 className="text-3xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                <p className="text-slate-600">
                   Quick answers to common questions about contacting us
                 </p>
               </div>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
                   <motion.div key={index} variants={fadeUp} custom={index}>
-                    <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                    <Card className="border border-slate-200 shadow-md hover:shadow-lg transition-all duration-300 bg-white">
                       <CardContent className="p-6">
                         <div className="space-y-3">
-                          <h3 className="font-bold text-foreground">{faq.question}</h3>
-                          <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                          <h3 className="font-bold text-slate-900">{faq.question}</h3>
+                          <p className="text-sm text-slate-600">{faq.answer}</p>
                         </div>
                       </CardContent>
                     </Card>
@@ -789,7 +789,7 @@ export default function ContactUs() {
 
       {/* Emergency and Support */}
       <motion.section
-        className="py-16"
+        className="py-16 bg-white"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
@@ -797,30 +797,30 @@ export default function ContactUs() {
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div variants={item}>
-            <Card className="border-0 shadow-lg bg-red-500 text-white">
+            <Card className="border border-red-200 shadow-lg bg-red-50 text-red-900">
               <CardContent className="p-8 text-center space-y-6">
                 <div className="space-y-4">
-                  <HeadphonesIcon className="h-12 w-12 mx-auto" />
-                  <h2 className="text-3xl font-bold">Need Immediate Assistance?</h2>
-                  <p className="text-red-100 max-w-2xl mx-auto">
+                  <HeadphonesIcon className="h-12 w-12 mx-auto text-red-600" />
+                  <h2 className="text-3xl font-bold text-red-900">Need Immediate Assistance?</h2>
+                  <p className="text-red-700/80 max-w-2xl mx-auto">
                     For urgent matters or emergency support, our team is available to help you right away.
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <a href="tel:+9177199 27774" target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full bg-white text-red-600 hover:bg-gray-100">
+                  <a href="tel:+9193993 45989" target="_blank" rel="noopener noreferrer">
+                    <Button className="w-full bg-red-600 text-white hover:bg-red-700">
                       <Phone className="mr-2 h-4 w-4" />
-                      Emergency Number: +91 77199 27774
+                      Emergency Number: +91 93993 45989
                     </Button>
                   </a>
                   <a href="https://wa.link/rck1ie" target="_blank" rel="noopener noreferrer">
-                    <Button className="w-full bg-white text-red-600 hover:bg-gray-100">
+                    <Button className="w-full bg-red-600 text-white hover:bg-red-700">
                       <MessageCircle className="mr-2 h-4 w-4" />
                       WhatsApp Support
                     </Button>
                   </a>
                 </div>
-                <p className="text-sm text-red-100">
+                <p className="text-sm text-red-700/70">
                   Available 24/7 for current students and urgent inquiries
                 </p>
               </CardContent>
