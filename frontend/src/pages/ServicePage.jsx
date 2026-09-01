@@ -159,21 +159,21 @@ export default function ServicePage() {
   ], []);
 
   const products = useMemo(() => [
-  {
-    id: "bookmyfarm",
-    name: "BookMyFarm",
-    tagline: "Agri-Tourism & Farm Booking Ecosystem",
-    description: "Real-time reservation platform connecting farm stay owners with travellers, featuring calendar sync and automated payouts.",
-    tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
-    image: ["/s1.png"],
-    gradient: "from-emerald-500 to-teal-600",
-    link: "https://bookmyfarm.co.in/",
-    features: ["Real-time Slot Booking", "Gateway Integration", "Host Dashboard", "Verified Reviews"]
-  },
+  // {
+  //   id: "bookmyfarm",
+  //   name: "BookMyFarm",
+  //   tagline: "Agri-Tourism & Farm Booking Ecosystem",
+  //   description: "Real-time reservation platform connecting farm stay owners with travellers, featuring calendar sync and automated payouts.",
+  //   tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
+  //   image: ["/s1.png"],
+  //   gradient: "from-emerald-500 to-teal-600",
+  //   link: "https://bookmyfarm.co.in/",
+  //   features: ["Real-time Slot Booking", "Gateway Integration", "Host Dashboard", "Verified Reviews"]
+  // },
 
   {
     id: "ayurade",
-    name: "Ayurade",
+    name: "Ayurveda",
     tagline: "D2C Ayurvedic Medicine Store",
     description: "Modern Ayurvedic e-commerce platform for browsing medicines, managing carts, placing orders, and streamlining the complete customer shopping experience.",
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
@@ -215,7 +215,7 @@ export default function ServicePage() {
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
     image: ["/s5.png"],
     gradient: "from-cyan-500 to-blue-600",
-    link: "#",
+    link: "https://crm.ssinfotech.co.in",
     features: ["Employee Management", "Task Tracking", "Attendance", "Performance Dashboard"]
   },
 
@@ -227,7 +227,7 @@ export default function ServicePage() {
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
     image: ["/s6.png"],
     gradient: "from-violet-500 to-purple-700",
-    link: "#",
+    link: "https://ssinterns.vercel.app/employee/login",
     features: ["Intern Profiles", "Task Management", "Progress Tracking", "Performance Reports"]
   },
 
@@ -239,7 +239,7 @@ export default function ServicePage() {
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
     image: ["/s7.png"],
     gradient: "from-red-500 to-rose-600",
-    link: "#",
+    link: "https://exam.ssinfotech.co.in/",
     features: ["Online Exams", "Camera Access", "Auto Cheating Detection", "Timed Assessments"]
   },
 
@@ -251,7 +251,7 @@ export default function ServicePage() {
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
     image: ["/s8.png"],
     gradient: "from-green-500 to-emerald-600",
-    link: "#",
+    link: "https://ss-payment.vercel.app/login",
     features: ["Online Payments", "Transaction Tracking", "Payment Status", "Customer Records"]
   },
 
@@ -263,7 +263,7 @@ export default function ServicePage() {
     tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
     image: ["/s9.png"],
     gradient: "from-sky-500 to-blue-700",
-    link: "#",
+    link: "https://enqury-form-ss.vercel.app",
     features: ["Student Enquiries", "Location Tracking", "Visit Detection", "Admin Dashboard"]
   },
 
@@ -287,7 +287,7 @@ export default function ServicePage() {
     tech: ["React", "JavaScript", "Tailwind CSS", "Node.js"],
     image: ["/s11.png"],
     gradient: "from-orange-500 to-red-600",
-    link: "#",
+    link: "https://vercel.com/khushant-wankhedes-projects/gp-veltur",
     features: ["Government Services", "Public Announcements", "Citizen Information", "Digital Documents"]
   },
 
