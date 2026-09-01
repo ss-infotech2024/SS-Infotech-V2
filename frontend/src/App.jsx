@@ -8,6 +8,7 @@ import TrainingAndPlacements from "./pages/TrainingAndPlacement";
 import Jobs from "./pages/Jobs";
 import './global.css'
 import Placements from "./pages/Placement";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 import Services from "./components/Services";
@@ -21,6 +22,7 @@ function App() {
   const [showPopup, setShowPopup] = useState(true);
   return (
     <div className="app">
+      <ScrollToTop />
       <Navbar />
       <main className="content">
         {showPopup && (
