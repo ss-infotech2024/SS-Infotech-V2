@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "../components/UI/Card";
@@ -61,6 +61,7 @@ const fadeUp = {
 
 export default function ServicePage() {
   const formRef = useRef(null);
+  const [activeImages, setActiveImages] = useState({});
 
   const companyStats = useMemo(() => [
     { icon: Users, value: "50+", label: "Happy Clients", color: "from-blue-600 to-cyan-500", bg: "bg-blue-50 text-blue-600" },
@@ -158,51 +159,170 @@ export default function ServicePage() {
   ], []);
 
   const products = useMemo(() => [
-    {
-      id: "bookmyfarm",
-      name: "BookMyFarm",
-      tagline: "Agri-Tourism & Farm Booking Ecosystem",
-      description: "Real-time reservation platform connecting farm stay owners with travellers, featuring calendar sync and automated payouts.",
-      tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
-      image: "/s1.png",
-      gradient: "from-emerald-500 to-teal-600",
-      link: "https://bookmyfarm.co.in/",
-      features: ["Real-time Slot Booking", "Gateway Integration", "Host Dashboard", "Verified Reviews"]
-    },
-    {
-      id: "ayurveda",
-      name: "Ayurade",
-      tagline: "D2C Ayurvedic Commerce Platform",
-      description: "High-conversion e-commerce ecosystem with tailored cart flows, variant matrixes, and end-to-end order logistics.",
-      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
-      image: "/s2.png",
-      gradient: "from-amber-500 to-orange-500",
-      link: "https://ayurade.example.com",
-      features: ["Custom Checkout", "Inventory Tracking", "Customer Portal", "Discount Logic"]
-    },
-    {
-      id: "oversease",
-      name: "SS Overseas",
-      tagline: "Global Education Consultancy Portal",
-      description: "Student recruitment and document tracking system connecting overseas aspirants directly with university liaisons.",
-      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
-      image: "/s3.png",
-      gradient: "from-blue-600 to-indigo-600",
-      link: "https://ssoverseas.in/",
-      features: ["Course Matchmaking", "Document Vault", "Status Tracker", "Advisor CRM"]
-    },
-    {
-      id: "daanapaani",
-      name: "Daanapaani Foundation",
-      tagline: "Non-Profit Transparency & Donor Engine",
-      description: "A digital impact tracker and donation portal empowering social programs with real-time audit logging.",
-      tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
-      image: "/s4.png",
-      gradient: "from-purple-600 to-indigo-600",
-      link: "https://daanapaanifoundation.com",
-      features: ["Micro-Donations", "Volunteer CRM", "Live Audit Trail", "Impact Metrics"]
-    }
-  ], []);
+  {
+    id: "bookmyfarm",
+    name: "BookMyFarm",
+    tagline: "Agri-Tourism & Farm Booking Ecosystem",
+    description: "Real-time reservation platform connecting farm stay owners with travellers, featuring calendar sync and automated payouts.",
+    tech: ["Java", "SQL", "TypeScript", "React.js", "Tailwind CSS"],
+    image: ["/s1.png"],
+    gradient: "from-emerald-500 to-teal-600",
+    link: "https://bookmyfarm.co.in/",
+    features: ["Real-time Slot Booking", "Gateway Integration", "Host Dashboard", "Verified Reviews"]
+  },
+
+  {
+    id: "ayurade",
+    name: "Ayurade",
+    tagline: "D2C Ayurvedic Medicine Store",
+    description: "Modern Ayurvedic e-commerce platform for browsing medicines, managing carts, placing orders, and streamlining the complete customer shopping experience.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s2.png"],
+    gradient: "from-amber-500 to-orange-500",
+    link: "https://ayurade.example.com",
+    features: ["Medicine Catalog", "Shopping Cart", "Order Management", "Customer Portal"]
+  },
+
+  {
+    id: "oversease",
+    name: "SS Overseas",
+    tagline: "Global Education Consultancy Portal",
+    description: "Student recruitment and document tracking system connecting overseas aspirants directly with university liaisons.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s3.png"],
+    gradient: "from-blue-600 to-indigo-600",
+    link: "https://ssoverseas.in/",
+    features: ["Course Matchmaking", "Document Vault", "Status Tracker", "Advisor CRM"]
+  },
+
+  {
+    id: "daanapaani",
+    name: "Daanapaani Foundation",
+    tagline: "Non-Profit Transparency & Donor Engine",
+    description: "A digital impact tracker and donation portal empowering social programs with real-time audit logging.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s4.png"],
+    gradient: "from-purple-600 to-indigo-600",
+    link: "https://daanapaanifoundation.com",
+    features: ["Micro-Donations", "Volunteer CRM", "Live Audit Trail", "Impact Metrics"]
+  },
+
+  {
+    id: "employee-crm",
+    name: "Employee CRM",
+    tagline: "Employee Management & Productivity CRM",
+    description: "Centralized employee management platform for tracking employee activities, tasks, attendance, performance, and organizational workflows.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s5.png"],
+    gradient: "from-cyan-500 to-blue-600",
+    link: "#",
+    features: ["Employee Management", "Task Tracking", "Attendance", "Performance Dashboard"]
+  },
+
+  {
+    id: "intern-crm",
+    name: "Intern CRM",
+    tagline: "Internship Management & Tracking System",
+    description: "Intern management platform designed to track intern profiles, assigned tasks, progress, attendance, activities, and overall internship performance.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s6.png"],
+    gradient: "from-violet-500 to-purple-700",
+    link: "#",
+    features: ["Intern Profiles", "Task Management", "Progress Tracking", "Performance Reports"]
+  },
+
+  {
+    id: "exam-portal",
+    name: "Exam Portal",
+    tagline: "Online Examination & AI Proctoring Platform",
+    description: "Secure online examination platform with camera access, automated cheating detection, timed assessments, and centralized exam management.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s7.png"],
+    gradient: "from-red-500 to-rose-600",
+    link: "#",
+    features: ["Online Exams", "Camera Access", "Auto Cheating Detection", "Timed Assessments"]
+  },
+
+  {
+    id: "payment-portal",
+    name: "Payment Portal",
+    tagline: "Secure Online Payment Management System",
+    description: "Payment management platform designed to handle online transactions, payment tracking, customer records, transaction history, and payment status management.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s8.png"],
+    gradient: "from-green-500 to-emerald-600",
+    link: "#",
+    features: ["Online Payments", "Transaction Tracking", "Payment Status", "Customer Records"]
+  },
+
+  {
+    id: "enquiry-dashboard",
+    name: "Enquiry Dashboard",
+    tagline: "Student Enquiry & Office Visit Tracking",
+    description: "Real-time enquiry dashboard designed to capture and manage student enquiries and identify students arriving within the office area using location-based tracking.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s9.png"],
+    gradient: "from-sky-500 to-blue-700",
+    link: "#",
+    features: ["Student Enquiries", "Location Tracking", "Visit Detection", "Admin Dashboard"]
+  },
+
+  {
+    id: "medical-equipment",
+    name: "MIKB Medical Equipment",
+    tagline: "B2B Medical Equipment Management Platform",
+    description: "B2B medical equipment platform for showcasing products, managing equipment categories, handling bulk requirements, and connecting buyers with suppliers.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s10.png"],
+    gradient: "from-teal-500 to-cyan-600",
+    link: "#",
+    features: ["Equipment Catalog", "Bulk Enquiry", "Product Categories", "B2B Management"]
+  },
+
+  {
+    id: "grampanchayat",
+    name: "Gram Panchayat Portal",
+    tagline: "Digital Government & Citizen Services Portal",
+    description: "Government project providing a digital presence for Gram Panchayat services with information, announcements, public resources, and citizen-focused content.",
+    tech: ["React", "JavaScript", "Tailwind CSS", "Node.js"],
+    image: ["/s11.png"],
+    gradient: "from-orange-500 to-red-600",
+    link: "#",
+    features: ["Government Services", "Public Announcements", "Citizen Information", "Digital Documents"]
+  },
+
+  {
+    id: "dental-doctor",
+    name: "Dental Doctor",
+    tagline: "Dental Clinic Management & Appointment Platform",
+    description: "Digital dental clinic platform for showcasing treatments, managing appointments, maintaining patient information, and improving communication between patients and the clinic.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+    image: ["/s12.png"],
+    gradient: "from-pink-500 to-rose-600",
+    link: "#",
+    features: ["Online Appointments", "Treatment Catalog", "Patient Management", "Doctor Dashboard"]
+  }
+], []);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setActiveImages((prev) => {
+      const next = { ...prev };
+
+      products.forEach((product) => {
+        if (product.images?.length > 1) {
+          next[product.id] =
+            ((prev[product.id] || 0) + 1) %
+            product.images.length;
+        }
+      });
+
+      return next;
+    });
+  }, 3000);
+
+  return () => clearInterval(interval);
+}, [products]);
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
@@ -554,66 +674,180 @@ export default function ServicePage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 xl:grid-cols-2 gap-6 lg:gap-7">
             {products.map((product, index) => (
               <motion.div
                 key={product.id}
                 variants={fadeUp}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-80px" }}
                 custom={index}
+                className="h-full"
               >
-                <Card className="h-full bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-slate-300 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-                  <div>
-                    <div className={`h-52 bg-gradient-to-r ${product.gradient} p-6 flex items-center justify-center relative overflow-hidden`}>
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="max-h-44 w-auto object-contain relative z-10 transition-transform duration-500 group-hover:scale-105 drop-shadow-xl"
-                      />
-                    </div>
-                    <CardContent className="p-8 space-y-6">
-                      <div>
-                        <div className="text-xs uppercase tracking-wider font-semibold text-purple-700 mb-1">
-                          {product.tagline}
-                        </div>
-                        <h3 className="text-2xl font-bold text-slate-900">{product.name}</h3>
-                        <p className="text-slate-600 text-sm mt-2 leading-relaxed">{product.description}</p>
-                      </div>
+                <Card
+                  className="
+                    h-full
+                    bg-white
+                    border border-slate-200
+                    rounded-2xl
+                    overflow-hidden
+                    hover:border-slate-300
+                    hover:shadow-xl
+                    transition-all
+                    duration-300
+                    flex flex-col
+                    group
+                  "
+                >
 
-                      <div className="space-y-2">
-                        <div className="text-xs font-semibold text-slate-800 uppercase tracking-wide">Key Features</div>
-                        <div className="flex flex-wrap gap-2">
-                          {product.features.map((feat) => (
-                            <span key={feat} className="text-xs px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md border border-slate-200 font-medium">
-                              {feat}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                  {/* ================= IMAGE ================= */}
+                  <div
+                    className={`
+                      relative
+                      w-full
+                      h-64
+                      bg-gradient-to-r ${product.gradient}
+                      overflow-hidden
+                    `}
+                  >
 
-                      <div className="space-y-2">
-                        <div className="text-xs font-semibold text-slate-800 uppercase tracking-wide">Tech Stack</div>
-                        <div className="flex flex-wrap gap-2">
-                          {product.tech.map((t) => (
-                            <span key={t} className="text-xs font-medium px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-md">
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
+                    {/* Background decoration */}
+                    <div className="absolute -top-16 -right-16 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                    <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-black/10 rounded-full blur-2xl" />
+
+                    <img
+                      src={product.image?.[activeImages[product.id] || 0]}
+                      alt={product.name}
+                      className="
+                        relative
+                        z-10
+                        w-full
+                        h-full
+                        object-cover
+                        transition-transform
+                        duration-500
+                        ease-out
+                        group-hover:scale-[1.03]
+                      "
+                    />
                   </div>
 
-                  <div className="p-8 pt-0">
-                    <a href={product.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                      <Button className="w-full bg-slate-900 hover:bg-purple-600 text-white rounded-xl py-6 flex items-center justify-center gap-2 transition-colors duration-300 font-medium shadow-sm">
+                  {/* ================= CONTENT ================= */}
+                  <CardContent className="p-6 flex flex-col flex-1">
+
+                    {/* Title Section */}
+                    <div className="mb-5">
+
+                      <div className="text-[11px] uppercase tracking-[0.12em] font-semibold text-purple-700 mb-1.5">
+                        {product.tagline}
+                      </div>
+
+                      <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight">
+                        {product.name}
+                      </h3>
+
+                      <p className="text-slate-600 text-sm mt-2.5 leading-relaxed line-clamp-3">
+                        {product.description}
+                      </p>
+
+                    </div>
+
+                    {/* ================= FEATURES ================= */}
+                    <div className="mb-5">
+
+                      <div className="text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-2">
+                        Key Features
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5">
+                        {product.features.map((feat) => (
+                          <span
+                            key={feat}
+                            className="
+                              text-[11px]
+                              px-2.5
+                              py-1
+                              bg-slate-50
+                              text-slate-700
+                              rounded-md
+                              border border-slate-200
+                              font-medium
+                            "
+                          >
+                            {feat}
+                          </span>
+                        ))}
+                      </div>
+
+                    </div>
+
+                    {/* ================= TECH STACK ================= */}
+                    <div className="mt-auto">
+
+                      <div className="text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-2">
+                        Tech Stack
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5">
+                        {product.tech.map((t) => (
+                          <span
+                            key={t}
+                            className="
+                              text-[11px]
+                              font-medium
+                              px-2.5
+                              py-1
+                              bg-blue-50
+                              text-blue-700
+                              border border-blue-200
+                              rounded-md
+                            "
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+
+                    </div>
+
+                  </CardContent>
+
+                  {/* ================= BUTTON ================= */}
+                  <div className="px-6 pb-6 pt-0">
+
+                    <a
+                      href={product.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full"
+                    >
+                      <Button
+                        className="
+                          w-full
+                          h-11
+                          bg-slate-900
+                          hover:bg-purple-600
+                          text-white
+                          rounded-xl
+                          flex
+                          items-center
+                          justify-center
+                          gap-2
+                          transition-all
+                          duration-300
+                          font-medium
+                          text-sm
+                          shadow-sm
+                        "
+                      >
                         <span>Visit Live Platform</span>
                         <ExternalLink className="w-4 h-4" />
                       </Button>
                     </a>
+
                   </div>
+
                 </Card>
               </motion.div>
             ))}
