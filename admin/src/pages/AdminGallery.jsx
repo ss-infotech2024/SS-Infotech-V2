@@ -102,13 +102,32 @@ const AdminGallery = () => {
 
   const [albums, setAlbums] = useState([]);
 
-  const [formData, setFormData] =
-    useState({
-      title: "",
-      fullTitle: "",
-      color: "",
-      images: [],
-    });
+  const [formData, setFormData] = useState({
+    title: "",
+    fullTitle: "",
+    color: "",
+    images: [],
+  });
+
+  const [gradientType, setGradientType] = useState("3");
+
+  const [gradientColors, setGradientColors] = useState([
+    {
+      color: "#FF9933",
+      position: 0,
+    },
+    {
+      color: "#FFFFFF",
+      position: 50,
+    },
+    {
+      color: "#138808",
+      position: 100,
+    },
+  ]);
+
+  const [gradientDirection, setGradientDirection] =
+    useState("90");
 
   const [isEditing, setIsEditing] =
     useState(false);
@@ -202,6 +221,21 @@ const AdminGallery = () => {
   useEffect(() => {
     fetchAlbums();
   }, []);
+
+  useEffect(() => {
+      const gradient =
+        generateGradientCSS();
+
+      setFormData((prev) => ({
+        ...prev,
+        color: gradient,
+      }));
+    }, [
+      gradientType,
+      gradientColors,
+      gradientDirection,
+    ]);
+  
 
 
   /*
@@ -315,6 +349,93 @@ const AdminGallery = () => {
 
     setError("");
   };
+
+  const updateGradientColor = (index, value) => {
+  setGradientColors((prev) =>
+    prev.map((item, i) =>
+      i === index
+        ? {
+            ...item,
+            color: value,
+          }
+        : item
+    )
+  );
+};
+
+
+const updateGradientPosition = (
+  index,
+  value
+) => {
+  const position = Math.min(
+    100,
+    Math.max(0, Number(value))
+  );
+
+  setGradientColors((prev) =>
+    prev.map((item, i) =>
+      i === index
+        ? {
+            ...item,
+            position,
+          }
+        : item
+    )
+  );
+};
+
+
+const getActiveGradientColors = () => {
+  return gradientColors.slice(
+    0,
+    Number(gradientType)
+  );
+};
+
+
+const generateGradientCSS = () => {
+  const colors =
+    getActiveGradientColors();
+
+  if (colors.length === 1) {
+    return colors[0].color;
+  }
+
+  const stops = colors
+    .map(
+      (item) =>
+        `${item.color} ${item.position}%`
+    )
+    .join(", ");
+
+  return `linear-gradient(${gradientDirection}deg, ${stops})`;
+};
+
+
+const generateGradientTailwind = () => {
+  const colors =
+    getActiveGradientColors();
+
+  if (colors.length === 1) {
+    return "bg-[#" +
+      colors[0].color.replace("#", "") +
+      "]";
+  }
+
+  return generateGradientCSS();
+};
+
+
+const applyGradientToForm = () => {
+  const gradient =
+    generateGradientCSS();
+
+  setFormData((prev) => ({
+    ...prev,
+    color: gradient,
+  }));
+};
 
 
   /*
@@ -980,74 +1101,303 @@ const AdminGallery = () => {
 
             {/* Title */}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Title
-              </label>
+            {/* Album Basic Information + Images */}
 
-              <input
-                type="text"
-                name="title"
-                value={
-                  formData.title
-                }
-                onChange={
-                  handleInputChange
-                }
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
-                required
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
+              {/* Title */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Title
+                </label>
 
-            {/* Full Title */}
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
+                  required
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Title
-              </label>
+              {/* Full Title */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  Full Title
+                </label>
 
-              <input
-                type="text"
-                name="fullTitle"
-                value={
-                  formData.fullTitle
-                }
-                onChange={
-                  handleInputChange
-                }
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
-                required
-              />
+                <input
+                  type="text"
+                  name="fullTitle"
+                  value={formData.fullTitle}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
+                  required
+                />
+              </div>
+
+              {/* Images */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  {isEditing ? "Add Images" : "Images (5–10)"}
+                </label>
+
+                <input
+                  type="file"
+                  name="images"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  ref={fileInputRef}
+                  className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs bg-white"
+                  required={!isEditing}
+                />
+              </div>
+
             </div>
 
 
             {/* Color */}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Color (Tailwind Gradient)
-              </label>
+         {/* ================================================================
+                GRADIENT BUILDER
+            ================================================================= */}
 
-              <input
-                type="text"
-                name="color"
-                value={
-                  formData.color
-                }
-                onChange={
-                  handleInputChange
-                }
-                placeholder="from-blue-600 to-purple-700"
-                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
-                required
-              />
+            <div>
+
+              <div className="flex items-center justify-between mb-4">
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800">
+                    Album Color / Gradient
+                  </label>
+
+                  <p className="text-xs text-gray-500 mt-1">
+                    Choose 1, 2 or 3 colors and control their positions.
+                  </p>
+                </div>
+
+              </div>
+
+
+              {/* ================================================================
+                  COLOR COUNT
+              ================================================================= */}
+
+              <div className="flex flex-wrap items-end gap-4 mb-4">
+
+                {/* Number of Colors */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    Colors
+                  </label>
+
+                  <div className="flex gap-1">
+                    {["1", "2", "3"].map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setGradientType(count)}
+                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
+                          gradientType === count
+                            ? "bg-[#552586] text-white border-[#552586]"
+                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        {count}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Direction */}
+                {gradientType !== "1" && (
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Direction
+                    </label>
+
+                    <select
+                      value={gradientDirection}
+                      onChange={(e) => setGradientDirection(e.target.value)}
+                      className="w-36 px-3 py-1.5 border border-gray-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-[#552586]"
+                    >
+                      <option value="0">Top → Bottom</option>
+                      <option value="45">Diagonal ↗</option>
+                      <option value="90">Left → Right</option>
+                      <option value="135">Diagonal ↘</option>
+                      <option value="180">Bottom → Top</option>
+                      <option value="270">Right → Left</option>
+                    </select>
+                  </div>
+                )}
+
+              </div>
+
+
+              {/* ================================================================
+                  COLOR CONTROLS
+              ================================================================= */}
+
+              <div className="flex flex-wrap items-center gap-3">
+
+                {getActiveGradientColors().map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl"
+                  >
+
+                    {/* Color Number */}
+                    <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">
+                      C{index + 1}
+                    </span>
+
+                    {/* Color Picker */}
+                    <input
+                      type="color"
+                      value={item.color}
+                      onChange={(e) =>
+                        updateGradientColor(index, e.target.value)
+                      }
+                      className="w-8 h-8 rounded-md border border-gray-300 cursor-pointer p-0.5 bg-white"
+                    />
+
+                    {/* HEX */}
+                    <input
+                      type="text"
+                      value={item.color}
+                      onChange={(e) =>
+                        updateGradientColor(index, e.target.value)
+                      }
+                      className="w-20 px-2 py-1.5 border border-gray-300 rounded-md uppercase text-xs font-medium"
+                    />
+
+                    {/* Position */}
+                    {gradientType !== "1" && (
+                      <>
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={item.position}
+                          onChange={(e) =>
+                            updateGradientPosition(
+                              index,
+                              e.target.value
+                            )
+                          }
+                          className="w-14 px-2 py-1.5 border border-gray-300 rounded-md text-center text-xs"
+                        />
+
+                        <span className="text-xs text-gray-500">
+                          %
+                        </span>
+                      </>
+                    )}
+
+                  </div>
+                ))}
+
+              </div>
+
+
+              {/* ================================================================
+                  LIVE PREVIEW
+              ================================================================= */}
+
+              {/* Live Preview + CSS Output */}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+
+                {/* Live Preview */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-gray-800">
+                      Live Preview
+                    </p>
+
+                    <span className="text-[10px] text-green-600 font-medium">
+                      ● Live
+                    </span>
+                  </div>
+
+                  <div
+                    className="w-full h-20 rounded-xl border border-gray-200 shadow-inner"
+                    style={{
+                      background: generateGradientCSS(),
+                    }}
+                  />
+                </div>
+
+                {/* Generated CSS */}
+                <div>
+                  <p className="text-xs font-semibold text-gray-800 mb-2">
+                    Generated CSS
+                  </p>
+
+                  <div className="h-20 flex items-center px-3 py-2 rounded-xl bg-gray-900 text-green-400 text-xs break-all font-mono overflow-auto">
+                    {generateGradientCSS()}
+                  </div>
+                </div>
+
+              </div>
+
+
+              {/* ================================================================
+                  GENERATED VALUE
+              ================================================================= */}
+
+              <div className="mt-4">
+
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  Generated CSS
+                </p>
+
+                <div className="p-3 rounded-xl bg-gray-900 text-green-400 text-xs sm:text-sm break-all font-mono">
+                  {generateGradientCSS()}
+                </div>
+
+              </div>
+
+
+              {/* ================================================================
+                  SAVE COLOR
+              ================================================================= */}
+
+              <button
+                type="button"
+                onClick={applyGradientToForm}
+                className="mt-4 px-5 py-3 bg-[#552586] hover:bg-[#6a34a0] text-white rounded-xl font-medium transition"
+              >
+                Apply Gradient
+              </button>
+
+
+              {/* Current saved value */}
+
+              {formData.color && (
+
+                <div className="mt-3">
+
+                  <p className="text-xs text-gray-500 mb-1">
+                    Value that will be saved:
+                  </p>
+
+                  <p className="text-xs font-mono bg-gray-100 p-3 rounded-lg break-all">
+                    {formData.color}
+                  </p>
+
+                </div>
+
+              )}
+
             </div>
 
 
             {/* Images */}
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {isEditing
                   ? "Add Images"
@@ -1068,7 +1418,7 @@ const AdminGallery = () => {
                   !isEditing
                 }
               />
-            </div>
+            </div> */}
 
 
             {error && (
