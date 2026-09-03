@@ -97,17 +97,17 @@ export default function ContactUs() {
   const contactMethods = useMemo(() => [
     {
       icon: Phone,
-      title: "Call Us",
-      description: "Speak directly with admissions team",
+      title: "Call for Business Consulting",
+      description: "Speak directly with our business consultants",
       primary: "+91 7720846048",
-      secondary: "+91 93993 45989",
+      
       available: "Mon-Sat, 9 AM - 6 PM"
     },
     {
       icon: Mail,
       title: "Email Support",
       description: "Get detailed information via email",
-      primary: "hr@ssinfo.co",
+      primary: "hr@ssinfo.co.in ",
       secondary: "Our official mail id",
       available: "24/7 Response"
     },
