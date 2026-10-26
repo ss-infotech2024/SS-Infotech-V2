@@ -4,9 +4,9 @@ import axios from "axios";
 import { FaCopy, FaPlus, FaTrash } from "react-icons/fa";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { templates } from "../../admin/src/components/CertificateTemplates"
-import { offerLetterTemplates } from "../../admin/src/components/OfferLetterTemplates"
-import CollegeNameField from "../../admin/src/components/CollegeNameField"
+import { templates } from "./components/CertificateTemplates"
+import { offerLetterTemplates } from "./components/OfferLetterTemplates"
+import CollegeNameField from "./components/CollegeNameField"
 
 export const DOC_TYPES = {
   offer: "Internship Offer Letter",
@@ -85,14 +85,19 @@ function datesFromInternshipStart(fromIso) {
   };
 }
 
-const EditableOfferPreview = React.memo(function EditableOfferPreview({ Template, previewKey, docType }) {
+const EditableOfferPreview = React.memo(function EditableOfferPreview({ Template, previewKey, docType, draftRef }) {
   const sourceRef = useRef(null);
   const hostRef = useRef(null);
   const data = useMemo(() => JSON.parse(previewKey), [previewKey]);
 
+  const rememberDraft = () => {
+    if (hostRef.current && draftRef) draftRef.current = hostRef.current.innerHTML;
+  };
+
   useEffect(() => {
     if (!sourceRef.current || !hostRef.current || !Template) return;
     hostRef.current.innerHTML = sourceRef.current.innerHTML;
+    rememberDraft();
   }, [Template, docType, previewKey]);
 
   if (!Template) {
@@ -111,10 +116,13 @@ const EditableOfferPreview = React.memo(function EditableOfferPreview({ Template
         spellCheck
         className="letter-editor bg-white outline-none"
         style={{ width: 794, minHeight: 1123 }}
+        onInput={rememberDraft}
+        onBlur={rememberDraft}
         onKeyDown={(event) => {
           if (event.key !== "Enter" || event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return;
           event.preventDefault();
           document.execCommand("insertLineBreak");
+          rememberDraft();
         }}
       />
     </>
@@ -229,6 +237,7 @@ function ScaledLetterPreview({ captureRef, children }) {
 
 function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRemove }) {
   const ref = useRef(null);
+  const draftRef = useRef("");
   const [downloadError, setDownloadError] = useState("");
   const [logNote, setLogNote] = useState("");
   const { docType, templateName, data } = letter;
@@ -283,11 +292,22 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
   };
 
   const downloadPdf = async () => {
-    if (!ref.current) return;
+    const liveEditor = ref.current?.querySelector?.(".letter-editor");
+    const markup = liveEditor?.innerHTML || draftRef.current || "";
+    if (!markup) return;
+    const captureNode = document.createElement("div");
+    captureNode.className = "letter-editor bg-white";
+    captureNode.style.cssText = "width:794px;min-height:1123px;background:#ffffff;color:#111827;";
+    captureNode.innerHTML = markup;
+    const holder = document.createElement("div");
+    holder.setAttribute("aria-hidden", "true");
+    holder.style.cssText = "position:fixed;left:0;top:0;width:794px;height:1123px;overflow:hidden;background:#ffffff;z-index:2147483646;";
+    holder.appendChild(captureNode);
+    document.body.appendChild(holder);
     setDownloadError("");
     setLogNote("");
     try {
-      const canvas = await html2canvas(ref.current, {
+      const canvas = await html2canvas(captureNode, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
@@ -306,6 +326,8 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
     } catch (error) {
       console.error(error);
       setDownloadError("Could not create the PDF. Please try again.");
+    } finally {
+      holder.remove();
     }
   };
 
@@ -399,22 +421,19 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
         <p className="text-center text-sm text-gray-700">{logNote}</p>
       )}
 
-      {isOffer && (
-        <p className="text-sm text-gray-600">
-          Click the offer letter and type to change the wording. Those edits are included in the download.
-          Changing the form, role, or document type rebuilds the letter, so set the details first.
-        </p>
-      )}
+      <p className="text-sm text-gray-600">
+        Click the letter and type to change the wording. The download uses the text you see.
+        Changing the form, role, or document type rebuilds the letter, so set the details first.
+      </p>
 
       <ScaledLetterPreview captureRef={ref}>
-        {isOffer ? (
+        {TemplateComponent ? (
           <EditableOfferPreview
             Template={TemplateComponent}
             previewKey={JSON.stringify(previewData)}
             docType={docType}
+            draftRef={draftRef}
           />
-        ) : TemplateComponent ? (
-          <TemplateComponent key={`${docType}-${templateName}`} data={previewData} type={docType} />
         ) : (
           <p className="text-red-500 text-center">Selected template not found!</p>
         )}

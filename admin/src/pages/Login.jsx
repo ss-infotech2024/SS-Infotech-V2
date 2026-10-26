@@ -13,7 +13,7 @@ export default function Login() {
     const admin = { username: "admin", password: "12345" };
 
     if (username === admin.username && password === admin.password) {
-      localStorage.setItem("isAdminLoggedIn", true);
+      localStorage.setItem("isAdminLoggedIn", "true");
       navigate("/");
     } else {
       setError("Invalid username or password ❌");
