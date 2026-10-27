@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Stars, X, ChevronLeft, ChevronRight, Expand, Camera } from 'lucide-react';
+import { apiUrl } from '../config/api';
 
 // Animation Variants
 const fadeUp = {
@@ -63,13 +64,13 @@ const pulseAnimation = {
 // API service functions
 const apiService = {
   async getAlbums() {
-    const response = await fetch('https://ss-infotech-v2-2.onrender.com/api/albums/album-getall');
+    const response = await fetch(apiUrl('/api/albums/album-getall'));
     if (!response.ok) throw new Error('Failed to fetch albums');
     return response.json();
   },
 
   async getAlbumById(id) {
-    const response = await fetch(`https://ss-infotech-v2-2.onrender.com/api/album/${id}`);
+    const response = await fetch(apiUrl(`/api/album/${id}`));
     if (!response.ok) throw new Error('Failed to fetch album');
     return response.json();
   },
@@ -84,7 +85,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch('https://ss-infotech-v2-2.onrender.com/api/album-post', {
+    const response = await fetch(apiUrl('/api/album-post'), {
       method: 'POST',
       body: formData,
     });
@@ -102,7 +103,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch(`https://ss-infotech-v2-2.onrender.com/api/album/${id}`, {
+    const response = await fetch(apiUrl(`/api/album/${id}`), {
       method: 'PATCH',
       body: formData,
     });
@@ -111,7 +112,7 @@ const apiService = {
   },
 
   async deleteAlbum(id) {
-    const response = await fetch(`https://ss-infotech-v2-2.onrender.com/api/album/${id}`, {
+    const response = await fetch(apiUrl(`/api/album/${id}`), {
       method: 'DELETE',
     });
     if (!response.ok) throw new Error('Failed to delete album');

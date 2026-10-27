@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiProxy = {
     '/api': {
-      target: env.API_BASE_URL || 'http://localhost:5000',
+      target: env.API_BASE_URL || 'https://ss-infotech-v2-2.onrender.com',
       changeOrigin: true,
       configure(proxy) {
         proxy.on('proxyReq', (proxyReq) => {
@@ -21,8 +21,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    server: { proxy: apiProxy },
-    preview: { proxy: apiProxy },
+    server: { host: true, port: 5174, strictPort: true, proxy: apiProxy },
+    preview: { host: true, port: 5174, strictPort: true, proxy: apiProxy },
     build: {
       outDir: 'dist',
       emptyOutDir: true,

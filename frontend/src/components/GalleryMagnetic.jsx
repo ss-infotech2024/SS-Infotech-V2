@@ -6,6 +6,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import { apiUrl } from "../config/api";
 
 export default function GalleryMagnetic({
   images: propImages = [],
@@ -51,7 +52,7 @@ export default function GalleryMagnetic({
     const fetchGalleryImages = async () => {
       try {
         const response = await fetch(
-          "https://ss-infotech-v2-2.onrender.com/api/seminars/magnetic-images",
+          apiUrl("/api/seminars/magnetic-images"),
           {
             method: "GET",
             credentials: "include", // Include cookies if needed

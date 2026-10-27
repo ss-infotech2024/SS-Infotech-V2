@@ -4,6 +4,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { internships } from "../data/internships";
+import CollegeNameInput from "../components/CollegeNameInput";
+import { apiUrl } from "../config/api";
 
 // Time ago utility
 function timeAgo(dateStr) {
@@ -87,6 +89,7 @@ function JobApplicationModal({ job, isOpen, onClose, isInternship }) {
     name: "",
     email: "",
     phone: "",
+    college: "",
     resume: null,
   });
   const [countryCode, setCountryCode] = useState("+91");
@@ -132,10 +135,11 @@ function JobApplicationModal({ job, isOpen, onClose, isInternship }) {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("phone", fullPhone);
+    if (isInternship) formDataToSend.append("college", formData.college.trim());
     formDataToSend.append("resume", formData.resume);
 
     try {
-      const response = await fetch("https://ss-infotech-v2-2.onrender.com/api/applications/fill-applications", {
+      const response = await fetch(apiUrl("/api/applications/fill-applications"), {
         method: "POST",
         body: formDataToSend,
       });
@@ -147,14 +151,14 @@ function JobApplicationModal({ job, isOpen, onClose, isInternship }) {
 
       toast.success(data.message || "Application submitted successfully!");
       console.log("Application Response:", data.message, data.application);
-      setFormData({ name: "", email: "", phone: "", resume: null });
+      setFormData({ name: "", email: "", phone: "", college: "", resume: null });
       setCountryCode("+91");
       setPhoneDigits("");
 
       if (isInternship) {
         const subject = encodeURIComponent(`Internship Application - ${job.title || "Internship"}`);
         const body = encodeURIComponent(
-          `Hello,\n\nI would like to apply for the ${job.title || "internship"} role.\n\nFull Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${fullPhone}\n\nMy resume is attached to the application submitted on the website. Please attach it here as well if needed.\n`
+          `Hello,\n\nI would like to apply for the ${job.title || "internship"} role.\n\nFull Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${fullPhone}\nCollege: ${formData.college.trim()}\n\nMy resume is attached to the application submitted on the website. Please attach it here as well if needed.\n`
         );
         window.location.href = `mailto:hr@ssinfotech.co.in?subject=${subject}&body=${body}`;
       }
@@ -256,6 +260,16 @@ function JobApplicationModal({ job, isOpen, onClose, isInternship }) {
               />
             )}
           </div>
+          {isInternship && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700">College Name</label>
+              <CollegeNameInput
+                value={formData.college}
+                disabled={submitting}
+                onChange={(college) => setFormData((prev) => ({ ...prev, college }))}
+              />
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-slate-700">Resume</label>
             <input
@@ -326,7 +340,7 @@ export default function JobSearch() {
       try {
         setLoading(true);
 
-        let url = "https://ss-infotech-v2-2.onrender.com/api/jobs/show-jobs";
+        let url = apiUrl("/api/jobs/show-jobs");
 
         const params = new URLSearchParams();
         if (query) params.append("query", query);

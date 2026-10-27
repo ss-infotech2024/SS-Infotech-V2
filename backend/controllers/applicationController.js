@@ -8,7 +8,7 @@ export const createApplication = async (req, res) => {
   console.log("Request headers:", req.headers);
 
   try {
-    const { jobId, name, email, phone } = req.body;
+    const { jobId, name, email, phone, title, college } = req.body;
 
     // Validate required fields
     if (!jobId || !name || !email || !phone) {
@@ -45,9 +45,11 @@ export const createApplication = async (req, res) => {
     // Create new application
     const application = new Application({
       jobId,
+      jobTitle: title || "",
       name,
       email,
       phone,
+      college: college || "",
       resume,
       resumePath,
     });

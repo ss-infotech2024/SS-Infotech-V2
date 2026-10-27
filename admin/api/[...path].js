@@ -18,8 +18,10 @@ const SKIP_RESPONSE_HEADERS = new Set([
   "connection",
 ]);
 
+const DEFAULT_API_BASE_URL = "https://ss-infotech-v2-2.onrender.com";
+
 function targetUrl(req) {
-  const base = String(process.env.API_BASE_URL || "").replace(/\/$/, "");
+  const base = String(process.env.API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");
   const incoming = new URL(req.url || "/", "https://admin.local");
   return `${base}${incoming.pathname}${incoming.search}`;
 }
@@ -32,11 +34,6 @@ async function readBody(req) {
 }
 
 export default async function handler(req, res) {
-  if (!process.env.API_BASE_URL) {
-    res.status(500).json({ message: "API is not configured." });
-    return;
-  }
-
   const headers = {};
   for (const [key, value] of Object.entries(req.headers || {})) {
     if (!value || SKIP_REQUEST_HEADERS.has(key.toLowerCase())) continue;
