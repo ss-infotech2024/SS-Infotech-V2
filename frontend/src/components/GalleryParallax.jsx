@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { apiUrl } from "../config/api";
 
 export default function GalleryParallax({
   title = "College Visits",
@@ -26,7 +27,7 @@ export default function GalleryParallax({
   useEffect(() => {
     const fetchGalleryImages = async () => {
       try {
-        const res = await fetch("https://ss-infotech-v2-2.onrender.com/api/gallery/gallery-img");
+        const res = await fetch(apiUrl("/api/gallery/gallery-img"));
         if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
         const data = await res.json();
 

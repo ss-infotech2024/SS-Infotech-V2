@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { internships } from "../data/internships";
 import CollegeNameInput from "../components/CollegeNameInput";
+import { apiUrl } from "../config/api";
 
 // Time ago utility
 function timeAgo(dateStr) {
@@ -138,7 +139,7 @@ function JobApplicationModal({ job, isOpen, onClose, isInternship }) {
     formDataToSend.append("resume", formData.resume);
 
     try {
-      const response = await fetch("/api/applications/fill-applications", {
+      const response = await fetch(apiUrl("/api/applications/fill-applications"), {
         method: "POST",
         body: formDataToSend,
       });
@@ -339,7 +340,7 @@ export default function JobSearch() {
       try {
         setLoading(true);
 
-        let url = "https://ss-infotech-v2-2.onrender.com/api/jobs/show-jobs";
+        let url = apiUrl("/api/jobs/show-jobs");
 
         const params = new URLSearchParams();
         if (query) params.append("query", query);

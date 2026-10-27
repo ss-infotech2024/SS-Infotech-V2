@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause } from 'lucide-react';
+import { apiUrl } from '../config/api';
 
 const Hero = () => {
   const [slides, setSlides] = useState([]);
@@ -14,7 +15,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await fetch("https://ss-infotech-v2-2.onrender.com/api/slides");
+        const response = await fetch(apiUrl("/api/slides"));
         if (!response.ok) throw new Error("Failed to fetch slides");
         const data = await response.json();
         setSlides(data.slides || []);
