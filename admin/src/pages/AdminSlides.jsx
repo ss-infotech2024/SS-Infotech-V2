@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
+import { message } from "antd";
+import { Download, Trash2 } from "lucide-react";
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState([]);
@@ -42,7 +43,24 @@ const AdminSlides = () => {
 
   // Handle file change
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFile(e.target.files?.[0] || null);
+  };
+
+  const handleDownload = (slide) => {
+    if (!slide.url) {
+      message.error("This slide does not have a downloadable media URL.");
+      return;
+    }
+
+    const downloadUrl = slide.url.replace("/upload/", "/upload/fl_attachment/");
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = `${(slide.title || "hero-slide").replace(/[^a-z0-9-_]/gi, "_")}`;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   // Submit new slide
@@ -79,7 +97,7 @@ const AdminSlides = () => {
       setForm({ title: "", subtitle: "", cta: "" });
       setFile(null);
       document.getElementById("file-input").value = "";
-      fetchSlides();
+      await fetchSlides();
       message.success(" Slide created successfully!");
     } catch (error) {
       console.error("Error creating slide:", error);
@@ -106,7 +124,7 @@ const AdminSlides = () => {
 
       const result = await res.json();
       console.log("Delete success:", result);
-      fetchSlides();
+      await fetchSlides();
       message.success(" Slide deleted successfully!");
     } catch (error) {
       console.error("Error deleting slide:", error);
@@ -167,12 +185,12 @@ const AdminSlides = () => {
               id="file-input"
               type="file"
               onChange={handleFileChange}
-              accept="image/*,video/*"
+              accept=".jpg,.jpeg,.png,.webp,.mp4,.webm"
               className="border border-gray-300 rounded-md p-2 w-full"
               required
             />
             <p className="text-xs text-gray-500 mt-1">
-              Supported: JPG, PNG, JPEG, WEBP, MP4, WEBM
+              Supported: JPG, PNG, JPEG, WEBP, MP4, WEBM (maximum 30 MB)
             </p>
             {file && (
               <p className="text-sm text-green-600 mt-1">
@@ -232,6 +250,11 @@ const AdminSlides = () => {
         >
           {loading ? "Uploading..." : "Add Slide"}
         </button>
+        {!file && (
+          <span className="ml-3 text-sm text-gray-500">
+            Select a media file to enable Add Slide.
+          </span>
+        )}
       </form>
 
       {/* Slides List */}
@@ -288,12 +311,26 @@ const AdminSlides = () => {
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => handleDelete(slide._id)}
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                >
-                  Delete
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleDownload(slide)}
+                    aria-label={`Download ${slide.title || "slide"}`}
+                    title="Download slide media"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#552586] text-[#552586] hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                  >
+                    <Download size={17} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(slide._id)}
+                    aria-label={`Delete ${slide.title || "slide"}`}
+                    title="Delete"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-500 text-red-500 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  >
+                    <Trash2 size={17} aria-hidden="true" />
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

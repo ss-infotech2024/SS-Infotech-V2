@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const slideSchema = new mongoose.Schema({
   type: { type: String, required: true, enum: ["video", "image"] },
   url: { type: String, required: true }, // Stores Cloudinary URL
+  public_id: { type: String }, // Cloudinary asset ID used to delete uploaded media
   title: { type: String, required: true },
   subtitle: { type: String },
   cta: { type: String },

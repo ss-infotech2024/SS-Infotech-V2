@@ -1,4 +1,6 @@
 import Slide from "../models/slideModel.js";
+import multer from "multer";
+import cloudinary from "../utils/cloudinary.js";
 
   export const getSlides = async (req, res) => {
     try {
@@ -32,6 +34,7 @@ import Slide from "../models/slideModel.js";
       const slide = new Slide({
         type,
         url: file.path,
+        public_id: file.filename,
         title,
         subtitle: subtitle || undefined,
         cta: cta || undefined,
@@ -43,7 +46,7 @@ import Slide from "../models/slideModel.js";
       console.error("Error creating slide:", err);
       if (err instanceof multer.MulterError) {
         if (err.code === "LIMIT_UNEXPECTED_FIELD") {
-          return res.status(400).json({ success: false, message: `Unexpected field in request. Expected file field named 'media'` });
+          return res.status(400).json({ success: false, message: "Unexpected file field. Please upload the slide media file." });
         }
         return res.status(400).json({ success: false, message: `Multer error: ${err.message}` });
       }
@@ -63,7 +66,7 @@ import Slide from "../models/slideModel.js";
 
     // Delete the media file from Cloudinary
     if (slide.public_id) {
-      await cloudinary.v2.uploader.destroy(slide.public_id, {
+      await cloudinary.uploader.destroy(slide.public_id, {
         resource_type: slide.type,
       });
     }

@@ -21,8 +21,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    server: { proxy: apiProxy },
-    preview: { proxy: apiProxy },
+    server: { host: true, port: 5174, strictPort: true, proxy: apiProxy },
+    preview: { host: true, port: 5174, strictPort: true, proxy: apiProxy },
     build: {
       outDir: 'dist',
       emptyOutDir: true,

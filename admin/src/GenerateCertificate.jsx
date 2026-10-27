@@ -470,7 +470,7 @@ const GenerateCertificate = () => {
       {initial.fromApplication && (
         <p className={`${sideBySide ? "" : "max-w-4xl mx-auto"} text-sm text-gray-600`}>
           Filled from the job application for {letters[0]?.data.candidateName || "this applicant"}.
-          College name is not stored on the application. Internship dates are prefilled and can be changed.
+          Internship dates are prefilled and can be changed.
         </p>
       )}
 
