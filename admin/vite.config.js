@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiProxy = {
     '/api': {
-      target: env.API_BASE_URL || 'https://ss-infotech-v2-2.onrender.com',
+      target: env.API_BASE_URL || 'https://sswebsitebackend.ssinfotech.co.in',
       changeOrigin: true,
       configure(proxy) {
         proxy.on('proxyReq', (proxyReq) => {

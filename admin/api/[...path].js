@@ -18,7 +18,7 @@ const SKIP_RESPONSE_HEADERS = new Set([
   "connection",
 ]);
 
-const DEFAULT_API_BASE_URL = "https://ss-infotech-v2-2.onrender.com";
+const DEFAULT_API_BASE_URL = "https://sswebsitebackend.ssinfotech.co.in";
 
 function targetUrl(req) {
   const base = String(process.env.API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");

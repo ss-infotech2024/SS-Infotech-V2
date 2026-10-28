@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = "https://ss-infotech-v2-2.onrender.com";
+const DEFAULT_API_BASE_URL = "https://sswebsitebackend.ssinfotech.co.in";
 
 export const API_BASE_URL = String(
   import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
