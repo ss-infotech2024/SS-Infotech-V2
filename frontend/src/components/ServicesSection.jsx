@@ -225,10 +225,10 @@ const SectionHeader = () => (
     <div className="inline-block px-4 py-2 bg-blue-500/10 rounded-full mb-4">
       <span className="text-blue-400 font-semibold">Our Services</span>
     </div>
-    <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 px-2 text-balance">
       Transform Your Business
     </h2>
-    <p className="text-lg text-white/70 max-w-2xl mx-auto">
+    <p className="text-base sm:text-lg text-white/70 max-w-2xl mx-auto px-4">
       Discover cutting-edge solutions designed to propel your business into the future.
     </p>
   </motion.div>

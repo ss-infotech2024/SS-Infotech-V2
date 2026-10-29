@@ -3,32 +3,28 @@ import "../index.css";
 
 const HeroWithLogo = () => {
   return (
-    <section className="relative mx-10 md:mx-8 sm:mx-4 w-full   ">
-      {/* Main Image Container with Wave */}
-      <div className="relative">
+    <section className="relative w-full max-w-full pb-10 sm:pb-16">
+      <div className="relative overflow-hidden">
         <img
           src="/office.png"
-          alt="About Section"
-          className="rounded-[0px] object-cover min-h-[200px] w-full  h-[750px]"
+          alt="SS Infotech office"
+          className="w-full h-[220px] sm:h-[360px] md:h-[480px] lg:h-[620px] object-cover object-center"
         />
-        
-        {/* Compressed Wave Under Image */}
         <div className="hero-wave"></div>
       </div>
 
-      {/* Center Button Wrapper */}
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 translate-y-1/2">
+      <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 translate-y-1/2">
         {/* Wrapper Background Shape */}
         <img
           src="assets/imgs/shape/shape-19.png"
           alt="Shape Background"
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 transform max-w-[610px] 2xl:max-w-[450px] xl:max-w-[310px] sm:hidden"
+          className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2 max-w-[280px] lg:max-w-[360px]"
         />
 
         {/* Circle Button */}
         <a
-          href="about.html"
-          className="relative flex items-center justify-center bg-theme text-white rounded-full w-[170px] h-[170px] 2xl:w-[140px] 2xl:h-[140px] xl:w-[100px] xl:h-[100px] hover:scale-105 transition-transform duration-300"
+          href="/about"
+          className="relative flex items-center justify-center bg-theme text-white rounded-full w-[84px] h-[84px] sm:w-[120px] sm:h-[120px] lg:w-[150px] lg:h-[150px] hover:scale-105 transition-transform duration-300"
         >
           {/* Wave Rings */}
           <span className="wave-ring"></span>

@@ -16,27 +16,23 @@ const Home = () => {
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 animate-gradient-x"></div>
       
       {/* Content */}
-      <div className="relative z-10 ">
+      <div className="relative z-10 min-w-0">
         {/* Hero Section */}
         <Hero />
 
-        {/* About Section */}
-        <section className=" px-4 mx-[-16px]   md:px-12  bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 ">
+        <section className="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
           <ServicesSection />
         </section>
 
-        {/* Company Goal Section */}
-        <section className="py-0 px-20 flex flex-col items-center justify-center text-center space-y-8  ">
+        <section>
           <AboutSection />
         </section>
 
-        {/* Branches Section */}
-        <section className="py-0 mx-[-16px] px-4 md:px-12 flex flex-col items-center justify-center space-y-12 ">
+        <section>
           <HeroWithLogo/>
         </section>
 
-        {/* Services Section */}
-        <section className="py-0 px-4 md:px-4 mx-[-16px]">
+        <section>
           <WhyChooseUs />
         </section>
 
