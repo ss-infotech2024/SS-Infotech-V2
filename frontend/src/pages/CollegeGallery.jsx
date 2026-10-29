@@ -1,7 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Stars, X, ChevronLeft, ChevronRight, Expand, Camera } from 'lucide-react';
-import { apiUrl } from '../config/api';
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Sparkles,
+  Stars,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Expand,
+  Camera,
+} from "lucide-react";
+import { apiUrl } from "../config/api";
 
 // Animation Variants
 const fadeUp = {
@@ -13,7 +21,7 @@ const fadeUp = {
       delay: i * 0.15,
       duration: 0.8,
       ease: "easeOut",
-      when: "beforeChildren"
+      when: "beforeChildren",
     },
   }),
 };
@@ -24,17 +32,23 @@ const container = {
     opacity: 1,
     transition: {
       staggerChildren: 0.2,
-      when: "beforeChildren"
+      when: "beforeChildren",
     },
   },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: {
+    opacity: 0,
+    y: 20,
+  },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: "easeOut" },
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
   },
 };
 
@@ -44,9 +58,9 @@ const floatingAnimation = {
     transition: {
       duration: 6,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
 const pulseAnimation = {
@@ -56,68 +70,68 @@ const pulseAnimation = {
     transition: {
       duration: 4,
       repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
 // API service functions
 const apiService = {
   async getAlbums() {
-    const response = await fetch(apiUrl('/api/albums/album-getall'));
-    if (!response.ok) throw new Error('Failed to fetch albums');
+    const response = await fetch(apiUrl("/api/albums/album-getall"));
+    if (!response.ok) throw new Error("Failed to fetch albums");
     return response.json();
   },
 
   async getAlbumById(id) {
     const response = await fetch(apiUrl(`/api/album/${id}`));
-    if (!response.ok) throw new Error('Failed to fetch album');
+    if (!response.ok) throw new Error("Failed to fetch album");
     return response.json();
   },
 
   async createAlbum(albumData) {
     const formData = new FormData();
-    Object.keys(albumData).forEach(key => {
-      if (key === 'images') {
-        albumData.images.forEach(image => formData.append('images', image));
+    Object.keys(albumData).forEach((key) => {
+      if (key === "images") {
+        albumData.images.forEach((image) => formData.append("images", image));
       } else {
         formData.append(key, albumData[key]);
       }
     });
 
-    const response = await fetch(apiUrl('/api/album-post'), {
-      method: 'POST',
+    const response = await fetch(apiUrl("/api/album-post"), {
+      method: "POST",
       body: formData,
     });
-    if (!response.ok) throw new Error('Failed to create album');
+    if (!response.ok) throw new Error("Failed to create album");
     return response.json();
   },
 
   async updateAlbum(id, albumData) {
     const formData = new FormData();
-    Object.keys(albumData).forEach(key => {
-      if (key === 'images') {
-        albumData.images.forEach(image => formData.append('images', image));
+    Object.keys(albumData).forEach((key) => {
+      if (key === "images") {
+        albumData.images.forEach((image) => formData.append("images", image));
       } else {
         formData.append(key, albumData[key]);
       }
     });
 
     const response = await fetch(apiUrl(`/api/album/${id}`), {
-      method: 'PATCH',
+      method: "PATCH",
       body: formData,
     });
-    if (!response.ok) throw new Error('Failed to update album');
+    if (!response.ok) throw new Error("Failed to update album");
     return response.json();
   },
 
   async deleteAlbum(id) {
     const response = await fetch(apiUrl(`/api/album/${id}`), {
-      method: 'DELETE',
+      method: "DELETE",
     });
-    if (!response.ok) throw new Error('Failed to delete album');
+    if (!response.ok) throw new Error("Failed to delete album");
     return response.json();
-  }
+  },
 };
 
 // Focus trap helper for modal
@@ -126,13 +140,13 @@ const useFocusTrap = (ref, isOpen) => {
     if (!isOpen || !ref.current) return;
     const element = ref.current;
     const focusableElements = element.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     const firstFocusable = focusableElements[0];
     const lastFocusable = focusableElements[focusableElements.length - 1];
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Tab') {
+      if (e.key === "Tab") {
         if (e.shiftKey) {
           if (document.activeElement === firstFocusable) {
             e.preventDefault();
@@ -147,10 +161,10 @@ const useFocusTrap = (ref, isOpen) => {
       }
     };
 
-    element.addEventListener('keydown', handleKeyDown);
+    element.addEventListener("keydown", handleKeyDown);
     firstFocusable?.focus();
 
-    return () => element.removeEventListener('keydown', handleKeyDown);
+    return () => element.removeEventListener("keydown", handleKeyDown);
   }, [ref, isOpen]);
 };
 
@@ -171,7 +185,7 @@ const CollegeGallery = () => {
         const data = await apiService.getAlbums();
         setAlbums(data);
       } catch (err) {
-        console.error('Error fetching albums:', err);
+        console.error("Error fetching albums:", err);
         setError(err.message);
         setAlbums([]);
       } finally {
@@ -185,17 +199,17 @@ const CollegeGallery = () => {
   // Close modal on ESC key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape' && selectedAlbum) {
+      if (e.key === "Escape" && selectedAlbum) {
         closeModal();
       }
     };
     if (selectedAlbum) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [selectedAlbum]);
 
@@ -203,12 +217,12 @@ const CollegeGallery = () => {
   useEffect(() => {
     const handleKey = (e) => {
       if (!selectedAlbum) return;
-      if (e.key === 'ArrowLeft') prevImage();
-      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === "ArrowLeft") prevImage();
+      if (e.key === "ArrowRight") nextImage();
     };
     if (selectedAlbum) {
-      document.addEventListener('keydown', handleKey);
-      return () => document.removeEventListener('keydown', handleKey);
+      document.addEventListener("keydown", handleKey);
+      return () => document.removeEventListener("keydown", handleKey);
     }
   }, [selectedAlbum, currentImageIndex]);
 
@@ -232,7 +246,10 @@ const CollegeGallery = () => {
 
   const prevImage = () => {
     if (!selectedAlbum) return;
-    setCurrentImageIndex((i) => (i - 1 + selectedAlbum.images.length) % selectedAlbum.images.length);
+    setCurrentImageIndex(
+      (i) =>
+        (i - 1 + selectedAlbum.images.length) % selectedAlbum.images.length,
+    );
   };
 
   const handleOverlayClick = (e) => {
@@ -249,7 +266,7 @@ const CollegeGallery = () => {
           animate={{
             y: [0, 30, 0],
             x: [0, 15, 0],
-            scale: [1, 1.2, 1]
+            scale: [1, 1.2, 1],
           }}
           transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
         />
@@ -259,7 +276,7 @@ const CollegeGallery = () => {
           animate={{
             y: [0, -40, 0],
             x: [0, -20, 0],
-            scale: [1, 1.3, 1]
+            scale: [1, 1.3, 1],
           }}
           transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
         />
@@ -296,11 +313,23 @@ const CollegeGallery = () => {
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-8 h-8 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-purple-900 mb-3">Failed to Load Galleries</h3>
+            <h3 className="text-xl font-semibold text-purple-900 mb-3">
+              Failed to Load Galleries
+            </h3>
             <p className="text-purple-700 mb-6">{error}</p>
             <div className="space-y-3 text-sm text-purple-600 mb-6">
               <p>Please check:</p>
@@ -333,7 +362,7 @@ const CollegeGallery = () => {
           animate={{
             y: [0, 30, 0],
             x: [0, 15, 0],
-            scale: [1, 1.2, 1]
+            scale: [1, 1.2, 1],
           }}
           transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
         />
@@ -343,7 +372,7 @@ const CollegeGallery = () => {
           animate={{
             y: [0, -40, 0],
             x: [0, -20, 0],
-            scale: [1, 1.3, 1]
+            scale: [1, 1.3, 1],
           }}
           transition={{ repeat: Infinity, duration: 10, ease: "easeInOut" }}
         />
@@ -361,7 +390,7 @@ const CollegeGallery = () => {
           className="absolute bottom-1/3 right-1/3"
           variants={floatingAnimation}
           animate="animate"
-          style={{ animationDelay: '2s' }}
+          style={{ animationDelay: "2s" }}
         >
           {/* <Sparkles className="h-4 w-4 text-pink-300" /> */}
         </motion.div>
@@ -392,15 +421,15 @@ const CollegeGallery = () => {
               <motion.span
                 className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent inline-block"
                 animate={{
-                  backgroundPosition: ['0%', '100%', '0%'],
+                  backgroundPosition: ["0%", "100%", "0%"],
                 }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
                 style={{
-                  backgroundSize: '200% 200%'
+                  backgroundSize: "200% 200%",
                 }}
               >
                 Memories
@@ -411,7 +440,8 @@ const CollegeGallery = () => {
               className="text-xl text-purple-700 max-w-3xl mx-auto leading-relaxed"
               variants={item}
             >
-              Discover the vibrant moments and beautiful memories captured throughout our journey.{" "}
+              Discover the vibrant moments and beautiful memories captured
+              throughout our journey.{" "}
               <motion.span
                 className="font-semibold text-purple-800"
                 animate={{ opacity: [0.7, 1, 0.7] }}
@@ -423,22 +453,16 @@ const CollegeGallery = () => {
           </motion.div>
 
           {/* Albums Grid */}
-          <motion.div
-            className="space-y-20"
-            variants={container}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-          >
+          <div className="space-y-12 sm:space-y-16">
             {albums.map((album, index) => (
-              <AlbumSection 
-                key={album.id} 
-                album={album} 
-                onExploreMore={(imgIndex) => openModal(album, imgIndex)} 
+              <AlbumSection
+                key={album.id}
+                album={album}
+                onExploreMore={(imgIndex) => openModal(album, imgIndex)}
                 index={index}
               />
             ))}
-          </motion.div>
+          </div>
 
           {albums.length === 0 && !loading && (
             <motion.div
@@ -449,9 +473,12 @@ const CollegeGallery = () => {
               <div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Camera className="w-12 h-12 text-purple-400" />
               </div>
-              <h3 className="text-2xl font-semibold text-purple-600 mb-3">No Albums Found</h3>
+              <h3 className="text-2xl font-semibold text-purple-600 mb-3">
+                No Albums Found
+              </h3>
               <p className="text-purple-500 max-w-md mx-auto">
-                There are no gallery albums to display at the moment. Check back later for updates!
+                There are no gallery albums to display at the moment. Check back
+                later for updates!
               </p>
             </motion.div>
           )}
@@ -480,7 +507,7 @@ const CollegeGallery = () => {
               className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-pink-500/10 rounded-full blur-3xl"
               variants={pulseAnimation}
               animate="animate"
-              style={{ animationDelay: '2s' }}
+              style={{ animationDelay: "2s" }}
             />
 
             <motion.div
@@ -500,7 +527,9 @@ const CollegeGallery = () => {
                     <Camera className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-purple-900">{selectedAlbum.fullTitle || selectedAlbum.title}</h3>
+                    <h3 className="text-xl font-bold text-purple-900">
+                      {selectedAlbum.fullTitle || selectedAlbum.title}
+                    </h3>
                     <p className="text-sm text-purple-600">
                       {selectedAlbum.images?.length || 0} photos
                     </p>
@@ -540,7 +569,7 @@ const CollegeGallery = () => {
                       initial={{ opacity: 0, x: 50 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
                     />
                   </AnimatePresence>
 
@@ -566,8 +595,13 @@ const CollegeGallery = () => {
 
                   {/* Enhanced Index Indicator */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm border border-white/20">
-                    <span className="text-purple-300">{currentImageIndex + 1}</span>
-                    <span className="text-white/70"> / {selectedAlbum.images.length}</span>
+                    <span className="text-purple-300">
+                      {currentImageIndex + 1}
+                    </span>
+                    <span className="text-white/70">
+                      {" "}
+                      / {selectedAlbum.images.length}
+                    </span>
                   </div>
                 </div>
 
@@ -582,11 +616,13 @@ const CollegeGallery = () => {
                         whileTap={{ scale: 0.95 }}
                         className={`relative rounded-xl overflow-hidden shadow-md transition-all duration-200 border-2 ${
                           index === currentImageIndex
-                            ? 'border-purple-500 ring-2 ring-purple-200/50 bg-purple-50'
-                            : 'border-transparent hover:border-purple-300 hover:shadow-lg'
+                            ? "border-purple-500 ring-2 ring-purple-200/50 bg-purple-50"
+                            : "border-transparent hover:border-purple-300 hover:shadow-lg"
                         } focus:outline-none focus:ring-2 focus:ring-purple-500 group`}
                         aria-label={`Jump to image ${index + 1}`}
-                        aria-current={index === currentImageIndex ? 'true' : 'false'}
+                        aria-current={
+                          index === currentImageIndex ? "true" : "false"
+                        }
                       >
                         <img
                           src={image}
@@ -634,14 +670,14 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
 
   // Color gradients for different albums
   const colorGradients = [
-    'from-purple-500 to-pink-500',
-    'from-blue-500 to-cyan-500',
-    'from-green-500 to-emerald-500',
-    'from-orange-500 to-red-500',
-    'from-indigo-500 to-purple-500',
-    'from-teal-500 to-blue-500'
+    "from-purple-500 to-pink-500",
+    "from-blue-500 to-cyan-500",
+    "from-green-500 to-emerald-500",
+    "from-orange-500 to-red-500",
+    "from-indigo-500 to-purple-500",
+    "from-teal-500 to-blue-500",
   ];
-  
+
   const gradient = colorGradients[index % colorGradients.length];
 
   // Responsive measurement
@@ -661,10 +697,10 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
     measure();
     const ro = new ResizeObserver(measure);
     if (containerRef.current) ro.observe(containerRef.current);
-    window.addEventListener('resize', measure);
+    window.addEventListener("resize", measure);
     return () => {
       ro.disconnect();
-      window.removeEventListener('resize', measure);
+      window.removeEventListener("resize", measure);
     };
   }, [total]);
 
@@ -729,8 +765,8 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
     }
   }, [itemWidth, visibleCount]);
 
-  const centerOffset = shouldCenter 
-    ? (containerWidth - total * itemWidth - (total - 1) * gap) / 2 
+  const centerOffset = shouldCenter
+    ? (containerWidth - total * itemWidth - (total - 1) * gap) / 2
     : 0;
 
   // If no images, don't render the section
@@ -742,18 +778,24 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
     <motion.div
       className="space-y-8"
       variants={item}
-      custom={index}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{
+        once: true,
+        amount: 0.05,
+        margin: "0px 0px 100px 0px",
+      }}
     >
       {/* Enhanced Header with title and controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-2">
-          <h3 className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
+          <h3
+            className={`text-3xl md:text-4xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
+          >
             {album.title}
           </h3>
           {album.description && (
-            <p className="text-purple-600 max-w-2xl">
-              {album.description}
-            </p>
+            <p className="text-purple-600 max-w-2xl">{album.description}</p>
           )}
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -765,7 +807,9 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
             className="px-4 sm:px-5 py-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-center gap-2 border border-purple-100"
           >
             <ChevronLeft className="w-4 h-4 text-purple-600" />
-            <span className="hidden sm:inline text-purple-700 font-medium">Prev</span>
+            <span className="hidden sm:inline text-purple-700 font-medium">
+              Prev
+            </span>
           </motion.button>
 
           <motion.button
@@ -775,7 +819,9 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
             aria-label={`Next image in ${album.title} gallery`}
             className="px-4 sm:px-5 py-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 flex items-center justify-center gap-2 border border-purple-100"
           >
-            <span className="hidden sm:inline text-purple-700 font-medium">Next</span>
+            <span className="hidden sm:inline text-purple-700 font-medium">
+              Next
+            </span>
             <ChevronRight className="w-4 h-4 text-purple-600" />
           </motion.button>
 
@@ -803,22 +849,25 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
       >
         <motion.div
           ref={trackRef}
-          className={`flex ${shouldCenter ? 'justify-center' : 'justify-start'} items-center transition-colors duration-300`}
+          className={`flex ${shouldCenter ? "justify-center" : "justify-start"} items-center transition-colors duration-300`}
           style={{
             gap: `${gap}px`,
-            width: total > visibleCount ? `${total * (itemWidth + gap)}px` : 'auto',
-            transform: shouldCenter ? `translateX(${centerOffset}px)` : undefined,
+            width:
+              total > visibleCount ? `${total * (itemWidth + gap)}px` : "auto",
+            transform: shouldCenter
+              ? `translateX(${centerOffset}px)`
+              : undefined,
           }}
           animate={{
             x: shouldCenter ? centerOffset : translateX,
           }}
           transition={{
-            type: 'spring',
+            type: "spring",
             stiffness: 100,
             damping: 20,
             duration: 0.6,
           }}
-          drag={total > visibleCount ? 'x' : false}
+          drag={total > visibleCount ? "x" : false}
           dragConstraints={
             total > visibleCount
               ? { left: -(maxLeadingIndex * (itemWidth + gap)), right: 0 }
@@ -845,7 +894,7 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
               className="flex-shrink-0 rounded-2xl overflow-hidden shadow-lg cursor-pointer group relative"
               style={{
                 width: `${itemWidth}px`,
-                height: '240px',
+                height: "240px",
               }}
               whileHover={{ scale: 1.03, y: -5 }}
               whileTap={{ scale: 0.98 }}
@@ -854,7 +903,7 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
               tabIndex={0}
               aria-label={`View full size of image ${i + 1} from ${album.title}`}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
+                if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   onExploreMore(i);
                 }
@@ -905,8 +954,11 @@ const AlbumSection = ({ album, onExploreMore, index }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Showing {Math.min(visibleCount, total)} of {total} images • 
-          <span className="text-purple-500 font-medium"> Auto-advances every {autoplayDelay / 1000}s</span>
+          Showing {Math.min(visibleCount, total)} of {total} images •
+          <span className="text-purple-500 font-medium">
+            {" "}
+            Auto-advances every {autoplayDelay / 1000}s
+          </span>
         </motion.p>
       )}
     </motion.div>
