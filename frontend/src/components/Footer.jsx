@@ -92,8 +92,13 @@ const Footer = () => {
   },
   {
     icon: FaPhone,
-    text: "+91 77199 27774",
-    href: "tel:+917719927774",
+    text: "+91 93993 45989",
+    href: "tel:+919399345989",
+  },
+  {
+    icon: FaPhone,
+    text: "+91 82629 08256",
+    href: "tel:+918262908256",
   },
   {
     icon: FaEnvelope,
@@ -124,7 +129,7 @@ const Footer = () => {
               Our Services
             </h2>
             <ul className="space-y-1 text-sm">
-              {["Website Developments", "Mobile App Development", "App Development", "Machine LearninDigital Marketing", "Integration Services"].map((service, index) => (
+              {["Website Developments", "Mobile App Development", "App Development", "Machine Learning", "Digital Marketing", "Integration Services"].map((service, index) => (
                 <li key={index}>
                   <p href="#" className="text-gray-300 hover:text-white">{service}</p>
                 </li>
