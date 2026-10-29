@@ -86,9 +86,9 @@ const Hero = () => {
     }
   };
 
-  if (loading) return <div className="text-center text-white py-20">Loading slides...</div>;
-  if (error) return <div className="text-center text-red-400 py-20">Error: {error}</div>;
-  if (slides.length === 0) return <div className="text-center text-white py-20">No slides available</div>;
+  if (loading) return <div className="text-center text-slate-600 py-16 px-4">Loading slides...</div>;
+  if (error) return <div className="text-center text-red-500 py-16 px-4">Error: {error}</div>;
+  if (slides.length === 0) return <div className="text-center text-slate-600 py-16 px-4">No slides available</div>;
 
   return (
     <section
@@ -172,7 +172,7 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 text-balance"
           >
             Empowering Businesses
             <span className="block text-blue-300">

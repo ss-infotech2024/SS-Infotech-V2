@@ -138,35 +138,34 @@ const BrandSectionWithIcons = () => {
   const row2 = technologies.slice(6);
 
   return (
-    <section className="section-spacing w-3/4 md:w-10/12 mt-10 md:mt-[70px] mb-10 md:mb-[70px]">
-      <div className=" mx-auto  px-0 sm:px-2 animate-fade-in">
+    <section className="section-spacing w-full md:w-10/12 mt-6 md:mt-[70px] mb-8 md:mb-[70px]">
+      <div className="mx-auto px-0 sm:px-2 animate-fade-in">
         <div className="border border-blue-500 rounded-2xl md:rounded-[30px] bg-[#EBEDF5] p-4 sm:p-6 md:p-10 lg:p-16">
-          <div className="text-center mb-6 md:mb-10">
+          <div className="text-center mb-5 md:mb-10">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 md:mb-4">
               Technologies We Work With
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-2">
+            <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg px-1">
               We build powerful and scalable solutions using modern technologies
               and frameworks — from front-end to back-end.
             </p>
           </div>
 
-          {/* === Infinite Scroll Rows === */}
           <div className="overflow-hidden space-y-3 md:space-y-4">
             {[row1, row2].map((row, i) => (
               <div
                 key={i}
-                className={`flex w-full gap-3 sm:gap-4 md:gap-6 ${
+                className={`flex w-max gap-3 sm:gap-4 md:gap-6 ${
                   i % 2 === 0 ? "animate-marquee-left" : "animate-marquee-right"
                 }`}
               >
                 {row.concat(row).map((tech, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center justify-center text-center bg-white p-3 sm:p-4 md:p-5 rounded-lg md:rounded-[15px] shadow-sm min-w-[80px] sm:min-w-[100px] md:min-w-[120px] flex-shrink-0"
+                    className="flex flex-col items-center justify-center text-center bg-white px-3 py-4 md:p-5 rounded-xl md:rounded-[15px] shadow-sm min-w-[118px] sm:min-w-[132px] md:min-w-[120px] min-h-[96px] md:min-h-0 flex-shrink-0 [&_svg]:w-10 [&_svg]:h-10 [&_img]:w-10 [&_img]:h-10 md:[&_svg]:w-12 md:[&_svg]:h-12 md:[&_img]:w-12 md:[&_img]:h-12"
                   >
                     {tech.icon}
-                    <div className="mt-1 md:mt-2 font-medium text-gray-800 text-xs sm:text-sm md:text-base">
+                    <div className="mt-2 font-medium text-gray-800 text-xs sm:text-sm md:text-base leading-tight">
                       {tech.name}
                     </div>
                   </div>

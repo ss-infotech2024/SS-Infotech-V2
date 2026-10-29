@@ -67,7 +67,7 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="about-area py-20 lg:py-28 relative overflow-hidden bg-white px-24">
+    <section ref={sectionRef} className="about-area py-12 sm:py-20 lg:py-28 relative overflow-hidden bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="about-area-inner grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           
@@ -128,7 +128,7 @@ const AboutSection = () => {
             {/* Floating Image with Parallax */}
             <motion.div
               ref={floatingRef}
-              className="absolute -bottom-8 -right-8 w-48 h-48 lg:w-56 lg:h-56 border-8 border-white rounded-2xl shadow-2xl overflow-hidden z-20 will-change-transform mb-[20px]"
+              className="absolute bottom-3 right-3 sm:-bottom-8 sm:-right-8 w-24 h-24 sm:w-48 sm:h-48 lg:w-56 lg:h-56 border-4 sm:border-8 border-white rounded-2xl shadow-2xl overflow-hidden z-20 will-change-transform"
               initial={{ scale: 0, rotate: 10, opacity: 0 }}
               whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
               viewport={{ once: true }}
@@ -177,7 +177,7 @@ const AboutSection = () => {
 
           {/* Right Side - Content */}
           <motion.div 
-            className="about-content"
+            className="about-content pr-14 sm:pr-0"
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -185,19 +185,19 @@ const AboutSection = () => {
           >
             {/* Main Heading */}
             <motion.h2 
-              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 leading-tight"
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight text-balance"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Make Sure Your Objectives<br />
-              <span className="text-gradient-to-r from-purple-600 to-purple-700">Improves Profit</span> Drivers
+              Make Sure Your Objectives{" "}
+              <span className="text-purple-700">Improves Profit</span> Drivers
             </motion.h2>
 
             {/* Description */}
             <motion.p 
-              className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed"
+              className="text-base sm:text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
