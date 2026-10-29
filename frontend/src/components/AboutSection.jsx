@@ -126,7 +126,7 @@ const AboutSection = () => {
             </div>
 
             {/* Floating Image with Parallax */}
-            <motion.div
+            {/* <motion.div
               ref={floatingRef}
               className="absolute bottom-3 right-3 sm:-bottom-8 sm:-right-8 w-24 h-24 sm:w-48 sm:h-48 lg:w-56 lg:h-56 border-4 sm:border-8 border-white rounded-2xl shadow-2xl overflow-hidden z-20 will-change-transform"
               initial={{ scale: 0, rotate: 10, opacity: 0 }}
@@ -139,12 +139,12 @@ const AboutSection = () => {
                 stiffness: 100
               }}
               
-            >
-              <img
+            > */}
+              {/* <img
                 src="/director.png"
                 alt="Business consulting"
                 className="w-full h-full object-cover"
-              />
+              /> */}
               
               {/* Trust Badge */}
               {/* <motion.div 
@@ -156,7 +156,7 @@ const AboutSection = () => {
               >
                 Trusted
               </motion.div> */}
-            </motion.div>
+            {/* </motion.div> */}
 
             {/* Decorative Elements */}
             <motion.div 
