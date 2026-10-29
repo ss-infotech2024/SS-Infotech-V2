@@ -42,7 +42,7 @@ const Home = () => {
         </section> */}
 
         {/* Contact Form */}
-        <section className="px-4 md:px-12 flex flex-col items-center justify-center">
+        <section className="px-3 sm:px-4 md:px-12 flex flex-col items-center justify-center">
           <BrandSectionWithIcons />
         </section>
       </div>

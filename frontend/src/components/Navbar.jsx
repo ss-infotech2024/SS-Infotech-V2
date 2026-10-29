@@ -1,82 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaFacebook, FaTwitter, FaLinkedinIn, FaBars, FaPhone,FaInstagram ,FaWhatsapp} from 'react-icons/fa';
-import { NavLink, useLocation  } from "react-router-dom";
+import { FaBars, FaPhone } from 'react-icons/fa';
+import { NavLink, useLocation } from "react-router-dom";
 
-// Data-driven approach for menu structure
 const menuItems = [
-  {
-    title: 'Home',
-    link: '/'
-  },
-  {
-    title: 'About Us',
-    link: '/about'
-  },
-  {
-    title: 'Services',
-    link: '/services'
-  },
-  {
-    title: 'Contact',
-    link: '/contact'
-  },
-  {
-    title: 'Careers',
-    link: '/serach-jobs'
-  },
-  {
-    title: 'Gallery',
-    link: '/gallary'
-  }
+  { title: 'Home', link: '/' },
+  { title: 'About Us', link: '/about' },
+  { title: 'Services', link: '/services' },
+  { title: 'Contact', link: '/contact' },
+  { title: 'Careers', link: '/serach-jobs' },
+  { title: 'Gallery', link: '/gallary' }
 ];
 
-const socialLinks = [
-  {
-    name: 'Whatsapp',
-    icon: FaWhatsapp,
-    href: 'https://wa.link/rck1ie',
-    color: 'hover:text-blue-400'
-  },
-  {
-    name: 'Instagram',
-    icon: FaInstagram,
-    href: 'https://www.instagram.com/ss.infotech_?igsh=MTJvNHVqdGZ0aXM2bA==',
-    color: 'hover:text-blue-400'
-  },
-  {
-    name: 'LinkedIn',
-    icon: FaLinkedinIn,
-    href: 'https://www.linkedin.com/company/ss-infotech-co/',
-    color: 'hover:text-blue-400'
-  }
-];
-
-// Reusable Social Link Component
-const SocialLink = ({ social }) => {
-  const IconComponent = social.icon;
-  return (
-    <motion.a
-      href={social.href}
-      className={`flex items-center space-x-2 transition-colors text-sm ${social.color}`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={`Visit our ${social.name}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <IconComponent className="w-4 h-4" />
-      <span className="font-semibold">{social.name}</span>
-    </motion.a>
-  );
-};
-
-// Navigation Item Component
 const MotionNavLink = motion(NavLink);
 
 const NavItem = ({ item }) => {
   const location = useLocation();
-
   const isActive =
     item.link === "/"
       ? location.pathname === "/"
@@ -99,68 +38,6 @@ const NavItem = ({ item }) => {
   );
 };
 
-// Top Bar Component
-const TopBar = () => (
-  <motion.div
-  className="relative overflow-hidden rounded-b-3xl shadow-2xl"
-  initial={{ y: -60, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ duration: 0.7, ease: "easeOut" }}
->
-  {/* Background Video */}
-  <div className="absolute inset-0 overflow-hidden">
-    <video
-      src="/nav.mp4"                 // VIDEO PATH: /public/navbar.mp4
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="w-full h-full object-cover"
-      style={{ filter: 'brightness(0.5) contrast(1.2)' }}
-    />
-  </div>
-
-  {/* Dark Gradient Overlay + Glass Effect */}
-  <div className="absolute inset-0 bg-gradient-to-r from-purple-900/95 via-purple-800/90 backdrop-blur-md" />
-
-  {/* Optional Subtle Pattern (for texture) */}
-  
-
-  {/* Content */}
-  <div className="relative z-10 w-full px-4 lg:px-8 py-3">
-    <div className="flex flex-col md:flex-row justify-between items-center space-y-3 md:space-y-0">
-      
-      {/* Optional: Phone / Update Note */}
-      {/* <div className="flex items-center space-x-3 text-sm font-medium">
-        <Phone className="w-4 h-4" />
-        <span>Call: +91 77199 27774</span>
-      </div> */}
-
-      {/* Social Icons */}
-      <div className="header-social flex space-x-5">
-        {socialLinks.map((social, index) => (
-          <motion.a
-            key={social.name}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group p-2.5 rounded-full bg-white/15 backdrop-blur border border-white/30 shadow-lg transition-all duration-300 hover:bg-white/25 hover:shadow-xl hover:scale-110"
-            whileHover={{ y: -3 }}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-          >
-            <social.icon className="w-5 h-5 text-white group-hover:text-purple-200 transition-colors" />
-            <span className="sr-only">{social.name}</span>
-          </motion.a>
-        ))}
-      </div>
-    </div>
-  </div>
-</motion.div>
-);
-
-// Mobile Menu Toggle Component
 const MobileMenuToggle = ({ onClick }) => (
   <motion.button
     className="lg:hidden p-2 text-gray-700 hover:text-purple-600 transition-colors"
@@ -175,123 +52,140 @@ const MobileMenuToggle = ({ onClick }) => (
 
 const Navbar = () => {
   const location = useLocation();
+  const headerRef = useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [barHeight, setBarHeight] = useState(72);
+  const lastY = useRef(0);
 
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
   }, []);
 
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const update = () => setBarHeight(el.offsetHeight);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    lastY.current = window.scrollY;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY.current;
+
+      if (isMobileMenuOpen || y < 40) {
+        setHidden(false);
+      } else if (delta > 8) {
+        setHidden(true);
+      } else if (delta < -8) {
+        setHidden(false);
+      }
+
+      lastY.current = y;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobileMenuOpen]);
+
   return (
     <>
-      {/* Top Bar (non-sticky) */}
-      <TopBar />
+    <div style={{ height: barHeight }} aria-hidden="true" />
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-transform duration-300 ease-out ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
+      <div ref={headerRef} className="bg-white px-4 lg:px-6 border-b border-gray-100 shadow-sm">
+        <div className="w-full px-2 sm:px-4 lg:px-6">
+          <div className="flex justify-between items-center py-2">
+            <NavLink to="/" className="block shrink-0">
+              <img
+                src="/logo.png"
+                alt="SS Infotech"
+                className="h-14 w-auto sm:h-16 md:h-20 lg:h-24 object-contain max-w-[180px] sm:max-w-[220px] lg:max-w-[260px]"
+                loading="eager"
+              />
+            </NavLink>
 
-      {/* Sticky Navbar */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
-        <motion.div 
-          className="bg-white px-4 lg:px-6 border-b border-gray-100"
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <div className="w-full px-4 lg:px-6">
-            <div className="flex justify-between items-center py-3">
-              
-              {/* Logo */}
-              <motion.div 
-                className="header-logo"
-                whileHover={{ scale: 1.05 }}
-              >
-                <NavLink to="/" className="block">
-                  <img 
-                    src="/logo.png" 
-                    alt="SS Infotech Logo" 
-                    className="h-16 w-auto sm:h-20 md:h-24 lg:h-28 xl:h-32 object-contain max-w-[200px] sm:max-w-[250px] lg:max-w-[300px]"
-                    loading="eager"
-                  />
-                </NavLink>
-              </motion.div>
-              
-              {/* Desktop Navigation */}
-              <nav className="hidden lg:block py-2">
-                <ul className="flex space-x-8 xl:space-x-10">
-                  {menuItems.map((item, index) => (
-                    <NavItem
-                      key={item.title}
-                      item={item}
-                    />
-                  ))}
-                </ul>
-              </nav>
-              
-              {/* CTA Section */}
-              <div className="hidden md:flex items-center space-x-6">
-                <motion.div 
-                  className="call-box flex items-center space-x-2 text-gray-700"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <FaPhone className="w-4 h-4 text-purple-600 scale-x-[-1]" />
-                  <span>
-                    Call us: {' '}
-                    <a 
-                      href="tel:+9177199 27774" 
-                      className="font-semibold hover:text-purple-600 transition-colors"
-                    >
-                      +91 82629 08256
-                    </a>
-                  </span>
-                </motion.div>
-                
-                {/* <motion.button
-                  className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-md"
-                  whileHover={{ scale: 1.05, boxShadow: '0 10px 25px -5px rgba(168, 85, 247, 0.4)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Get Started
-                </motion.button> */}
-              </div>
-              
-              {/* Mobile Menu Toggle */}
-              <MobileMenuToggle onClick={toggleMobileMenu} />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              className="lg:hidden bg-white border-t border-gray-200 shadow-xl"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="px-4 py-6 space-y-4">
-                {menuItems.map((item, index) => (
-                  <div key={item.title} className="border-b border-gray-100 pb-4 last:border-b-0">
-                    <NavLink
-                      to={item.link}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`font-semibold text-lg transition-colors block ${
-                        (
-                          item.link === "/"
-                            ? location.pathname === "/"
-                            : location.pathname === item.link
-                        )
-                          ? "text-purple-600"
-                          : "text-gray-800 hover:text-purple-600"
-                      }`}
-                    >
-                      {item.title}
-                    </NavLink>
-                  </div>
+            <nav className="hidden lg:block py-2">
+              <ul className="flex space-x-8 xl:space-x-10">
+                {menuItems.map((item) => (
+                  <NavItem key={item.title} item={item} />
                 ))}
+              </ul>
+            </nav>
+
+            <div className="hidden md:flex items-center space-x-6">
+              <div className="flex items-center space-x-2 text-gray-700">
+                <FaPhone className="w-4 h-4 text-purple-600 scale-x-[-1]" />
+                <span>
+                  Call us:{" "}
+                  <a
+                    href="tel:+918262908256"
+                    className="font-semibold hover:text-purple-600 transition-colors"
+                  >
+                    +91 82629 08256
+                  </a>
+                </span>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+            </div>
+
+            <MobileMenuToggle onClick={toggleMobileMenu} />
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .phone-menu-glass {
+          background: linear-gradient(180deg, rgba(255,255,255,0.62), rgba(237,233,254,0.42));
+          backdrop-filter: blur(18px) saturate(1.7);
+          -webkit-backdrop-filter: blur(18px) saturate(1.7);
+          border-top: 1px solid rgba(255,255,255,0.75);
+          box-shadow: 0 18px 40px rgba(88, 28, 135, 0.16);
+        }
+      `}</style>
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            className="phone-menu-glass lg:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="px-3 py-3 space-y-1">
+              {menuItems.map((item) => {
+                const isActive =
+                  item.link === "/"
+                    ? location.pathname === "/"
+                    : location.pathname === item.link;
+                return (
+                  <NavLink
+                    key={item.title}
+                    to={item.link}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`font-semibold text-lg transition-colors block rounded-xl px-3 py-3 ${
+                      isActive
+                        ? "bg-white/75 text-purple-600 shadow-sm"
+                        : "text-gray-800 hover:bg-white/45 hover:text-purple-600"
+                    }`}
+                  >
+                    {item.title}
+                  </NavLink>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
     </>
   );
 };
