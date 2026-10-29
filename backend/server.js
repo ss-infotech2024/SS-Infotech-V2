@@ -130,16 +130,7 @@ const startServer = async () => {
     // ------------------------
     // Serve Frontend in Production
     // ------------------------
-    if (process.env.NODE_ENV === "production") {
-      const frontendPath = join(__dirname, "../frontend/dist");
-      app.use(express.static(frontendPath));
-
-      app.get("*", (req, res) => {
-        res.sendFile(join(frontendPath, "index.html"));
-      });
-
-      console.log(`🌐 Serving frontend from: ${frontendPath}`);
-    }
+    
 
     // ------------------------
     // Global Error Handler
