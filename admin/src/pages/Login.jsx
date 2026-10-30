@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("12345");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,9 +24,12 @@ export default function Login() {
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.success) {
-        throw new Error(result.message || "Invalid username or password.");
+        const message = response.status === 401
+          ? "The backend rejected these login details. Check ADMIN_USER and ADMIN_PASSWORD in the deployed backend settings."
+          : result.message || "Could not sign in. Please try again.";
+        throw new Error(message);
       }
-      localStorage.setItem("isAdminLoggedIn", true);
+      localStorage.setItem("isAdminLoggedIn", "true");
       navigate("/");
     } catch (loginError) {
       setError(loginError.message || "Could not sign in. Please try again.");
@@ -61,7 +66,6 @@ export default function Login() {
         <p className=" font-bold text-center text-blue-700 mb-6">
           Admin Login
         </p>
-
         <form onSubmit={handleLogin} className="space-y-5">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -84,13 +88,25 @@ export default function Login() {
             transition={{ delay: 0.6 }}
           >
             <label className="block text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300  p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 p-2 pr-11 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((visible) => !visible)}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 hover:text-blue-700"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? <FaEyeSlash aria-hidden="true" /> : <FaEye aria-hidden="true" />}
+              </button>
+            </div>
           </motion.div>
 
           {error && (
