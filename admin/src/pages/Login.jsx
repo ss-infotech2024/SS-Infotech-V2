@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { apiUrl } from "../lib/api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Login() {
     setError("");
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/admin/login", {
+      const response = await fetch(apiUrl("/api/admin/login"), {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },

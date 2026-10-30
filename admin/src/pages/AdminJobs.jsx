@@ -5,9 +5,10 @@ import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
 
 // Icons
 import { Trash, Plus, Edit3, Loader2 } from "lucide-react";
+import { apiAuthHeaders, apiUrl } from "../lib/api";
 
 export default function AdminJobs() {
-  const BASE_URL = "/api/jobs";
+  const BASE_URL = apiUrl("/api/jobs");
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +70,7 @@ export default function AdminJobs() {
 
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: apiAuthHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(jobData),
       });
 
@@ -103,7 +104,7 @@ export default function AdminJobs() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this job?")) return;
     try {
-      const res = await fetch(`${BASE_URL}/delete-jobs/${id}`, { method: "DELETE" });
+      const res = await fetch(`${BASE_URL}/delete-jobs/${id}`, { method: "DELETE", headers: apiAuthHeaders() });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to delete job");
 

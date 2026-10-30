@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaSignOutAlt, FaBars, FaTimes, FaTachometerAlt, FaImages, FaBriefcase, FaFileAlt, FaCertificate, FaUsers, FaPhotoVideo, FaClipboardList } from "react-icons/fa";
+import { apiAuthHeaders, apiUrl } from "../lib/api";
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export default function AdminSidebar() {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+      await fetch(apiUrl("/api/admin/logout"), { method: "POST", headers: apiAuthHeaders() });
     } catch (error) {
       console.error("Admin logout failed:", error);
     } finally {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { message } from "antd";
 import { Download, Trash2 } from "lucide-react";
+import { apiAuthHeaders, apiUrl } from "../lib/api";
 
 const AdminSlides = () => {
   const [slides, setSlides] = useState([]);
@@ -13,7 +14,6 @@ const AdminSlides = () => {
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  const API_BASE = "";
 
   // Fetch slides on mount
   useEffect(() => {
@@ -24,9 +24,9 @@ const AdminSlides = () => {
   const fetchSlides = async () => {
     try {
       setFetchError("");
-      const res = await fetch(`${API_BASE}/api/slides`, {
+      const res = await fetch(apiUrl("/api/slides"), {
         method: "GET",
-        credentials: "include",
+        headers: apiAuthHeaders(),
       });
 
       if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
@@ -80,10 +80,10 @@ const AdminSlides = () => {
 
       console.log("Submitting form data...");
 
-      const res = await fetch(`${API_BASE}/api/slides`, {
+      const res = await fetch(apiUrl("/api/slides"), {
         method: "POST",
         body: formData,
-        credentials: "include",
+        headers: apiAuthHeaders(),
       });
 
       if (!res.ok) {
@@ -112,9 +112,9 @@ const AdminSlides = () => {
     if (!window.confirm("Are you sure you want to delete this slide?")) return;
 
     try {
-      const res = await fetch(`${API_BASE}/api/slides/delete/${id}`, {
+      const res = await fetch(apiUrl(`/api/slides/delete/${id}`), {
         method: "DELETE",
-        credentials: "include",
+        headers: apiAuthHeaders(),
       });
 
       if (!res.ok) {
@@ -135,8 +135,8 @@ const AdminSlides = () => {
   // Test backend connection
   const testConnection = async () => {
     try {
-      const res = await fetch(`${API_BASE}/api/slides`, {
-        credentials: "include",
+      const res = await fetch(apiUrl("/api/slides"), {
+        headers: apiAuthHeaders(),
       });
       if (res.status === 200) {
         message.success("✅ Backend connection successful!");
