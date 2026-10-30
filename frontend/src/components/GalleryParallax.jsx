@@ -27,19 +27,22 @@ export default function GalleryParallax({
   useEffect(() => {
     const fetchGalleryImages = async () => {
       try {
-        const res = await fetch(apiUrl("/api/gallery/gallery-img"));
+        const res = await fetch(apiUrl("/api/albums/album-getall"));
         if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
         const data = await res.json();
 
         console.log("API Response:", data);
 
         // ✅ Normalize backend data
-        const images =
-          Array.isArray(data)
-            ? data
-            : Array.isArray(data.galleryImages)
-            ? data.galleryImages
-            : [];
+        const albums = Array.isArray(data) ? data : Array.isArray(data.albums) ? data.albums : [];
+        const images = albums.flatMap((album) =>
+          (Array.isArray(album.images) ? album.images : []).map((thumbnail, imageIndex) => ({
+            _id: `${album._id || album.title}-${imageIndex}`,
+            title: album.fullTitle || album.title || "Gallery",
+            category: album.title || "Gallery",
+            thumbnail,
+          })),
+        );
 
         setGalleryImages(images);
       } catch (err) {

@@ -19,10 +19,12 @@ export const ROLE_BY_TEMPLATE = {
   "Cyber Security": "Cyber Security Intern",
   Marketing: "Marketing Intern",
   "Human Resources": "Human Resources Intern",
+  "AI/ML": "AI/ML Intern",
 };
 
 export function templateFromJobTitle(title = "") {
   const value = String(title).toLowerCase();
+  if (/(artificial intelligence|machine learning|\bai\s*\/\s*ml\b)/.test(value)) return "AI/ML";
   if (/(data|analyst|analytics)/.test(value)) return "Data Analyst";
   if (/(cyber|security)/.test(value)) return "Cyber Security";
   if (/market/.test(value)) return "Marketing";
@@ -142,6 +144,7 @@ function certificateStateFromLocation(state) {
       position: state?.position || ROLE_BY_TEMPLATE[templateName],
       issuedDate: parseISODate(state?.issuedDate) ? state.issuedDate : dates.issuedDate,
       collegeName: state?.collegeName || "",
+      supervisorName: state?.supervisorName || "Mr Viraj Patle",
     },
   };
 }
@@ -159,6 +162,7 @@ const FIELD_LABELS = {
   position: "Position",
   issuedDate: "Issued Date",
   collegeName: "College Name",
+  supervisorName: "Supervisor Name",
 };
 
 function blankLetterData() {
@@ -171,6 +175,7 @@ function blankLetterData() {
     position: ROLE_BY_TEMPLATE["Web Developer"],
     issuedDate: dates.issuedDate,
     collegeName: "",
+    supervisorName: "Mr Viraj Patle",
   };
 }
 
@@ -349,7 +354,7 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {Object.keys(data).map((key) => (
+        {Object.keys(data).filter((key) => key !== "supervisorName").map((key) => (
           <div key={key} className="flex flex-col">
             <label className="text-sm font-semibold mb-1" htmlFor={key === "collegeName" ? collegeInputId : undefined}>
               {FIELD_LABELS[key] || key}
@@ -372,6 +377,22 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
             )}
           </div>
         ))}
+        {docType === DOC_TYPES.completion && (
+          <div className="flex flex-col">
+            <label className="text-sm font-semibold mb-1" htmlFor={`supervisor-${letter.id}`}>
+              Supervisor Name
+            </label>
+            <input
+              id={`supervisor-${letter.id}`}
+              type="text"
+              name="supervisorName"
+              value={data.supervisorName || ""}
+              onChange={handleChange}
+              className="border rounded p-2"
+              placeholder="Enter supervisor name"
+            />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">

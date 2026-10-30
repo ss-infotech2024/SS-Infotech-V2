@@ -10,7 +10,7 @@ const WebDeveloperTemplate = ({ data = {}, type = "Certificate" }) => {
     department = "[Department]",
     position = "Web Development Intern",
     issuedDate = "[Date]",
-    collegeName = "[College Name]",
+    supervisorName = "Mr Viraj Patle",
   } = data;
 
   return (
@@ -24,38 +24,23 @@ const WebDeveloperTemplate = ({ data = {}, type = "Certificate" }) => {
       <div className="text-center font-bold text-[20px] underline pt-52">INTERNSHIP COMPLETION CERTIFICATE</div>
 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
-        {/* To block */}
-        <div className="mb-4">
-          <p className="font-semibold">To,</p>
-          <p className="font-semibold">{candidateName},</p>
-          <p>{collegeName}.</p>
-        </div>
-
-        {/* Subject */}
-        <p className="font-semibold mb-3">
-          Subject: Certificate of Internship
-        </p>
-
-        {/* Greeting */}
-        <p className="mb-4">Dear {candidateName},</p>
-
         {/* Main Content */}
-        <p className="mb-3">
-          This is to formally certify that <strong>{candidateName}</strong> has successfully completed an internship at <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the tenure of the internship, {candidateName} was assigned to the <strong>{position}</strong> role.
+        <p className="mb-1">
+          This is to formally certify that <strong>{candidateName}</strong> has successfully completed an internship at <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the tenure of the internship, {candidateName} was assigned to the <strong>{position}</strong> role Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
-        <p className="mb-3 font-semibold">Internship Details:</p>
-        <div className="pl-4 mb-3">
+        <p className="mb-1 font-semibold">Internship Details:</p>
+        <div className="pl-2 mb-1">
           <p><strong>Intern Name:</strong> {candidateName}</p>
           <p><strong>Position:</strong> {position}</p>
           <p><strong>Internship Duration:</strong> {internshipFrom} to {internshipTo}</p>
         </div>
 
-        <p className="mb-3 font-semibold">Responsibilities Undertaken:</p>
-        <p className="mb-3">
+        <p className="mb-1 font-semibold">Responsibilities Undertaken:</p>
+        <p className="mb-1">
           During the internship, {candidateName} actively contributed to the development of web applications and software solutions. Key responsibilities included:
         </p>
-        <div className="pl-4 mb-3">
+        <div className="pl-2 mb-1">
           <p>Frontend Development: Implementing responsive UI designs using HTML, CSS, JavaScript, React.js.</p>
           <p>Backend Development: Developing and integrating APIs using Node.js, Express.js, and managing databases with MongoDB/MySQL.</p>
           <p>Debugging & Optimization: Identifying and fixing bugs, optimizing application performance.</p>
@@ -63,11 +48,10 @@ const WebDeveloperTemplate = ({ data = {}, type = "Certificate" }) => {
           {/* <p>Deployment & Testing: Assisting in deployment of web applications and conducting testing for functionality and security.</p> */}
         </div>
 
-        <p className="mb-3 font-semibold">Internship Overview & Performance Evaluation:</p>
-        <p className="mb-3">
+        <p className="mb-1 font-semibold">Internship Overview & Performance Evaluation:</p>
+        <p className="mb-1">
           Throughout the internship, {candidateName} exhibited exceptional problem-solving skills, adaptability, and enthusiasm in learning new technologies. Their contributions to project development and teamwork were highly commendable.
         </p>
-
       </div>
     </div>
     </CertificateFrame>

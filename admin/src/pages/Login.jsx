@@ -7,16 +7,29 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const admin = { username: "admin", password: "12345" };
-
-    if (username === admin.username && password === admin.password) {
+    setError("");
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Invalid username or password.");
+      }
       localStorage.setItem("isAdminLoggedIn", true);
       navigate("/");
-    } else {
-      setError("Invalid username or password ❌");
+    } catch (loginError) {
+      setError(loginError.message || "Could not sign in. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -94,9 +107,10 @@ export default function Login() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-blue-600 text-white py-2  hover:bg-blue-700 transition-all shadow-md"
           >
-            Login
+            {isSubmitting ? "Signing in..." : "Login"}
           </motion.button>
         </form>
 

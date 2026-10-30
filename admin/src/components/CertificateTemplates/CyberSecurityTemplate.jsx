@@ -4,12 +4,12 @@ import CertificateFrame from "../CertificateFrame";
 const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) => {
   const {
     candidateName = "[Candidate Name]",
-    collegeName = "[College Name]",
     companyName = "SS Infotech Pvt. Ltd.",
     position = "Cyber Security Intern",
     internshipFrom = "[Start Date]",
     internshipTo = "[End Date]",
     issuedDate = "[Issued Date]",
+    supervisorName = "Mr Viraj Patle",
   } = data;
 
   return (
@@ -22,21 +22,6 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
       <div className="text-center font-bold text-[20px] underline pt-52">INTERNSHIP COMPLETION CERTIFICATE</div>
 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
-        <div className="mb-4">
-          <p className="font-semibold">To,</p>
-          <p className="font-semibold">{candidateName}</p>
-          <p>{collegeName}</p>
-        </div>
-
-        <p className="font-semibold mb-3">
-          Subject:{" "}
-          {type === "Internship Offer Letter"
-            ? `Offer for Internship in Cyber Security`
-            : "Certificate of Internship"}
-        </p>
-
-        <p className="mb-4">Dear {candidateName},</p>
-
         {type === "Internship Offer Letter" ? (
           <>
             <p className="mb-3">
@@ -91,7 +76,7 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
               has successfully completed an internship at{" "}
               <strong>{companyName}</strong> from{" "}
               <strong>{internshipFrom}</strong> to{" "}
-              {<strong>{internshipTo}.</strong>}
+              {<strong>{internshipTo}</strong>} Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
             </p>
 
             <div className="mt-4 mb-3">
@@ -108,7 +93,7 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
               <p className="font-semibold underline">
                 Responsibilities Undertaken:
               </p>
-              <div className="pl-6">
+              <div className="pl-0">
                 <p>
                   Conducting vulnerability assessments and penetration testing
                   on internal systems.
@@ -144,24 +129,15 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
                 were highly valuable to the team.
               </p>
             </div>
-
             <div className="mt-4 mb-3">
-              <p className="font-semibold underline">
-                Conclusion & Appreciation:
-              </p>
-              <p>
-                We appreciate {candidateName}'s dedication, technical skills,
-                and professionalism displayed during the internship. Their
-                performance has been exemplary, and we are confident that the
-                knowledge and hands-on experience gained during this period will
-                greatly contribute to their future success in the field of
-                Cyber Security.
-              </p>
             </div>
           </>
         )}
 
       </div>
+      {type !== "Internship Offer Letter" && (
+        <p ></p>
+      )}
     </div>
     </CertificateFrame>
   );

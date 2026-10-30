@@ -5,9 +5,12 @@ import { resolve } from 'path'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
+  const apiTarget = String(env.API_BASE_URL || 'https://sswebsitebackend.ssinfotech.co.in')
+    .replace(/\/+$/, '')
+    .replace(/\/api$/i, '')
   const apiProxy = {
     '/api': {
-      target: env.API_BASE_URL || 'https://sswebsitebackend.ssinfotech.co.in',
+      target: apiTarget,
       changeOrigin: true,
       configure(proxy) {
         proxy.on('proxyReq', (proxyReq) => {

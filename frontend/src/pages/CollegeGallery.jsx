@@ -84,7 +84,7 @@ const apiService = {
   },
 
   async getAlbumById(id) {
-    const response = await fetch(apiUrl(`/api/album/${id}`));
+    const response = await fetch(apiUrl(`/api/albums/album/${id}`));
     if (!response.ok) throw new Error("Failed to fetch album");
     return response.json();
   },
@@ -99,7 +99,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch(apiUrl("/api/album-post"), {
+    const response = await fetch(apiUrl("/api/albums/album-post"), {
       method: "POST",
       body: formData,
     });
@@ -117,7 +117,7 @@ const apiService = {
       }
     });
 
-    const response = await fetch(apiUrl(`/api/album/${id}`), {
+    const response = await fetch(apiUrl(`/api/albums/album/${id}`), {
       method: "PATCH",
       body: formData,
     });
@@ -126,7 +126,7 @@ const apiService = {
   },
 
   async deleteAlbum(id) {
-    const response = await fetch(apiUrl(`/api/album/${id}`), {
+    const response = await fetch(apiUrl(`/api/albums/album/${id}`), {
       method: "DELETE",
     });
     if (!response.ok) throw new Error("Failed to delete album");

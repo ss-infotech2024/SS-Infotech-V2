@@ -85,6 +85,18 @@ export const getAlbums = async (req, res) => {
   }
 };
 
+export const getAlbumById = async (req, res) => {
+  try {
+    const album = await Album.findById(req.params.id);
+    if (!album) {
+      return res.status(404).json({ success: false, message: "Album not found" });
+    }
+    return res.status(200).json(album);
+  } catch (error) {
+    return res.status(400).json({ success: false, message: "Invalid album ID" });
+  }
+};
+
 
 /*
 |--------------------------------------------------------------------------

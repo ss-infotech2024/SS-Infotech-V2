@@ -4,12 +4,12 @@ import CertificateFrame from "../CertificateFrame";
 const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) => {
   const {
     candidateName = "[Candidate Name]",
-    collegeName = "[College Name]",
     companyName = "SS Infotech Pvt. Ltd.",
     position = "Data Analyst Intern",
     internshipFrom = "[Start Date]",
     internshipTo = "[End Date]",
     issuedDate = "[Date]",
+    supervisorName = "Mr Viraj Patle",
   } = data;
 
   return (
@@ -22,21 +22,6 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
       <div className="text-center font-bold text-[20px] underline pt-52">INTERNSHIP COMPLETION CERTIFICATE</div>
 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
-        <div className="mb-4">
-          <p className="font-semibold">To,</p>
-          <p className="font-semibold">{candidateName}</p>
-          <p>{collegeName}</p>
-        </div>
-        
-        <p className="font-semibold mb-3">
-          Subject:{" "}
-          {type === "Internship Offer Letter"
-            ? `Offer for Internship in ${position}`
-            : "Certificate of Internship"}
-        </p>
-
-        <p className="mb-4">Dear {candidateName},</p>
-
         {type === "Internship Offer Letter" ? (
           <>
             <p className="mb-3">
@@ -50,7 +35,7 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
               Please confirm your acceptance by replying to this email or returning a signed copy of this letter.
             </p>
 
-            <p className="mb-6">
+            <p className="mb-2">
               We look forward to your contributions and growth during the internship.
             </p>
           </>
@@ -58,10 +43,10 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
           <>
             <p className="mb-3">
               This is to formally certify that <strong>{candidateName}</strong> has successfully completed an internship at{" "}
-              <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>.
+              <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong> Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
             </p>
 
-            <div className="mt-4 mb-3">
+            <div className="mt-4 mb-1">
               <p className="font-semibold underline">Internship Details:</p>
               <p>Intern Name: {candidateName}</p>
               <p>Position: {position}</p>
@@ -69,7 +54,7 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
               <p>Internship Duration: {internshipFrom} to {internshipTo}</p>
             </div>
 
-            <div className="mt-4 mb-3">
+            <div className="mt-4 mb-1">
               <p className="font-semibold underline">Responsibilities Undertaken:</p>
               <p>
                 During the internship, {candidateName} actively contributed to data analysis and business intelligence tasks. Key responsibilities included:
@@ -81,18 +66,18 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
               <p>Predictive Analytics: Assisting in building models for forecasting and trend analysis.</p>
             </div>
 
-            <div className="mt-4 mb-3">
+            <div className="mt-4 mb-1">
               <p className="font-semibold underline">Internship Overview & Performance Evaluation:</p>
               <p>
                 Throughout the internship, {candidateName} exhibited exceptional analytical thinking, attention to detail, and enthusiasm in learning new data-driven technologies. Contributions to data projects and teamwork were highly commendable.
               </p>
             </div>
-
-            
           </>
         )}
-
       </div>
+      {type !== "Internship Offer Letter" && (
+        <p ></p>
+      )}
     </div>
     </CertificateFrame>
   );

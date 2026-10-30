@@ -10,7 +10,7 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
     department = "Human Resources",
     position = "Human Resources Intern",
     issuedDate = "[Date]",
-    collegeName = "[College Name]",
+    supervisorName = "Mr Viraj Patle",
   } = data;
 
   return (
@@ -27,33 +27,18 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
       </div>
 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
-        {/* To Section */}
-        <div className="mb-4">
-          <p className="font-semibold">To,</p>
-          <p className="font-semibold">{candidateName},</p>
-          <p>{collegeName}.</p>
-        </div>
-
-        {/* Subject */}
-        <p className="font-semibold mb-3">
-          Subject: Certificate of Internship
-        </p>
-
-        {/* Greeting */}
-        <p className="mb-4">Dear {candidateName},</p>
-
         {/* Main Content */}
-        <p className="mb-3">
+        <p className="mb-1">
           This is to formally certify that <strong>{candidateName}</strong> has successfully
           completed an internship at <strong>{companyName}</strong> from{" "}
           <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the
           tenure of the internship, {candidateName} was assigned to the{" "}
-          <strong>{position}</strong> role in the <strong>{department}</strong> department.
+            <strong>{position}</strong> role in the <strong>{department}</strong> department working under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
         {/* Internship Details */}
-        <p className="mb-3 font-semibold">Internship Details:</p>
-        <div className="pl-4 mb-3">
+        <p className="mb-1 font-semibold">Internship Details:</p>
+        <div className="pl-4 mb-1">
           <p>
             <strong>Intern Name:</strong> {candidateName}
           </p>
@@ -66,12 +51,12 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
         </div>
 
         {/* Responsibilities Undertaken */}
-        <p className="mb-3 font-semibold">Responsibilities Undertaken:</p>
-        <p className="mb-3">
+        <p className="mb-1 font-semibold">Responsibilities Undertaken:</p>
+        <p className="mb-1">
           During the internship, {candidateName} actively supported HR and administrative
           operations within the company. Key responsibilities included:
         </p>
-        <div className="pl-4 mb-3">
+        <div className="pl-4 mb-1">
           <p>
             Assisting in recruitment processes including screening resumes and scheduling interviews.
           </p>
@@ -90,10 +75,10 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
         </div>
 
         {/* Overview & Evaluation */}
-        <p className="mb-3 font-semibold">
+        <p className="mb-1 font-semibold">
           Internship Overview & Performance Evaluation:
         </p>
-        <p className="mb-2">
+        <p className="mb-1">
           Throughout the internship, {candidateName} displayed strong communication,
           organizational, and interpersonal skills. Their dedication to learning and
           professionalism in handling HR-related activities were commendable.

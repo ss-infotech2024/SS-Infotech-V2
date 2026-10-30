@@ -1,12 +1,21 @@
 import Application from "../models/applicationModel.js";
 import cloudinary from "../utils/cloudinary.js"; // Import pre-configured Cloudinary
+import multer from "multer";
+import { unlink } from "fs/promises";
+
+function cloudinaryErrorMessage(err) {
+  if (!err) return "";
+  if (typeof err === "string") return err;
+  return (
+    err.message ||
+    err.error?.message ||
+    (typeof err.error === "string" ? err.error : "") ||
+    ""
+  );
+}
 
 // Create Application
 export const createApplication = async (req, res) => {
-  console.log("Request body:", req.body);
-  console.log("Request file:", req.file);
-  console.log("Request headers:", req.headers);
-
   try {
     const { jobId, name, email, phone, title, college } = req.body;
 
@@ -38,9 +47,27 @@ export const createApplication = async (req, res) => {
       });
     }
 
-    // Use the Cloudinary URL and public_id directly from req.file (uploaded by multer-storage-cloudinary)
-    const resumePath = req.file.path; // Cloudinary URL
-    const resume = req.file.filename || req.file.public_id; // Use filename or public_id
+    const filename = req.file.filename;
+    let resume = filename;
+    let resumePath = `${req.protocol}://${req.get("host")}/Uploads/resumes/${filename}`;
+
+    try {
+      const uploaded = await cloudinary.uploader.upload(req.file.path, {
+        folder: "resumes",
+        resource_type: "raw",
+        access_mode: "public",
+        use_filename: true,
+        unique_filename: true,
+      });
+      resume = uploaded.public_id;
+      resumePath = uploaded.secure_url;
+      await unlink(req.file.path).catch(() => {});
+    } catch (uploadErr) {
+      console.error(
+        "Cloudinary resume upload failed, keeping the local file:",
+        cloudinaryErrorMessage(uploadErr) || uploadErr
+      );
+    }
 
     // Create new application
     const application = new Application({
@@ -62,11 +89,10 @@ export const createApplication = async (req, res) => {
       application,
     });
   } catch (err) {
-    console.error("Error creating application:", err.stack); // Log full stack trace
+    console.error("Error creating application:", err.stack || err);
     res.status(500).json({
       success: false,
-      message: err instanceof multer.MulterError ? err.message : "Something went wrong on the server",
-      error: err.message,
+      message: err instanceof multer.MulterError ? err.message : "Application could not be saved. Please try again.",
     });
   }
 };

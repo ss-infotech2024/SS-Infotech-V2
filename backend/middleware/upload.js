@@ -1,7 +1,13 @@
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinary from "../utils/cloudinary.js";
-import { extname } from "path";
+import { dirname, extname, join } from "path";
+import { mkdirSync } from "fs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const resumeDir = join(__dirname, "..", "Uploads", "resumes");
 
 //
 // 📌 Image / Video Upload Storage
@@ -54,22 +60,14 @@ export const upload = multer({
 //     };
 //   },
 // });
-const resumeStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => {
-    const safeName = file.originalname.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_\.-]/g, "");
-
-    return {
-      folder: "resumes",
-      resource_type: "raw",
-      type: "upload",         // ensure it's a standard uploaded file
-      access_mode: "public",  // make it public
-      use_filename: true,     // let Cloudinary keep original name (optional)
-      unique_filename: false, // prevent random IDs
-      allowed_formats: ["pdf", "doc", "docx"],
-      public_id: `${Date.now()}-${safeName}`,
-
-    };
+const resumeStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    mkdirSync(resumeDir, { recursive: true });
+    cb(null, resumeDir);
+  },
+  filename: (req, file, cb) => {
+    const safeName = file.originalname.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_.-]/g, "");
+    cb(null, `${Date.now()}-${safeName}`);
   },
 });
 

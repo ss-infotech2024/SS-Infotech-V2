@@ -61,7 +61,7 @@ const startServer = async () => {
     const allowedOrigins = [
       "https://ssinfotech-omega.vercel.app",
       "https://ssinfotech-xsq6.vercel.app",
-      "https://ss-infotech-v2-2.onrender.com", // backend self URL
+      "https://sswebsitebackend.ssinfotech.co.in", // backend self URL
       "https://ss-infotech-v2-y2i2.vercel.app", // ✅ newly added frontend
       "https://ssinfotech.co.in",
       "https://www.ssinfotech.co.in",
@@ -82,7 +82,7 @@ const startServer = async () => {
 
           // Allow if in allowed list or backend itself
           if (
-            origin === "https://ss-infotech-v2-2.onrender.com" ||
+            origin === "https://sswebsitebackend.ssinfotech.co.in" ||
             allowedOrigins.includes(origin)
           ) {
             return callback(null, true);
@@ -136,10 +136,16 @@ const startServer = async () => {
     // Global Error Handler
     // ------------------------
     app.use((err, req, res, next) => {
-      console.error("❌ Error Stack:", err.stack);
-      res
-        .status(err.status || 500)
-        .json({ message: err.message || "Something went wrong!" });
+      console.error("❌ Error Stack:", err?.stack || err);
+      const message =
+        (typeof err === "string" && err) ||
+        err?.message ||
+        err?.error?.message ||
+        "Something went wrong!";
+      res.status(err?.status || err?.http_code || 500).json({
+        success: false,
+        message,
+      });
     });
 
     // ------------------------

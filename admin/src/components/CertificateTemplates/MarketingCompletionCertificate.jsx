@@ -10,7 +10,7 @@ const MarketingCompletionCertificate = ({ data = {}, type = "Certificate" }) => 
     department = "Marketing",
     position = "Marketing Intern",
     issuedDate = "[Date]",
-    collegeName = "[College Name]",
+    supervisorName = "Mr Viraj Patle",
   } = data;
 
   return (
@@ -27,28 +27,13 @@ const MarketingCompletionCertificate = ({ data = {}, type = "Certificate" }) => 
       </div>
 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
-        {/* To Section */}
-        <div className="mb-4">
-          <p className="font-semibold">To,</p>
-          <p className="font-semibold">{candidateName},</p>
-          <p>{collegeName}.</p>
-        </div>
-
-        {/* Subject */}
-        <p className="font-semibold mb-3">
-          Subject: Certificate of Internship
-        </p>
-
-        {/* Greeting */}
-        <p className="mb-4">Dear {candidateName},</p>
-
         {/* Main Content */}
         <p className="mb-3">
           This is to formally certify that <strong>{candidateName}</strong> has successfully
           completed an internship at <strong>{companyName}</strong> from{" "}
           <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the
           tenure of the internship, {candidateName} was assigned to the{" "}
-          <strong>{position}</strong> role in the <strong>{department}</strong> department.
+          <strong>{position}</strong> role in the <strong>{department}</strong> department Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
         {/* Internship Details */}
@@ -91,21 +76,22 @@ const MarketingCompletionCertificate = ({ data = {}, type = "Certificate" }) => 
         </div>
 
         {/* Overview & Evaluation */}
-        <p className="mb-3 font-semibold">
+        <p className="mb-2 font-semibold">
           Internship Overview & Performance Evaluation:
         </p>
-        <p className="mb-2">
+        <p className="mb-3">
           Throughout the internship, {candidateName} demonstrated creativity, communication
           skills, and professionalism. Their enthusiasm in executing marketing activities and
           collaboration within the team was highly commendable.
         </p>
 
         {/* Closing */}
-        <p className="">
+        {/* <p className="mb-2">
           We appreciate {candidateName}’s efforts and wish them great success in their future
           career in Marketing.
-        </p>
+        </p> */}
       </div>
+      {/* <p className="absolute bottom-[178px] left-8 text-[14px] font-semibold">Supervisor: {supervisorName || "Mr Viraj Patle"}</p> */}
     </div>
     </CertificateFrame>
   );

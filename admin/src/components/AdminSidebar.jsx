@@ -8,10 +8,16 @@ export default function AdminSidebar() {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAdminLoggedIn");
-    navigate("/login");
-    setIsOpen(false);
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+    } catch (error) {
+      console.error("Admin logout failed:", error);
+    } finally {
+      localStorage.removeItem("isAdminLoggedIn");
+      navigate("/login");
+      setIsOpen(false);
+    }
   };
 
   const navLinks = [

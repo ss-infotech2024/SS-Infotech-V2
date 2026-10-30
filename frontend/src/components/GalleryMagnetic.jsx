@@ -52,7 +52,7 @@ export default function GalleryMagnetic({
     const fetchGalleryImages = async () => {
       try {
         const response = await fetch(
-          apiUrl("/api/seminars/magnetic-images"),
+          apiUrl("/api/albums/album-getall"),
           {
             method: "GET",
             credentials: "include", // Include cookies if needed
@@ -69,11 +69,15 @@ export default function GalleryMagnetic({
         console.log("Fetched gallery data:", data);
 
         // ✅ Safely extract array
-        const formattedImages = Array.isArray(data)
-          ? data
-          : Array.isArray(data.images)
-          ? data.images
-          : [];
+        const albums = Array.isArray(data) ? data : Array.isArray(data.albums) ? data.albums : [];
+        const formattedImages = albums.flatMap((album) =>
+          (Array.isArray(album.images) ? album.images : []).map((thumbnail, imageIndex) => ({
+            _id: `${album._id || album.title}-${imageIndex}`,
+            title: album.fullTitle || album.title || "Gallery",
+            category: album.title || "Gallery",
+            thumbnail,
+          })),
+        );
 
         console.log("Formatted images:", formattedImages);
         setGalleryImages(formattedImages);

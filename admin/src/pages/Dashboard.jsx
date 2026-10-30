@@ -235,7 +235,6 @@ export default function Dashboard() {
   const handleDownloadResume = async (publicId) => {
     try {
       const response = await axios.get(`/api/applications/download/${publicId}`, {
-        headers: { Authorization: 'Bearer YOUR_TOKEN_HERE' },
         responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));

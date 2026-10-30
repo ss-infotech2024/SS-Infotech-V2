@@ -3,6 +3,7 @@ import DataAnalystTemplate from "./DataAnalystTemplate";
 import CyberSecurityTemplate from "./CyberSecurityTemplate";
 import MarketingCompletionCertificate from "./MarketingCompletionCertificate";
 import HRCompletionCertificate from "./HRCompletionCertificate";
+import AIMLCompletionCertificate from "./AIMLCompletionCertificate";
 
 export const templates = {
   "Web Developer": WebDeveloperTemplate,
@@ -10,4 +11,5 @@ export const templates = {
   "Cyber Security": CyberSecurityTemplate,
   "Marketing": MarketingCompletionCertificate,
   "Human Resources": HRCompletionCertificate,
+  "AI/ML": AIMLCompletionCertificate,
 };
