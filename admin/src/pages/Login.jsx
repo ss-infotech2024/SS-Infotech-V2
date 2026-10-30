@@ -30,6 +30,7 @@ export default function Login() {
           : result.message || "Could not sign in. Please try again.";
         throw new Error(message);
       }
+      if (result.token) sessionStorage.setItem("adminApiToken", result.token);
       localStorage.setItem("isAdminLoggedIn", "true");
       navigate("/");
     } catch (loginError) {

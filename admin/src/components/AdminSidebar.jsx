@@ -16,6 +16,7 @@ export default function AdminSidebar() {
       console.error("Admin logout failed:", error);
     } finally {
       localStorage.removeItem("isAdminLoggedIn");
+      sessionStorage.removeItem("adminApiToken");
       navigate("/login");
       setIsOpen(false);
     }

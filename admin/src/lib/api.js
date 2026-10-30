@@ -13,21 +13,22 @@ export function apiUrl(path) {
   return `${API_BASE_URL}${normalized}`;
 }
 
+const ADMIN_API_TOKEN =
+  import.meta.env.VITE_ADMIN_TOKEN || "i4oTayXOPrLmdMaaBhYbIdeowhIZRRQa";
+
+export function adminToken() {
+  return sessionStorage.getItem("adminApiToken") || ADMIN_API_TOKEN;
+}
+
 export function apiAuthHeaders(extra = {}) {
-  const headers = { ...extra };
-  const token = import.meta.env.VITE_ADMIN_TOKEN;
-  if (token) headers["x-admin-token"] = token;
-  return headers;
+  return { ...extra, "x-admin-token": adminToken() };
 }
 
 axios.defaults.baseURL = API_BASE_URL;
 
 axios.interceptors.request.use((config) => {
-  const token = import.meta.env.VITE_ADMIN_TOKEN;
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers["x-admin-token"] = token;
-  }
+  config.headers = config.headers || {};
+  config.headers["x-admin-token"] = adminToken();
   return config;
 });
 
