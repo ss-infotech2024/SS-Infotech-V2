@@ -14,13 +14,7 @@ const HeroWithLogo = () => {
       </div>
 
       <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 translate-y-1/2">
-        {/* Wrapper Background Shape */}
-        <img
-          src="assets/imgs/shape/shape-19.png"
-          alt="Shape Background"
-          className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2 max-w-[280px] lg:max-w-[360px]"
-        />
-
+        
         {/* Circle Button */}
         <a
           href="/about"
