@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { App as AntApp, Button, message } from "antd";
+import { App as AntApp, Button, Input, message, Pagination } from "antd";
 import { Award, Download, Trash2 } from "lucide-react";
 import { DOC_TYPES, ROLE_BY_TEMPLATE, templateFromJobTitle } from "../GenerateCertificate";
 
@@ -17,6 +17,9 @@ export default function AdminApplications() {
   const { message: toast } = AntApp.useApp();
   const [applications, setApplications] = useState([]);
   const [jobsById, setJobsById] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch applications
   const fetchApplications = async () => {
@@ -49,6 +52,23 @@ export default function AdminApplications() {
   const internshipById = useMemo(
     () => Object.fromEntries(internships.map((item) => [item.id, item])),
     []
+  );
+
+  const filteredApplications = useMemo(() => {
+    const query = searchTerm.trim().toLocaleLowerCase();
+    if (!query) return applications;
+
+    return applications.filter((app) =>
+      [app.name, app.email, app.phone].some((value) =>
+        String(value || "").toLocaleLowerCase().includes(query)
+      )
+    );
+  }, [applications, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredApplications.length / pageSize));
+  const visibleApplications = filteredApplications.slice(
+    (Math.min(currentPage, totalPages) - 1) * pageSize,
+    Math.min(currentPage, totalPages) * pageSize
   );
 
   const copyText = async (value) => {
@@ -158,6 +178,27 @@ export default function AdminApplications() {
         </Button>
       </div>
 
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <Input.Search
+          allowClear
+          value={searchTerm}
+          onChange={(event) => {
+            setSearchTerm(event.target.value);
+            setCurrentPage(1);
+          }}
+          onSearch={(value) => {
+            setSearchTerm(value);
+            setCurrentPage(1);
+          }}
+          placeholder="Search by name, email, or phone"
+          aria-label="Search job applications by name, email, or phone"
+          className="w-full sm:max-w-md"
+        />
+        <span className="text-sm text-gray-500" aria-live="polite">
+          {filteredApplications.length} {filteredApplications.length === 1 ? "application" : "applications"}
+        </span>
+      </div>
+
       <div className="overflow-x-auto border rounded-lg shadow-sm">
         <table className="w-full border-collapse border">
           <thead className="bg-gray-100">
@@ -171,7 +212,7 @@ export default function AdminApplications() {
             </tr>
           </thead>
           <tbody>
-            {applications.map((app) => (
+            {visibleApplications.map((app) => (
               <tr key={app._id} className="hover:bg-gray-50">
                 <td className="border px-3 py-2">{app.name}</td>
                 <td className="border px-3 py-2 whitespace-nowrap">
@@ -231,16 +272,35 @@ export default function AdminApplications() {
               </tr>
             ))}
 
-            {applications.length === 0 && (
+            {filteredApplications.length === 0 && (
               <tr>
                 <td colSpan="6" className="text-center py-6 text-gray-500 italic">
-                  No applications found.
+                  {applications.length === 0
+                    ? "No applications found."
+                    : "No applications match your search."}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {filteredApplications.length > 0 && (
+        <div className="mt-4 flex justify-end">
+          <Pagination
+            current={Math.min(currentPage, totalPages)}
+            pageSize={pageSize}
+            pageSizeOptions={["10", "20", "50", "100"]}
+            total={filteredApplications.length}
+            showSizeChanger
+            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total}`}
+            onChange={(page, size) => {
+              setCurrentPage(page);
+              setPageSize(size);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
