@@ -42,8 +42,8 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
         ) : (
           <>
             <p className="mb-3">
-              This is to formally certify that <strong>{candidateName}</strong> has successfully completed an internship at{" "}
-              <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong> Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+              This certifies that <strong>{candidateName}</strong> successfully completed an internship with{" "}
+              <strong>{companyName}</strong> as a <strong>{position}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
             </p>
 
             <div className="mt-4 mb-1">
@@ -57,19 +57,23 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
             <div className="mt-4 mb-1">
               <p className="font-semibold underline">Responsibilities Undertaken:</p>
               <p>
-                During the internship, {candidateName} actively contributed to data analysis and business intelligence tasks. Key responsibilities included:
+                The internship provided practical experience in data analysis and reporting. Responsibilities included:
               </p>
-              <p>Data Collection & Cleaning: Gathering, processing, and cleaning large datasets for analysis.</p>
-              <p>Data Visualization: Creating insightful visualizations using tools like Tableau, Power BI, and Matplotlib.</p>
-              <p>Statistical Analysis: Applying statistical techniques to interpret and extract valuable insights from data.</p>
-              <p>SQL & Database Management: Querying and managing data using SQL and relational databases.</p>
-              <p>Predictive Analytics: Assisting in building models for forecasting and trend analysis.</p>
+              <p>Preparing, checking, and cleaning datasets for analysis.</p>
+              <p>Writing queries and organizing information from data sources.</p>
+              <p>Using descriptive analysis to identify patterns, trends, and unusual values.</p>
+              <p>Creating clear charts, tables, and summaries to communicate findings.</p>
+              <p>Checking that calculations and visualizations match the source data.</p>
+              <p>Documenting analysis steps and noting assumptions or data limitations.</p>
             </div>
 
             <div className="mt-4 mb-1">
-              <p className="font-semibold underline">Internship Overview & Performance Evaluation:</p>
+              <p className="font-semibold underline">Program Learning Overview:</p>
               <p>
-                Throughout the internship, {candidateName} exhibited exceptional analytical thinking, attention to detail, and enthusiasm in learning new data-driven technologies. Contributions to data projects and teamwork were highly commendable.
+                The program covered data quality, analysis, visualization, and clear reporting. The workflow included clarifying questions, preparing data, checking results, and presenting findings in a form that supports review. This certificate recognizes completion of the internship in data analytics.
+              </p>
+              <p>
+                The intern also practiced distinguishing observations from assumptions, documenting transformations, and explaining how missing or inconsistent values can affect conclusions. These steps helped make analysis easier to reproduce and gave reviewers useful context for interpreting reported findings.
               </p>
             </div>
           </>

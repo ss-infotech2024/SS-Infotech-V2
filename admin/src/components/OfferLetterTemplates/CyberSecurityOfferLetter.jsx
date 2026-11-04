@@ -5,45 +5,59 @@ const CyberSecurityOfferLetter = ({ data }) => {
   const {
     candidateName,
     collegeName,
+    companyName,
+    position,
     internshipFrom,
+    internshipTo,
+    issuedDate,
   } = data;
+  const name = candidateName || "Candidate Name";
+  const role = position || "Cyber Security Intern";
+  const company = companyName || "SS Infotech Pvt. Ltd.";
 
   return (
     <CertificateFrame>
-    <div className="relative h-full w-full text-[14px] leading-relaxed">
+    <div className="relative h-full w-full text-[14px] leading-snug">
       <div className="absolute left-8 right-8 pt-40">
+        <p className="mb-2 text-right font-medium">Date: {issuedDate || "DD/MM/YYYY"}</p>
         <p>To,</p>
-        <p className="font-semibold">{candidateName || "Candidate Name"}</p>
-        <p>{collegeName || "College Name"},</p>
+        <p className="font-semibold">{name}</p>
+        <p>{collegeName || "College Name"}</p>
 
-        <p className="mt-6 font-semibold">Subject: Offer for Cyber Security Intern</p>
+        <p className="mt-1 font-semibold">Subject: Offer for {role}</p>
 
-        <p className="mt-6">Dear {candidateName || "Candidate Name"},</p>
+        <p className="mt-1">Dear {name},</p>
 
-        <p className="mt-4 text-justify">
-          We are delighted to offer you the position of <b>Cyber Security Intern</b> at <b>SS Infotech Pvt. Ltd.</b>.
-          We are confident that your technical acumen, curiosity, and enthusiasm for network security will be valuable to our organization.
+        <p className="mt-1 text-justify">
+          We are pleased to offer you an internship with <b>{company}</b> as a <b>{role}</b>. You will gain supervised experience with security practices that help protect systems, networks, and information.
         </p>
 
-        <p className="mt-4 text-justify">
+        <p className="mt-1 text-justify">
           <b>Internship / Training Details:</b><br />
-          Role: Cyber Security Intern<br />
+          Role: {role}<br />
           Location: Nagpur<br />
           Joining Date: {internshipFrom || "DD/MM/YYYY"}
+          {internshipTo ? <><br />End Date: {internshipTo}</> : null}
         </p>
 
-        <p className="mt-4 text-justify">
-          During your internship, you will work on vulnerability assessments, penetration testing, and security auditing 
-          under the guidance of experienced professionals. This program aims to strengthen your knowledge in safeguarding 
-          IT infrastructure and enhance your expertise in the field of Cyber Security.
+        <p className="mt-1 text-justify">
+          With appropriate authorization and team supervision, your assignments may include reviewing security configurations, analyzing logs, documenting potential risks, and learning how teams assess and respond to security issues. You must follow access controls and confidentiality requirements at all times.
         </p>
 
-        <p className="mt-4 text-justify">
-          Please confirm your acceptance by replying to this email or returning a signed copy of this letter.
+        <p className="mt-1 text-justify">
+          You may also study security procedures, help organize assessment evidence, and prepare concise notes that distinguish confirmed observations from items requiring further review. Any security testing must remain within the systems, accounts, and scope specifically approved by the company.
         </p>
 
-        <p className="mt-4 text-justify">
-          We look forward to having you join our security team and contribute to our projects at SS Infotech Pvt. Ltd.
+        <p className="mt-1 text-justify">
+          Please protect credentials and sensitive information, use approved channels to report concerns, and do not access, scan, modify, or disclose systems or data outside your assigned authorization. These expectations apply throughout the internship.
+        </p>
+
+        <p className="mt-1 text-justify">
+          Upon successful completion of the internship and its required evaluation, a certificate of completion will be issued. This internship is intended for learning and skill development and does not constitute an offer of employment. Please confirm your acceptance by replying to this email or returning a signed copy of this letter.
+        </p>
+
+        <p className="mt-1 text-justify">
+          We look forward to supporting your growth in cybersecurity.
         </p>
 
       </div>
@@ -53,3 +67,5 @@ const CyberSecurityOfferLetter = ({ data }) => {
 };
 
 export default CyberSecurityOfferLetter;
+
+

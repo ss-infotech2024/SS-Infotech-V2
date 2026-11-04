@@ -19,7 +19,7 @@ const AIMLCompletionCertificate = ({ data = {} }) => {
         <div className="text-center font-bold text-[20px] underline pt-52">INTERNSHIP COMPLETION CERTIFICATE</div>
         <div className="absolute left-8 right-8 text-[14px] pt-4">
           <p className="mb-3">
-            This is to formally certify that <strong>{candidateName}</strong> successfully completed an internship at <strong>{companyName}</strong> as a <strong>{position}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+            This certifies that <strong>{candidateName}</strong> successfully completed an internship with <strong>{companyName}</strong> as a <strong>{position}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
           </p>
           <p className="mb-1 font-semibold">Internship Details:</p>
           <div className="pl-4 mb-3">
@@ -29,11 +29,15 @@ const AIMLCompletionCertificate = ({ data = {} }) => {
           </div>
           <p className="mb-1 font-semibold">Responsibilities Undertaken:</p>
           <div className="pl-4 mb-3">
-            <p>Prepared and validated datasets for analysis and model development.</p>
-            <p>Explored machine learning workflows and evaluated model performance.</p>
-            <p>Documented findings and communicated data-informed recommendations.</p>
+            <p>Prepared and explored datasets for analysis and experimentation.</p>
+            <p>Reviewed machine learning workflows and compared model evaluation results.</p>
+            <p>Recorded experimental settings and maintained clear notes on methods used.</p>
+            <p>Considered data quality, limitations, and responsible handling of model outputs.</p>
+            <p>Documented experiments, findings, and limitations for team review.</p>
           </div>
-          <p>{candidateName} demonstrated analytical thinking, curiosity, and professionalism. We appreciate their contribution and wish them success in AI and machine learning.</p>
+          <p className="mb-2 font-semibold">Program Learning Overview:</p>
+          <p className="mb-1">The program covered data preparation, model experimentation, evaluation, and responsible communication of results. Activities included defining an experiment, comparing outputs against an evaluation method, and recording observations for review. This certificate recognizes completion of the internship in AI and machine learning.</p>
+          <p>The intern also practiced comparing a baseline with later experiments, noting limitations in the available data, and summarizing results in clear language. Attention was given to reproducible methods and to communicating uncertainty so that model outputs could be considered with appropriate context.</p>
         </div>
       </div>
     </CertificateFrame>

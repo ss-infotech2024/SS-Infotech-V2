@@ -29,11 +29,7 @@ const MarketingCompletionCertificate = ({ data = {}, type = "Certificate" }) => 
       <div className="absolute left-8 right-8 text-[14px] pt-4">
         {/* Main Content */}
         <p className="mb-3">
-          This is to formally certify that <strong>{candidateName}</strong> has successfully
-          completed an internship at <strong>{companyName}</strong> from{" "}
-          <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the
-          tenure of the internship, {candidateName} was assigned to the{" "}
-          <strong>{position}</strong> role in the <strong>{department}</strong> department Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+          This certifies that <strong>{candidateName}</strong> successfully completed an internship with <strong>{companyName}</strong> as a <strong>{position}</strong> in the <strong>{department}</strong> department from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
         {/* Internship Details */}
@@ -53,45 +49,40 @@ const MarketingCompletionCertificate = ({ data = {}, type = "Certificate" }) => 
         {/* Responsibilities Undertaken */}
         <p className="mb-3 font-semibold">Responsibilities Undertaken:</p>
         <p className="mb-3">
-          During the internship, {candidateName} actively contributed to the marketing and
-          promotional activities of the organization. Key responsibilities included:
+          The internship provided practical experience in marketing and communications. Responsibilities included:
         </p>
         <div className="pl-4 mb-3">
           <p>
-            Assisting in the planning and execution of marketing campaigns across digital and
-            offline platforms.
+            Supporting the planning and coordination of marketing campaigns.
           </p>
           <p>
-            Conducting market research and competitor analysis to support strategic decisions.
+            Researching audiences, markets, and competitor communications.
           </p>
           <p>
-            Creating and managing promotional content for social media and marketing materials.
+            Preparing draft content for social media and other promotional materials.
           </p>
           <p>
-            Coordinating with design and HR teams for event promotions and brand awareness.
+            Coordinating campaign materials and event communications with relevant teams.
           </p>
           <p>
-            Tracking campaign performance and contributing to reports for improvement.
+            Organizing engagement results and campaign summaries for review.
           </p>
+          <p>Maintaining content calendars and coordinating review of campaign materials.</p>
+          <p>Checking that communications follow the approved brand tone and audience brief.</p>
         </div>
 
         {/* Overview & Evaluation */}
         <p className="mb-2 font-semibold">
-          Internship Overview & Performance Evaluation:
+          Program Learning Overview:
         </p>
         <p className="mb-3">
-          Throughout the internship, {candidateName} demonstrated creativity, communication
-          skills, and professionalism. Their enthusiasm in executing marketing activities and
-          collaboration within the team was highly commendable.
+          The program covered campaign support, audience research, content preparation, brand consistency, and communications reporting. Activities included planning work against a brief, preparing materials for review, and organizing results for discussion. This certificate recognizes completion of the internship in marketing.
+        </p>
+        <p className="mb-1">
+          The intern also practiced adapting messages for different audiences, checking materials against approved guidelines, and incorporating review feedback before publication. Campaign observations were organized to help the team discuss engagement and identify useful considerations for future planning.
         </p>
 
-        {/* Closing */}
-        {/* <p className="mb-2">
-          We appreciate {candidateName}’s efforts and wish them great success in their future
-          career in Marketing.
-        </p> */}
       </div>
-      {/* <p className="absolute bottom-[178px] left-8 text-[14px] font-semibold">Supervisor: {supervisorName || "Mr Viraj Patle"}</p> */}
     </div>
     </CertificateFrame>
   );

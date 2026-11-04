@@ -72,11 +72,9 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
         ) : (
           <>
             <p className="mb-3">
-              This is to formally certify that <strong>{candidateName}</strong>{" "}
-              has successfully completed an internship at{" "}
-              <strong>{companyName}</strong> from{" "}
-              <strong>{internshipFrom}</strong> to{" "}
-              {<strong>{internshipTo}</strong>} Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+              This certifies that <strong>{candidateName}</strong> successfully completed an internship with{" "}
+              <strong>{companyName}</strong> as a <strong>{position}</strong> from{" "}
+              <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
             </p>
 
             <div className="mt-4 mb-3">
@@ -95,49 +93,39 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
               </p>
               <div className="pl-0">
                 <p>
-                  Conducting vulnerability assessments and penetration testing
-                  on internal systems.
+                  Reviewing approved security configurations and documenting potential risks.
                 </p>
                 <p>
-                  Assisting in incident response and forensic investigation
-                  exercises.
+                  Analyzing sample or authorized logs to recognize suspicious activity.
                 </p>
                 <p>
-                  Implementing firewall configurations and access control
-                  measures.
+                  Learning access control, network defense, and secure configuration practices.
                 </p>
                 <p>
-                  Monitoring and analyzing network logs for potential security
-                  threats.
+                  Organizing findings by evidence and potential impact for supervisor review.
                 </p>
                 <p>
-                  Researching and documenting cybersecurity best practices and
-                  emerging threats.
+                  Supporting security awareness, incident response exercises, and clear reporting.
+                </p>
+                <p>
+                  Researching cybersecurity practices and documenting findings for the team.
                 </p>
               </div>
             </div>
 
             <div className="mt-4 mb-3">
-              <p className="font-semibold underline">
-                Internship Overview & Performance Evaluation:
+              <p className="font-semibold underline">Program Learning Overview:</p>
+              <p>
+                The program covered security fundamentals, risk documentation, safe log analysis, access controls, and responsible handling of information. Assignments emphasized staying within approved scope, preserving evidence, and communicating observations clearly so they can be reviewed. This certificate recognizes completion of the internship in cybersecurity.
               </p>
               <p>
-                Throughout the internship, {candidateName} demonstrated
-                excellent analytical thinking, attention to detail, and a
-                strong understanding of cybersecurity principles. Their
-                contributions to system hardening and vulnerability mitigation
-                were highly valuable to the team.
+                The intern also practiced separating verified indicators from assumptions, recording the context of observations, and escalating concerns through the appropriate team channels. These habits support careful review and help ensure that security work is performed responsibly and within authorized boundaries.
               </p>
-            </div>
-            <div className="mt-4 mb-3">
             </div>
           </>
         )}
 
       </div>
-      {type !== "Internship Offer Letter" && (
-        <p ></p>
-      )}
     </div>
     </CertificateFrame>
   );
