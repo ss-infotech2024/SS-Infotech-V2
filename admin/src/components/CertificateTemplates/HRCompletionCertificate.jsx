@@ -29,11 +29,7 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
       <div className="absolute left-8 right-8 text-[14px] pt-4">
         {/* Main Content */}
         <p className="mb-1">
-          This is to formally certify that <strong>{candidateName}</strong> has successfully
-          completed an internship at <strong>{companyName}</strong> from{" "}
-          <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the
-          tenure of the internship, {candidateName} was assigned to the{" "}
-            <strong>{position}</strong> role in the <strong>{department}</strong> department working under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+          This certifies that <strong>{candidateName}</strong> successfully completed an internship with <strong>{companyName}</strong> as a <strong>{position}</strong> in the <strong>{department}</strong> department from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
         {/* Internship Details */}
@@ -53,41 +49,41 @@ const HRCompletionCertificate = ({ data = {}, type = "Certificate" }) => {
         {/* Responsibilities Undertaken */}
         <p className="mb-1 font-semibold">Responsibilities Undertaken:</p>
         <p className="mb-1">
-          During the internship, {candidateName} actively supported HR and administrative
-          operations within the company. Key responsibilities included:
+          The internship provided practical experience in Human Resources operations. Responsibilities included:
         </p>
         <div className="pl-4 mb-1">
           <p>
-            Assisting in recruitment processes including screening resumes and scheduling interviews.
+            Supporting recruitment coordination, candidate communication, and interview scheduling.
           </p>
           <p>
-            Maintaining employee records and supporting documentation management.
+            Organizing employee records and maintaining confidential documentation.
           </p>
           <p>
-            Coordinating onboarding and orientation sessions for new hires.
+            Assisting with onboarding and orientation activities.
           </p>
           <p>
-            Supporting internal communications and employee engagement initiatives.
+            Helping coordinate internal communications and employee engagement activities.
           </p>
           <p>
-            Assisting in performance tracking, attendance management, and reporting tasks.
+            Preparing administrative information and summaries for HR review.
           </p>
+          <p>Coordinating routine follow-ups and directing questions to the appropriate HR contact.</p>
+          <p>Applying care when handling personal, employment, and candidate information.</p>
         </div>
 
         {/* Overview & Evaluation */}
         <p className="mb-1 font-semibold">
-          Internship Overview & Performance Evaluation:
+          Program Learning Overview:
         </p>
         <p className="mb-1">
-          Throughout the internship, {candidateName} displayed strong communication,
-          organizational, and interpersonal skills. Their dedication to learning and
-          professionalism in handling HR-related activities were commendable.
+          The program covered recruitment support, onboarding, records management, and workplace communication. The work emphasized accurate documentation, respectful communication, privacy, and following established procedures. This certificate recognizes completion of the internship in Human Resources.
+        </p>
+        <p className="mb-1">
+          The intern also gained familiarity with coordinating routine HR processes, maintaining organized records for review, and directing questions to the appropriate contact. Activities reinforced discretion, consistency, and timely communication when supporting candidates and employees.
         </p>
 
-        {/* Closing */}
         <p className="">
-          We appreciate {candidateName}’s efforts and wish them success in building a
-          promising career in Human Resources.
+          We wish {candidateName} success in their future career.
         </p>
       </div>
     </div>

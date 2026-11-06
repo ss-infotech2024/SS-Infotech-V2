@@ -26,7 +26,7 @@ const WebDeveloperTemplate = ({ data = {}, type = "Certificate" }) => {
       <div className="absolute left-8 right-8 text-[14px] pt-4">
         {/* Main Content */}
         <p className="mb-1">
-          This is to formally certify that <strong>{candidateName}</strong> has successfully completed an internship at <strong>{companyName}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>. During the tenure of the internship, {candidateName} was assigned to the <strong>{position}</strong> role Under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
+          This certifies that <strong>{candidateName}</strong> successfully completed an internship with <strong>{companyName}</strong> as a <strong>{position}</strong> from <strong>{internshipFrom}</strong> to <strong>{internshipTo}</strong>, under the supervision of <strong>{supervisorName || "Mr Viraj Patle"}</strong>.
         </p>
 
         <p className="mb-1 font-semibold">Internship Details:</p>
@@ -38,19 +38,23 @@ const WebDeveloperTemplate = ({ data = {}, type = "Certificate" }) => {
 
         <p className="mb-1 font-semibold">Responsibilities Undertaken:</p>
         <p className="mb-1">
-          During the internship, {candidateName} actively contributed to the development of web applications and software solutions. Key responsibilities included:
+          The internship provided practical experience with web application development. Responsibilities included:
         </p>
         <div className="pl-2 mb-1">
-          <p>Frontend Development: Implementing responsive UI designs using HTML, CSS, JavaScript, React.js.</p>
-          <p>Backend Development: Developing and integrating APIs using Node.js, Express.js, and managing databases with MongoDB/MySQL.</p>
-          <p>Debugging & Optimization: Identifying and fixing bugs, optimizing application performance.</p>
-          <p>Version Control: Collaborating with teams using Git & GitHub.</p>
-          {/* <p>Deployment & Testing: Assisting in deployment of web applications and conducting testing for functionality and security.</p> */}
+          <p>Building and refining responsive user interfaces and reusable page components.</p>
+          <p>Connecting application features with APIs and data sources while following project requirements.</p>
+          <p>Testing functionality across common user flows, diagnosing issues, and improving code quality.</p>
+          <p>Considering accessibility, layout behavior, and clear feedback in interface implementation.</p>
+          <p>Using version control, documenting changes, and collaborating through code reviews.</p>
+          <p>Supporting the team with debugging and maintenance tasks for existing web applications.</p>
         </div>
 
-        <p className="mb-1 font-semibold">Internship Overview & Performance Evaluation:</p>
+        <p className="mb-1 font-semibold">Program Learning Overview:</p>
         <p className="mb-1">
-          Throughout the internship, {candidateName} exhibited exceptional problem-solving skills, adaptability, and enthusiasm in learning new technologies. Their contributions to project development and teamwork were highly commendable.
+          The program covered frontend and backend development practices, application testing, version control, and team collaboration. Work moved from understanding requirements to implementation, review, and refinement under supervision. This certificate recognizes completion of the internship in web development.
+        </p>
+        <p className="mb-1">
+          The experience also included considering maintainability, accessibility, and the effect of code changes on connected features. The intern practiced explaining implementation choices, responding to review feedback, and recording completed work so that another team member could follow the development process.
         </p>
       </div>
     </div>

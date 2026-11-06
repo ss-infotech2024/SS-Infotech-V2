@@ -131,11 +131,34 @@ function certificateStateFromLocation(state) {
     ? state.docType
     : DOC_TYPES.offer;
   const dates = datesFromInternshipStart(state?.internshipFrom);
+  const initialLetters = Array.isArray(state?.applications)
+    ? state.applications.map((application) => {
+        const applicationTemplate = ROLE_BY_TEMPLATE[application?.templateName]
+          ? application.templateName
+          : templateFromJobTitle(application?.position || "");
+        const applicationDates = datesFromInternshipStart(application?.internshipFrom);
+        return {
+          docType: DOC_TYPES.offer,
+          templateName: applicationTemplate,
+          data: {
+            candidateName: (application?.candidateName || "").trim(),
+            companyName: application?.companyName || "SS Infotech Pvt. Ltd.",
+            internshipFrom: applicationDates.internshipFrom,
+            internshipTo: applicationDates.internshipTo,
+            issuedDate: parseISODate(application?.issuedDate) ? application.issuedDate : applicationDates.issuedDate,
+            position: application?.position || ROLE_BY_TEMPLATE[applicationTemplate],
+            collegeName: application?.collegeName || "",
+            supervisorName: "Mr Viraj Patle",
+          },
+        };
+      })
+    : [];
 
   return {
     docType,
     templateName,
     fromApplication: Boolean(state?.fromApplication),
+    initialLetters,
     data: {
       candidateName: (state?.candidateName || "").trim(),
       companyName: state?.companyName || "SS Infotech Pvt. Ltd.",
@@ -447,7 +470,11 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
 const GenerateCertificate = () => {
   const location = useLocation();
   const initial = certificateStateFromLocation(location.state);
-  const [letters, setLetters] = useState(() => [createLetter(initial)]);
+  const [letters, setLetters] = useState(() =>
+    initial.initialLetters.length
+      ? initial.initialLetters.map((letter) => createLetter(letter))
+      : [createLetter(initial)]
+  );
 
   const updateLetter = (id, nextLetter) => {
     setLetters((current) => current.map((letter) => (letter.id === id ? nextLetter : letter)));
@@ -490,7 +517,9 @@ const GenerateCertificate = () => {
 
       {initial.fromApplication && (
         <p className={`${sideBySide ? "" : "max-w-4xl mx-auto"} text-sm text-gray-600`}>
-          Filled from the job application for {letters[0]?.data.candidateName || "this applicant"}.
+          {initial.initialLetters.length > 1
+            ? `Filled from ${initial.initialLetters.length} selected job applications.`
+            : `Filled from the job application for ${letters[0]?.data.candidateName || "this applicant"}.`}
           Internship dates are prefilled and can be changed.
         </p>
       )}
