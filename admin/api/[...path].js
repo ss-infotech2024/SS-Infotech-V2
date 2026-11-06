@@ -25,7 +25,7 @@ const SKIP_RESPONSE_HEADERS = new Set([
   "set-cookie",
 ]);
 
-const DEFAULT_API_BASE_URL = "https://sswebsitebackend.ssinfotech.co.in";
+const DEFAULT_API_BASE_URL = "https://ss-infotech-v2-2.onrender.com/";
 
 function requestPath(req) {
   return new URL(req.url || "/", "https://admin.local").pathname;

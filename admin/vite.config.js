@@ -5,7 +5,7 @@ import { resolve } from 'path'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiTarget = String(env.API_BASE_URL || 'https://sswebsitebackend.ssinfotech.co.in')
+  const apiTarget = String(env.API_BASE_URL || 'https://ss-infotech-v2-2.onrender.com')
     .replace(/\/+$/, '')
     .replace(/\/api$/i, '')
   const apiProxy = {

@@ -82,7 +82,7 @@ const startServer = async () => {
 
           // Allow if in allowed list or backend itself
           if (
-            origin === "https://sswebsitebackend.ssinfotech.co.in" ||
+            origin === "https://ss-infotech-v2-2.onrender.com/" || 
             allowedOrigins.includes(origin)
           ) {
             return callback(null, true);
