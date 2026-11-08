@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   FaFacebookF,
   FaTwitter,
@@ -92,8 +93,23 @@ const Footer = () => {
   },
   {
     icon: FaPhone,
+<<<<<<< Updated upstream
     text: "+91 77199 27774",
     href: "tel:+917719927774",
+=======
+    text: "+91 80073 07435",
+    href: "tel:+918007307435",
+  },
+  {
+    icon: FaPhone,
+    text: "+91 77208 46048",
+    href: "tel:+917720846048",
+  },
+  {
+    icon: FaPhone,
+    text: "+91 82629 08256",
+    href: "tel:+918262908256",
+>>>>>>> Stashed changes
   },
   {
     icon: FaEnvelope,
@@ -152,9 +168,8 @@ const Footer = () => {
           © 2025 <span className="text-white font-semibold">SS Infotech</span>. All rights reserved.
         </p>
         <div className="flex gap-4 flex-wrap justify-center">
-          {["Privacy Policy", "Terms of Service"].map((item, index) => (
-            <a key={index} href="#" className="hover:text-white text-xs">{item}</a>
-          ))}
+          <Link to="/privacy-policy" className="hover:text-white text-xs">Privacy Policy</Link>
+          <Link to="/terms-of-service" className="hover:text-white text-xs">Terms of Service</Link>
         </div>
       </div>
     </footer>

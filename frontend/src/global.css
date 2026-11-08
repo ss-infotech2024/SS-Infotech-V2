@@ -435,18 +435,28 @@
 
 /* styles/globals.css */
 @keyframes float {
-  0%, 100% { 
-    transform: translateY(0px) scale(1);
-    opacity: 0.05;
-  }
-  50% { 
-    transform: translateY(-20px) scale(1.05);
-    opacity: 0.08;
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 .animate-float {
-  animation: float 8s ease-in-out infinite;
+  animation: float 5.5s ease-in-out infinite;
+}
+
+@keyframes border-crawl {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -100; }
+}
+
+.animate-border-crawl {
+  animation: border-crawl 3.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-border-crawl {
+    animation: none;
+  }
 }
 
 .animation-delay-2000 {

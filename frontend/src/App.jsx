@@ -18,6 +18,8 @@ import ServicePage from "./pages/ServicePage";
 import ContactPage from "./pages/ContactUs"
 import CollegeGallery from "./pages/CollegeGallery";
 import SocialPopup from "./components/SocialPopup";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 function App() {
   const [showPopup, setShowPopup] = useState(true);
   return (
@@ -42,6 +44,8 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<ServicePage/>} />
           <Route path="/contact" element={<ContactPage/>} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/*" element={"not found"} />
         </Routes>
       </main>

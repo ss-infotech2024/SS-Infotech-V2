@@ -807,10 +807,10 @@ export default function ContactUs() {
                   </p>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <a href="tel:+9193993 45989" target="_blank" rel="noopener noreferrer">
+                  <a href="tel:+918262908256" target="_blank" rel="noopener noreferrer">
                     <Button className="w-full bg-red-600 text-white hover:bg-red-700">
                       <Phone className="mr-2 h-4 w-4" />
-                      Emergency Number: +91 93993 45989
+                      Emergency Number: +91 82629 08256
                     </Button>
                   </a>
                   <a href="https://wa.link/rck1ie" target="_blank" rel="noopener noreferrer">

@@ -1,6 +1,6 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useState, useRef, useEffect, useId } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, animate, useInView } from "framer-motion";
 import { Card, CardContent } from "../components/UI/Card";
 import { Badge } from "../components/UI/Badge";
 import { Button } from "../components/UI/Button";
@@ -27,24 +27,64 @@ import {
   TrendingUp,
   Search,
   ChevronDown,
-  ExternalLink,
   CheckCircle2
 } from "lucide-react";
 
 // Initialize EmailJS
 emailjs.init("uo8vZ7IYM4nQArKtj");
 
-const floatingAnimation = {
-  animate: {
-    y: [0, -12, 0],
-    x: [0, 6, 0],
-    transition: {
-      duration: 5,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
+function GlowPill({ children, className = "", delay = "0s", crawl = "3.4s" }) {
+  const rawId = useId().replace(/:/g, "");
+  const gradId = `pill-glow-${rawId}`;
+
+  return (
+    <div className={`animate-float ${className}`} style={{ animationDelay: delay }}>
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        width="100%"
+        height="100%"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#c4b5fd" />
+            <stop offset="50%" stopColor="#818cf8" />
+            <stop offset="100%" stopColor="#67e8f9" />
+          </linearGradient>
+        </defs>
+        <rect
+          x="1.25"
+          y="1.25"
+          width="calc(100% - 2.5px)"
+          height="calc(100% - 2.5px)"
+          rx="9999"
+          fill="none"
+          stroke="rgba(129,140,248,0.28)"
+          strokeWidth="1"
+        />
+        <rect
+          x="1.25"
+          y="1.25"
+          width="calc(100% - 2.5px)"
+          height="calc(100% - 2.5px)"
+          rx="9999"
+          fill="none"
+          stroke={`url(#${gradId})`}
+          strokeWidth="2.25"
+          strokeLinecap="round"
+          pathLength="100"
+          strokeDasharray="22 78"
+          className="animate-border-crawl"
+          style={{
+            animationDuration: crawl,
+            filter: "drop-shadow(0 0 5px rgba(99,102,241,0.95))",
+          }}
+        />
+      </svg>
+      {children}
+    </div>
+  );
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -58,6 +98,38 @@ const fadeUp = {
     }
   })
 };
+
+const AnimatedNumber = ({ value }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [display, setDisplay] = useState("0");
+
+  useEffect(() => {
+    // Separate the numeric part from suffixes like "+", "%", or "/7"
+    const match = value.toString().match(/(\d+)(.*)/);
+    if (!match) {
+      setDisplay(value);
+      return;
+    }
+
+    const targetNumber = parseInt(match[1], 10);
+    const suffix = match[2] || "";
+
+    if (isInView) {
+      const controls = animate(0, targetNumber, {
+        duration: 2.5, // Animation duration in seconds
+        ease: "easeOut",
+        onUpdate: (val) => {
+          setDisplay(Math.floor(val).toString() + suffix);
+        },
+      });
+      return () => controls.stop();
+    }
+  }, [isInView, value]);
+
+  return <span ref={ref}>{display}</span>;
+};
+
 
 export default function ServicePage() {
   const formRef = useRef(null);
@@ -439,29 +511,32 @@ useEffect(() => {
         {/* Soft purple/blue atmospheric glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-100/60 via-blue-50/40 to-white/80 pointer-events-none" />
 
-        {/* Floating Badges — Light Theme */}
-        <motion.div
-          className="hidden lg:flex items-center gap-2 absolute top-24 left-20 px-4 py-2.5 bg-white/90 border border-purple-200 rounded-2xl shadow-lg backdrop-blur-xl text-slate-700 text-sm font-medium"
-          variants={floatingAnimation}
-          animate="animate"
-        >
-          <Rocket className="w-5 h-5 text-purple-600" />
-          <span>Agile Delivery</span>
-        </motion.div>
-        <motion.div className="hidden lg:flex items-center gap-2 absolute top-36 right-24 px-4 py-2.5 bg-white/90 border border-blue-200 backdrop-blur-xl rounded-2xl shadow-md text-slate-700 text-sm font-medium" variants={floatingAnimation} animate="animate">
-          <Target className="w-5 h-5 text-blue-600" />
-          <span>Result Focused</span>
-        </motion.div>
-        <motion.div className="hidden lg:flex items-center gap-2 absolute bottom-24 left-28 px-4 py-2.5 bg-white/90 border border-emerald-200 backdrop-blur-xl rounded-2xl shadow-md text-slate-700 text-sm font-medium" variants={floatingAnimation} animate="animate">
-          <Shield className="w-5 h-5 text-emerald-600" />
-          <span>Enterprise Secure</span>
-        </motion.div>
+        <GlowPill className="absolute top-24 left-12 z-20 hidden lg:inline-flex xl:left-20" delay="0s" crawl="3.2s">
+          <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white/90 px-4 py-2.5 text-sm font-medium text-slate-700 shadow-lg backdrop-blur-xl">
+            <Rocket className="h-5 w-5 text-purple-600" />
+            Agile Delivery
+          </span>
+        </GlowPill>
+        <GlowPill className="absolute top-36 right-10 z-20 hidden lg:inline-flex xl:right-24" delay="0.8s" crawl="3.8s">
+          <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white/90 px-4 py-2.5 text-sm font-medium text-slate-700 shadow-md backdrop-blur-xl">
+            <Target className="h-5 w-5 text-blue-600" />
+            Result Focused
+          </span>
+        </GlowPill>
+        <GlowPill className="absolute bottom-24 left-16 z-20 hidden lg:inline-flex xl:left-28" delay="1.4s" crawl="4.2s">
+          <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-white/90 px-4 py-2.5 text-sm font-medium text-slate-700 shadow-md backdrop-blur-xl">
+            <Shield className="h-5 w-5 text-emerald-600" />
+            Enterprise Secure
+          </span>
+        </GlowPill>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Badge className="bg-purple-100 text-purple-800 border-purple-200 px-4 py-1.5 text-sm font-medium tracking-wide inline-flex items-center gap-2 shadow-sm">
-              Scalable Tech Architecture
-            </Badge>
+            <GlowPill className="relative inline-flex" delay="0.4s" crawl="3.6s">
+              <Badge className="rounded-full bg-purple-100 text-purple-800 border-purple-200 px-4 py-1.5 text-sm font-medium tracking-wide inline-flex items-center gap-2 shadow-sm">
+                Scalable Tech Architecture
+              </Badge>
+            </GlowPill>
           </motion.div>
 
           <motion.h1
@@ -526,7 +601,9 @@ useEffect(() => {
                 <div className={`p-4 rounded-2xl ${stat.bg} mb-3 group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">{stat.value}</h3>
+                <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                  <AnimatedNumber value={stat.value} />
+                </h3>
                 <p className="text-sm font-medium text-slate-500 mt-1">{stat.label}</p>
               </motion.div>
             ))}
@@ -812,41 +889,6 @@ useEffect(() => {
                     </div>
 
                   </CardContent>
-
-                  {/* ================= BUTTON ================= */}
-                  <div className="px-6 pb-6 pt-0">
-
-                    <a
-                      href={product.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full"
-                    >
-                      <Button
-                        className="
-                          w-full
-                          h-11
-                          bg-slate-900
-                          hover:bg-purple-600
-                          text-white
-                          rounded-xl
-                          flex
-                          items-center
-                          justify-center
-                          gap-2
-                          transition-all
-                          duration-300
-                          font-medium
-                          text-sm
-                          shadow-sm
-                        "
-                      >
-                        <span>Visit Live Platform</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
-                    </a>
-
-                  </div>
 
                 </Card>
               </motion.div>

@@ -6,6 +6,20 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "border-crawl": {
+          "0%": { strokeDashoffset: "0" },
+          "100%": { strokeDashoffset: "-100" },
+        },
+      },
+      animation: {
+        float: "float 5.5s ease-in-out infinite",
+        "border-crawl": "border-crawl 3.4s linear infinite",
+      },
       colors: {
         'brand-blue': '#1e3a8a', // Primary blue for brand elements
         'brand-blue-dark': '#1e1b4b', // Darker blue for gradients and hovers
