@@ -1,93 +1,26 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
-import { FaCopy, FaPlus, FaTrash } from "react-icons/fa";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { templates } from "../../admin/src/components/CertificateTemplates"
-import { offerLetterTemplates } from "../../admin/src/components/OfferLetterTemplates"
-import CollegeNameField from "../../admin/src/components/CollegeNameField"
+import { FaCopy, FaFileWord, FaPlus, FaTrash, FaUsers } from "react-icons/fa";
+import LetterDetailsForm from "./components/LetterDetailsForm";
+import BulkGenerator from "./components/BulkGenerator/BulkGenerator";
+import { downloadLetterAsWord } from "./lib/wordExport";
+import {
+  DOC_TYPES,
+  ROLE_BY_TEMPLATE,
+  createLetter,
+  createLetterPdf,
+  datesFromInternshipStart,
+  parseISODate,
+  safeFileName,
+  saveCertificateLog,
+  templateFromJobTitle,
+  templateSetFor,
+  toPreviewData,
+} from "./lib/letters";
 
-export const DOC_TYPES = {
-  offer: "Internship Offer Letter",
-  completion: "Internship Completion Certificate",
-};
-
-export const ROLE_BY_TEMPLATE = {
-  "Web Developer": "Web Development Intern",
-  "Data Analyst": "Data Analyst Intern",
-  "Cyber Security": "Cyber Security Intern",
-  Marketing: "Marketing Intern",
-  "Human Resources": "Human Resources Intern",
-  "AI/ML": "AI/ML Intern",
-  "Software Development": "Software Development Intern",
-};
-
-export function templateFromJobTitle(title = "") {
-  const value = String(title).toLowerCase();
-  if (/(artificial intelligence|machine learning|\bai\s*\/\s*ml\b)/.test(value)) return "AI/ML";
-  if (/(data|analyst|analytics)/.test(value)) return "Data Analyst";
-  if (/(cyber|security)/.test(value)) return "Cyber Security";
-  if (/market/.test(value)) return "Marketing";
-  if (/(human resource|\bhr\b)/.test(value)) return "Human Resources";
-  if (/software/.test(value)) return "Software Development";
-  return "Web Developer";
-}
-
-const DATE_FIELDS = new Set(["internshipFrom", "internshipTo", "issuedDate"]);
-
-function toISODate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function parseISODate(iso) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
-  if (!match) return null;
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  if (
-    Number.isNaN(date.getTime()) ||
-    date.getFullYear() !== Number(match[1]) ||
-    date.getMonth() !== Number(match[2]) - 1 ||
-    date.getDate() !== Number(match[3])
-  ) {
-    return null;
-  }
-  return date;
-}
-
-function addMonths(iso, months) {
-  const date = parseISODate(iso);
-  if (!date) return "";
-  date.setMonth(date.getMonth() + months);
-  return toISODate(date);
-}
-
-function addDays(iso, days) {
-  const date = parseISODate(iso);
-  if (!date) return "";
-  date.setDate(date.getDate() + days);
-  return toISODate(date);
-}
-
-function formatDisplayDate(iso) {
-  const date = parseISODate(iso);
-  if (!date) return "";
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  return `${day}/${month}/${date.getFullYear()}`;
-}
-
-function datesFromInternshipStart(fromIso) {
-  const internshipFrom = parseISODate(fromIso) ? fromIso : toISODate(new Date());
-  return {
-    internshipFrom,
-    internshipTo: addMonths(internshipFrom, 6),
-    issuedDate: addDays(internshipFrom, -3),
-  };
-}
+// Re-exported for existing importers (e.g. pages/AdminApplications.jsx).
+export { DOC_TYPES, ROLE_BY_TEMPLATE, templateFromJobTitle };
+export { parseBulkNames, toTitleCase } from "./lib/letters";
 
 const EditableOfferPreview = React.memo(function EditableOfferPreview({ Template, previewKey, docType }) {
   const sourceRef = useRef(null);
@@ -174,61 +107,6 @@ function certificateStateFromLocation(state) {
   };
 }
 
-const LETTER_TYPE_LABEL = {
-  [DOC_TYPES.offer]: "Offer letter",
-  [DOC_TYPES.completion]: "Completion certificate",
-};
-
-const FIELD_LABELS = {
-  candidateName: "Candidate Name",
-  companyName: "Company Name",
-  internshipFrom: "Internship From",
-  internshipTo: "Internship To",
-  position: "Position",
-  issuedDate: "Issued Date",
-  collegeName: "College Name",
-  supervisorName: "Supervisor Name",
-};
-
-function blankLetterData() {
-  const dates = datesFromInternshipStart();
-  return {
-    candidateName: "",
-    companyName: "SS Infotech Pvt. Ltd.",
-    internshipFrom: dates.internshipFrom,
-    internshipTo: dates.internshipTo,
-    position: ROLE_BY_TEMPLATE["Web Developer"],
-    issuedDate: dates.issuedDate,
-    collegeName: "",
-    supervisorName: "Mr Viraj Patle",
-  };
-}
-
-function createLetter(source) {
-  return {
-    id: crypto.randomUUID(),
-    docType: source?.docType || DOC_TYPES.offer,
-    templateName: source?.templateName || "Web Developer",
-    data: source?.data ? { ...source.data } : blankLetterData(),
-  };
-}
-
-async function saveCertificateLog(letter) {
-  await axios.post(
-    "/api/certificate-logs",
-    {
-      candidateName: letter.data.candidateName,
-      collegeName: letter.data.collegeName,
-      letterType: LETTER_TYPE_LABEL[letter.docType] || letter.docType,
-      role: letter.data.position,
-      internshipFrom: formatDisplayDate(letter.data.internshipFrom),
-      internshipTo: formatDisplayDate(letter.data.internshipTo),
-      issuedDate: formatDisplayDate(letter.data.issuedDate),
-    },
-    { timeout: 20000 },
-  );
-}
-
 function ScaledLetterPreview({ captureRef, children }) {
   const frameRef = useRef(null);
   const [scale, setScale] = useState(1);
@@ -261,81 +139,50 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
   const ref = useRef(null);
   const [downloadError, setDownloadError] = useState("");
   const [logNote, setLogNote] = useState("");
+  const [wordBusy, setWordBusy] = useState(false);
   const { docType, templateName, data } = letter;
-  const templateSet = docType === DOC_TYPES.offer ? offerLetterTemplates : templates;
-  const TemplateComponent = templateSet[templateName];
-  const previewData = Object.fromEntries(
-    Object.entries(data)
-      .map(([key, value]) => [
-        key,
-        DATE_FIELDS.has(key) ? formatDisplayDate(value) : value,
-      ])
-      .filter(([, value]) => String(value).trim() !== "")
-  );
+  const TemplateComponent = templateSetFor(docType)[templateName];
+  const previewData = toPreviewData(data);
   const isOffer = docType === DOC_TYPES.offer;
-  const collegeInputId = `college-${letter.id}`;
-
-  const updateData = (nextData) => {
-    onChange({ ...letter, data: typeof nextData === "function" ? nextData(letter.data) : nextData });
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    if (name === "internshipFrom") {
-      const dates = value ? datesFromInternshipStart(value) : {
-        internshipFrom: "",
-        internshipTo: "",
-        issuedDate: "",
-      };
-      updateData((prev) => ({ ...prev, ...dates }));
-      return;
-    }
-    updateData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleDocTypeChange = (value) => {
-    const nextSet = value === DOC_TYPES.offer ? offerLetterTemplates : templates;
-    const nextTemplate = nextSet[templateName] ? templateName : Object.keys(nextSet)[0];
-    onChange({ ...letter, docType: value, templateName: nextTemplate });
-  };
-
-  const handleTemplateChange = (value) => {
-    const knownRoles = Object.values(ROLE_BY_TEMPLATE);
-    const nextRole = ROLE_BY_TEMPLATE[value];
-    const position = !nextRole || (data.position.trim() && !knownRoles.includes(data.position))
-      ? data.position
-      : nextRole;
-    onChange({
-      ...letter,
-      templateName: value,
-      data: { ...data, position },
-    });
-  };
 
   const downloadPdf = async () => {
     if (!ref.current) return;
     setDownloadError("");
     setLogNote("");
     try {
-      const canvas = await html2canvas(ref.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#ffffff",
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: [794, 1123] });
-      pdf.addImage(imgData, "PNG", 0, 0, 794, 1123);
-      const safeName = (data.candidateName || "document").replace(/[\\/:*?"<>|]/g, "").trim();
-      pdf.save(`${safeName || "document"}.pdf`);
-      try {
-        await saveCertificateLog(letter);
-      } catch (error) {
-        console.error(error);
-        setLogNote("The letter was downloaded, but it could not be added to Certificate logs.");
-      }
+      const pdf = await createLetterPdf(ref.current);
+      pdf.save(`${downloadFileName()}.pdf`);
+      await logDownload();
     } catch (error) {
       console.error(error);
       setDownloadError("Could not create the PDF. Please try again.");
+    }
+  };
+
+  const downloadFileName = () => safeFileName(data.candidateName);
+
+  const logDownload = async () => {
+    try {
+      await saveCertificateLog(letter);
+    } catch (error) {
+      console.error(error);
+      setLogNote("The letter was downloaded, but it could not be added to Certificate logs.");
+    }
+  };
+
+  const downloadWord = async () => {
+    if (!ref.current || wordBusy) return;
+    setDownloadError("");
+    setLogNote("");
+    setWordBusy(true);
+    try {
+      await downloadLetterAsWord(ref.current, downloadFileName());
+      await logDownload();
+    } catch (error) {
+      console.error(error);
+      setDownloadError("Could not create the Word document. Please try again.");
+    } finally {
+      setWordBusy(false);
     }
   };
 
@@ -355,70 +202,7 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
         </div>
       )}
 
-      <div className="flex gap-4">
-        <select
-          value={docType}
-          onChange={(event) => handleDocTypeChange(event.target.value)}
-          className="border p-2 rounded"
-          aria-label="Document type"
-        >
-          <option value={DOC_TYPES.offer}>{DOC_TYPES.offer}</option>
-          <option value={DOC_TYPES.completion}>{DOC_TYPES.completion}</option>
-        </select>
-
-        <select
-          value={templateName}
-          onChange={(event) => handleTemplateChange(event.target.value)}
-          className="border p-2 rounded"
-          aria-label="Role template"
-        >
-          {Object.keys(templateSet).map((key) => (
-            <option key={key} value={key}>{key}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        {Object.keys(data).filter((key) => key !== "supervisorName").map((key) => (
-          <div key={key} className="flex flex-col">
-            <label className="text-sm font-semibold mb-1" htmlFor={key === "collegeName" ? collegeInputId : undefined}>
-              {FIELD_LABELS[key] || key}
-            </label>
-            {key === "collegeName" ? (
-              <CollegeNameField
-                inputId={collegeInputId}
-                value={data.collegeName}
-                onChange={(collegeName) => updateData((prev) => ({ ...prev, collegeName }))}
-              />
-            ) : (
-              <input
-                type={DATE_FIELDS.has(key) ? "date" : "text"}
-                name={key}
-                value={data[key]}
-                onChange={handleChange}
-                className="border rounded p-2"
-                placeholder={DATE_FIELDS.has(key) ? undefined : `Enter ${FIELD_LABELS[key] || key}`}
-              />
-            )}
-          </div>
-        ))}
-        {docType === DOC_TYPES.completion && (
-          <div className="flex flex-col">
-            <label className="text-sm font-semibold mb-1" htmlFor={`supervisor-${letter.id}`}>
-              Supervisor Name
-            </label>
-            <input
-              id={`supervisor-${letter.id}`}
-              type="text"
-              name="supervisorName"
-              value={data.supervisorName || ""}
-              onChange={handleChange}
-              className="border rounded p-2"
-              placeholder="Enter supervisor name"
-            />
-          </div>
-        )}
-      </div>
+      <LetterDetailsForm letter={letter} onChange={onChange} idPrefix={letter.id} />
 
       <div className="flex flex-wrap justify-center gap-3">
         <button
@@ -436,6 +220,15 @@ function LetterCard({ letter, canRemove, sideBySide, onChange, onDuplicate, onRe
           className="bg-[#552586] text-white py-2 px-4 rounded"
         >
           {isOffer ? "Download offer letter" : "Download completion certificate"}
+        </button>
+        <button
+          type="button"
+          onClick={downloadWord}
+          disabled={wordBusy}
+          className="inline-flex items-center gap-2 border border-[#552586] text-[#552586] py-2 px-4 rounded disabled:opacity-60"
+        >
+          <FaFileWord size={14} />
+          {wordBusy ? "Preparing Word file…" : "Download as Word"}
         </button>
       </div>
       {downloadError && (
@@ -477,6 +270,8 @@ const GenerateCertificate = () => {
       ? initial.initialLetters.map((letter) => createLetter(letter))
       : [createLetter(initial)]
   );
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const closeBulk = useCallback(() => setBulkOpen(false), []);
 
   const updateLetter = (id, nextLetter) => {
     setLetters((current) => current.map((letter) => (letter.id === id ? nextLetter : letter)));
@@ -505,16 +300,26 @@ const GenerateCertificate = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className={`${sideBySide ? "" : "max-w-4xl mx-auto"} flex justify-between items-center gap-4`}>
+      <div className={`${sideBySide ? "" : "max-w-4xl mx-auto"} flex flex-wrap justify-between items-center gap-4`}>
         <h1 className="text-2xl font-bold text-gray-800">Letters</h1>
-        <button
-          type="button"
-          onClick={addLetter}
-          className="inline-flex items-center gap-2 bg-[#552586] text-white py-2 px-4 rounded"
-        >
-          <FaPlus size={12} />
-          Add another letter
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => setBulkOpen(true)}
+            className="inline-flex items-center gap-2 border border-[#552586] text-[#552586] py-2 px-4 rounded"
+          >
+            <FaUsers size={14} />
+            Bulk Generator
+          </button>
+          <button
+            type="button"
+            onClick={addLetter}
+            className="inline-flex items-center gap-2 bg-[#552586] text-white py-2 px-4 rounded"
+          >
+            <FaPlus size={12} />
+            Add another letter
+          </button>
+        </div>
       </div>
 
       {initial.fromApplication && (
@@ -525,6 +330,8 @@ const GenerateCertificate = () => {
           Internship dates are prefilled and can be changed.
         </p>
       )}
+
+      <BulkGenerator open={bulkOpen} onClose={closeBulk} />
 
       <div
         className={sideBySide ? "grid items-start gap-6" : undefined}

@@ -48,10 +48,10 @@ const DataAnalystTemplate = ({ data = {}, type = "Internship Offer Letter" }) =>
 
             <div className="mt-4 mb-1">
               <p className="font-semibold underline">Internship Details:</p>
-              <p>Intern Name: {candidateName}</p>
-              <p>Position: {position}</p>
-              <p>Department: Data Analytics</p>
-              <p>Internship Duration: {internshipFrom} to {internshipTo}</p>
+              <p><strong>Intern Name:</strong> {candidateName}</p>
+              <p><strong>Position:</strong> {position}</p>
+              <p><strong>Department:</strong> Data Analytics</p>
+              <p><strong>Internship Duration:</strong> {internshipFrom} to {internshipTo}</p>
             </div>
 
             <div className="mt-4 mb-1">

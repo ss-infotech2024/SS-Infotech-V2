@@ -38,7 +38,7 @@ const SoftwareDevelopmentCompletionCertificate = ({ data = {} }) => {
             <p>Documented implementation decisions and progress for team review.</p>
           </div>
           <p className="mb-2 font-semibold">Program Learning Overview:</p>
-          <p className="mb-1">The program covered the software development lifecycle, including requirement analysis, design, implementation, testing, and maintenance. Activities included breaking down features into tasks, building and verifying functionality, and incorporating review feedback. This certificate recognizes that the intern has successfully completed the {domain} training program.</p>
+          <p className="mb-1">The program covered the software development lifecycle, including requirement analysis, design, implementation, testing, and maintenance. Activities included breaking down features into tasks, building and verifying functionality, and incorporating review feedback. This certificate recognizes that the intern has successfully completed the <strong>{domain} training program</strong>.</p>
           <p>The intern also practiced writing readable, maintainable code, identifying and resolving defects, and communicating progress clearly within a team. Attention was given to collaborative development practices and to delivering reliable, well-documented work.</p>
         </div>
       </div>

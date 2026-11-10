@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Bulk Generator: glass panels and buttons in the site's purple glass style. */
+@layer components {
+  .bulk-panel {
+    @apply rounded-2xl border border-white/70 bg-white/65 shadow-[0_8px_30px_-12px_rgba(85,37,134,0.18)] backdrop-blur-xl;
+  }
+  .bulk-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#6A0DAD] to-[#9B59B6] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(124,58,237,0.6)] transition duration-200 hover:-translate-y-px hover:shadow-[0_12px_28px_-8px_rgba(124,58,237,0.7)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50;
+  }
+  .bulk-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-purple-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-[#552586] shadow-sm transition duration-200 hover:border-purple-300 hover:bg-white disabled:pointer-events-none disabled:opacity-50;
+  }
+  .bulk-icon-btn {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition duration-200 hover:bg-purple-50 hover:text-[#552586] disabled:pointer-events-none disabled:opacity-40;
+  }
+  .bulk-seg {
+    @apply inline-flex rounded-xl border border-purple-100 bg-white/70 p-1 shadow-sm;
+  }
+  .bulk-seg > button {
+    @apply inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-500 transition duration-200 hover:text-[#552586];
+  }
+  .bulk-seg > button[aria-pressed="true"] {
+    @apply bg-gradient-to-r from-[#6A0DAD] to-[#9B59B6] text-white shadow;
+  }
+}
+
 .letter-editor {
   line-height: 1.625;
 }

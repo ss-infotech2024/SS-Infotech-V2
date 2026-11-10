@@ -19,14 +19,14 @@ const WebDeveloperOfferLetter = ({ data }) => {
     <CertificateFrame>
     <div className="relative h-full w-full text-[14px] leading-snug">
       <div className="absolute left-8 right-8 pt-40">
-        <p className="mb-2 text-right font-medium">Date: {issuedDate || "DD/MM/YYYY"}</p>
+        <p className="mb-2 text-right font-medium">Date: <b>{issuedDate || "DD/MM/YYYY"}</b></p>
         <p>To,</p>
         <p className="font-semibold">{name}</p>
-        <p>{collegeName || "College Name"}</p>
+        <p className="font-semibold">{collegeName || "College Name"}</p>
 
         <p className="mt-1 font-semibold">Subject: Offer for {role}</p>
 
-        <p className="mt-1">Dear {name},</p>
+        <p className="mt-1">Dear <b>{name}</b>,</p>
 
         <p className="mt-1 text-justify">
           We are pleased to offer you an internship with <b>{company}</b> as a <b>{role}</b>. The internship will provide supervised, practical experience in designing, building, and maintaining web applications.
@@ -34,10 +34,10 @@ const WebDeveloperOfferLetter = ({ data }) => {
 
         <p className="mt-1 text-justify">
           <b>Internship / Training Details:</b><br />
-          Role: {role}<br />
-          Location: Nagpur<br />
-          Joining Date: {internshipFrom || "DD/MM/YYYY"}
-          {internshipTo ? <><br />End Date: {internshipTo}</> : null}
+          Role: <b>{role}</b><br />
+          Location: <b>Nagpur</b><br />
+          Joining Date: <b>{internshipFrom || "DD/MM/YYYY"}</b>
+          {internshipTo ? <><br />End Date: <b>{internshipTo}</b></> : null}
         </p>
 
         <p className="mt-1 text-justify">
@@ -53,7 +53,7 @@ const WebDeveloperOfferLetter = ({ data }) => {
         </p>
 
         <p className="mt-1 text-justify">
-          Upon successful completion of the internship and its required evaluation, a certificate of completion will be issued. This internship is intended for learning and skill development and does not constitute an offer of employment.
+          Upon successful completion of the internship and its required evaluation, a <b>certificate of completion</b> will be issued. This internship is intended for learning and skill development and <b>does not constitute an offer of employment</b>.
         </p>
 
         <p className="mt-1 text-justify">

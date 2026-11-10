@@ -69,7 +69,7 @@ function findSimilar(colleges, name) {
   return best;
 }
 
-export default function CollegeNameField({ value, onChange, inputId = "collegeName" }) {
+export default function CollegeNameField({ value, onChange, inputId = "collegeName", inputClassName }) {
   const listId = useId();
   const rootRef = useRef(null);
   const [colleges, setColleges] = useState(NAGPUR_COLLEGES);
@@ -154,7 +154,7 @@ export default function CollegeNameField({ value, onChange, inputId = "collegeNa
           }
           if (event.key === "Escape") setOpen(false);
         }}
-        className="w-full border rounded p-2"
+        className={inputClassName || "w-full border rounded p-2"}
         placeholder="Search or enter a college"
       />
       {open && (

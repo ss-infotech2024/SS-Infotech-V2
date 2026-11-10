@@ -16,14 +16,14 @@ const HumanResourcesTemplate = ({ data }) => {
     <CertificateFrame>
     <div className="relative h-full w-full text-[14px] leading-snug">
       <div className="absolute left-8 right-8 pt-40">
-        <p className="mb-2 text-right font-medium">Date: {issuedDate || "DD/MM/YYYY"}</p>
+        <p className="mb-2 text-right font-medium">Date: <b>{issuedDate || "DD/MM/YYYY"}</b></p>
         <p>To,</p>
         <p className="font-semibold">{candidateName || "candidate Name"}</p>
-        <p>{collegeName || "College Name"}</p>
+        <p className="font-semibold">{collegeName || "College Name"}</p>
 
         <p className="mt-1 font-semibold">Subject: Offer for Internship in Human Resources</p>
 
-        <p className="mt-1">Dear {candidateName || "Candidate Name"},</p>
+        <p className="mt-1">Dear <b>{candidateName || "Candidate Name"}</b>,</p>
 
         <p className="mt-1 text-justify">
           We are pleased to offer you an opportunity to join{" "}
@@ -36,15 +36,15 @@ const HumanResourcesTemplate = ({ data }) => {
         <p className="mt-1 text-justify">
           <b>Internship Details:</b>
           <br />
-          Internship Role: {position || "Human Resources Intern"}
+          Internship Role: <b>{position || "Human Resources Intern"}</b>
           <br />
-          Location: Nagpur
+          Location: <b>Nagpur</b>
           <br />
-          Start Date: {internshipFrom || "DD/MM/YYYY"}
+          Start Date: <b>{internshipFrom || "DD/MM/YYYY"}</b>
           {internshipTo ? (
             <>
               <br />
-              End Date: {internshipTo}
+              End Date: <b>{internshipTo}</b>
             </>
           ) : null}
         </p>
@@ -70,9 +70,9 @@ const HumanResourcesTemplate = ({ data }) => {
         </p>
 
         <p className="mt-1 text-justify">
-          Upon successful completion of the internship and its required evaluation, a certificate
-          of completion will be issued. This internship is intended for learning and skill development
-          and does not constitute an offer of employment.
+          Upon successful completion of the internship and its required evaluation, a <b>certificate
+          of completion</b> will be issued. This internship is intended for learning and skill development
+          and <b>does not constitute an offer of employment</b>.
         </p>
 
         <p className="mt-1 text-justify">

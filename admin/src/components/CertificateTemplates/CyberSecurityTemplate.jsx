@@ -79,11 +79,11 @@ const CyberSecurityTemplate = ({ data = {}, type = "Internship Offer Letter" }) 
 
             <div className="mt-4 mb-3">
               <p className="font-semibold underline">Internship Details:</p>
-              <p>Intern Name: {candidateName}</p>
-              <p>Position: {position}</p>
-              <p>Department: Cyber Security & Network Defense</p>
+              <p><strong>Intern Name:</strong> {candidateName}</p>
+              <p><strong>Position:</strong> {position}</p>
+              <p><strong>Department:</strong> Cyber Security & Network Defense</p>
               <p>
-                Internship Duration: {internshipFrom} to {internshipTo}
+                <strong>Internship Duration:</strong> {internshipFrom} to {internshipTo}
               </p>
             </div>
 
