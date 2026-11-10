@@ -4,6 +4,7 @@ import CyberSecurityTemplate from "./CyberSecurityTemplate";
 import MarketingCompletionCertificate from "./MarketingCompletionCertificate";
 import HRCompletionCertificate from "./HRCompletionCertificate";
 import AIMLCompletionCertificate from "./AIMLCompletionCertificate";
+import SoftwareDevelopmentCompletionCertificate from "./SoftwareDevelopmentCompletionCertificate";
 
 export const templates = {
   "Web Developer": WebDeveloperTemplate,
@@ -12,4 +13,5 @@ export const templates = {
   "Marketing": MarketingCompletionCertificate,
   "Human Resources": HRCompletionCertificate,
   "AI/ML": AIMLCompletionCertificate,
+  "Software Development": SoftwareDevelopmentCompletionCertificate,
 };

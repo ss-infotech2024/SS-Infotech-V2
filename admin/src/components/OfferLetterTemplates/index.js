@@ -4,6 +4,7 @@ import CyberSecurityOfferLetter from "./CyberSecurityOfferLetter";
 import MarketingOfferLetter from "./MarketingOfferLetter";
 import HumanResourcesTemplate from "./HumanResourcesTemplate";
 import AIMLOfferLetter from "./AIMLOfferLetter";
+import SoftwareDevelopmentOfferLetter from "./SoftwareDevelopmentOfferLetter";
 
 export const offerLetterTemplates = {
   "Web Developer": WebDeveloperOfferLetter,
@@ -12,4 +13,5 @@ export const offerLetterTemplates = {
   "Marketing": MarketingOfferLetter,
   "Human Resources": HumanResourcesTemplate,
   "AI/ML": AIMLOfferLetter,
+  "Software Development": SoftwareDevelopmentOfferLetter,
 };

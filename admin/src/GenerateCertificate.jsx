@@ -20,6 +20,7 @@ export const ROLE_BY_TEMPLATE = {
   Marketing: "Marketing Intern",
   "Human Resources": "Human Resources Intern",
   "AI/ML": "AI/ML Intern",
+  "Software Development": "Software Development Intern",
 };
 
 export function templateFromJobTitle(title = "") {
@@ -29,6 +30,7 @@ export function templateFromJobTitle(title = "") {
   if (/(cyber|security)/.test(value)) return "Cyber Security";
   if (/market/.test(value)) return "Marketing";
   if (/(human resource|\bhr\b)/.test(value)) return "Human Resources";
+  if (/software/.test(value)) return "Software Development";
   return "Web Developer";
 }
 
