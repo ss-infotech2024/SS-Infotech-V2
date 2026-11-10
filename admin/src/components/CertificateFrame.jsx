@@ -3,11 +3,16 @@ import certificateBg from "../assets/certificate-bg.png";
 const PAGE_WIDTH = 794;
 const PAGE_HEIGHT = 1123;
 
+// Certificates are pinned to the font they were designed with (Tailwind's default sans stack),
+// so the admin UI typography can change without altering any certificate, PDF, or Word export.
+const CERTIFICATE_FONT =
+  'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+
 export default function CertificateFrame({ children }) {
   return (
     <div
-      className="relative mx-auto overflow-hidden bg-white"
-      style={{ width: PAGE_WIDTH, height: PAGE_HEIGHT }}
+      className="relative mx-auto overflow-hidden bg-white text-black"
+      style={{ width: PAGE_WIDTH, height: PAGE_HEIGHT, fontFamily: CERTIFICATE_FONT, letterSpacing: "normal" }}
     >
       <img
         src={certificateBg}

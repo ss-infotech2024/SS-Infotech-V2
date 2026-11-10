@@ -1,6 +1,4 @@
-
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import AdminSidebar from "./components/AdminSidebar";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -12,102 +10,36 @@ import AdminCertificate from "./GenerateCertificate";
 import AdminApplications from "./pages/AdminApplications";
 import CandidateManager from "./pages/CandidateManager";
 import CertificateLogs from "./pages/CertificateLogs";
+import AppShell from "./components/layout/AppShell";
+
+const protectedRoutes = [
+  { path: "/", element: <Dashboard /> },
+  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/hero-banner", element: <AdminSlides /> },
+  { path: "/job-listings", element: <AdminJobs /> },
+  { path: "/job-applications", element: <AdminApplications /> },
+  { path: "/gallery", element: <AdminGallery /> },
+  { path: "/certificates", element: <AdminCertificate /> },
+  { path: "/certificate-logs", element: <CertificateLogs /> },
+  { path: "/candidate-excel", element: <CandidateManager /> },
+];
 
 function AppContent() {
   const location = useLocation();
   const isLoggedIn = localStorage.getItem("isAdminLoggedIn") === "true";
-
-  // Hide Sidebar on login page
-  const hideSidebar = location.pathname === "/login";
-
-  return (
-    <div className="flex">
-      {/* Sidebar */}
-      {!hideSidebar && isLoggedIn && <AdminSidebar />}
-
-      {/* Main Content */}
-      <div className={`flex-1 ${!hideSidebar && isLoggedIn ? "md:ml-72" : ""}`}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          {/* Protected Routes */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hero-banner"
-            element={
-              <ProtectedRoute>
-                <AdminSlides />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/job-listings"
-            element={
-              <ProtectedRoute>
-                <AdminJobs />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/job-applications"
-            element={
-              <ProtectedRoute>
-                <AdminApplications />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/gallery"
-            element={
-              <ProtectedRoute>
-                <AdminGallery />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/certificates"
-            element={
-              <ProtectedRoute>
-                <AdminCertificate />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/certificate-logs"
-            element={
-              <ProtectedRoute>
-                <CertificateLogs />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/candidate-excel"
-            element={
-              <ProtectedRoute>
-                <CandidateManager />
-              </ProtectedRoute>
-            }
-          />
-          {/* Catch-all Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-    </div>
+  const routes = (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      {protectedRoutes.map((route) => (
+        <Route key={route.path} path={route.path} element={<ProtectedRoute>{route.element}</ProtectedRoute>} />
+      ))}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
+
+  // The login page stands alone; every signed-in page lives inside the app shell.
+  if (location.pathname === "/login" || !isLoggedIn) return routes;
+  return <AppShell>{routes}</AppShell>;
 }
 
 export default function App() {

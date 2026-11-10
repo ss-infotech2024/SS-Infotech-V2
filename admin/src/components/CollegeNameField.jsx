@@ -161,14 +161,14 @@ export default function CollegeNameField({ value, onChange, inputId = "collegeNa
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-30 mt-1 max-h-60 w-full overflow-auto border bg-white"
+          className="absolute z-30 mt-1.5 max-h-64 w-full overflow-auto rounded-2xl border border-white/80 bg-white/95 p-1.5 font-ui shadow-glass-lg backdrop-blur-xl"
         >
           {matches.map((college) => (
             <li key={college}>
               <button
                 type="button"
                 role="option"
-                className="block w-full px-2 py-1 text-left"
+                className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-[#7c3aed]/[0.07] hover:text-[#5b21b6] ${college === value ? "bg-[#7c3aed]/[0.08] font-semibold text-[#5b21b6]" : "text-ink-soft"}`}
                 onClick={() => selectCollege(college)}
               >
                 {college}
@@ -179,28 +179,30 @@ export default function CollegeNameField({ value, onChange, inputId = "collegeNa
             <li>
               <button
                 type="button"
-                className="block w-full px-2 py-1 text-left"
+                className="block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-[#6d28d9] transition hover:bg-[#7c3aed]/[0.07]"
                 onClick={() => requestAdd(trimmedQuery)}
               >
-                Add "{trimmedQuery}"
+                + Add "{trimmedQuery}" <span className="font-normal text-ink-faint">(or press Enter)</span>
               </button>
             </li>
           )}
           {!matches.length && !showAdd && (
-            <li className="px-2 py-1">No colleges found.</li>
+            <li className="px-3 py-2 text-sm text-ink-muted">No colleges found.</li>
           )}
         </ul>
       )}
       {warning && (
-        <div className="mt-2">
-          <p>A similar college already exists.</p>
-          <p>{warning.match}</p>
-          <button type="button" onClick={() => selectCollege(warning.match)}>
-            Use this college
-          </button>
-          <button type="button" className="ml-3" onClick={() => addCollege(warning.pending)}>
-            Add anyway
-          </button>
+        <div className="mt-2 rounded-2xl border border-amber-200 bg-amber-50/80 p-3 text-sm text-amber-900" role="alert">
+          <p className="font-semibold">A similar college already exists.</p>
+          <p className="mt-0.5 text-amber-800">{warning.match}</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button type="button" className="btn-secondary btn-sm" onClick={() => selectCollege(warning.match)}>
+              Use this college
+            </button>
+            <button type="button" className="btn-ghost btn-sm" onClick={() => addCollege(warning.pending)}>
+              Add anyway
+            </button>
+          </div>
         </div>
       )}
     </div>

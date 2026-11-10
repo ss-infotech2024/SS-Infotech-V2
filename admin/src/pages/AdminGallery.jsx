@@ -17,10 +17,13 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Images,
 } from "lucide-react";
+import { PageHeader } from "../components/ui/kit";
 
 import axios from "axios";
-import { message } from "antd";
+import { message } from "../components/ui/toast";
+import { confirmDialog } from "../components/ui/confirm";
 
 
 /*
@@ -643,9 +646,7 @@ const applyGradientToForm = () => {
 
   const handleDelete = async (_id) => {
     if (
-      !window.confirm(
-        "Are you sure you want to delete this album and all its photos?"
-      )
+      !(await confirmDialog({ title: "Delete this album?", description: "The album and all of its photos will be permanently removed from the website.", confirmText: "Delete album" }))
     ) {
       return;
     }
@@ -970,9 +971,7 @@ const applyGradientToForm = () => {
     index
   ) => {
     if (
-      !window.confirm(
-        "Are you sure you want to delete this photo?"
-      )
+      !(await confirmDialog({ title: "Delete this photo?", description: "The photo will be removed from the album. This can't be undone.", confirmText: "Delete photo" }))
     ) {
       return;
     }
@@ -1062,9 +1061,16 @@ const applyGradientToForm = () => {
   */
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-0">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="page">
+        <PageHeader
+          icon={Images}
+          eyebrow="Website"
+          title="Gallery"
+          description="Create albums of 5–10 photos, style their cover gradient, and manage individual photos."
+        />
+
 
         {/* ================================================================
             CREATE / EDIT ALBUM
@@ -1072,19 +1078,19 @@ const applyGradientToForm = () => {
 
         <section
           ref={formRef}
-          className="mb-12 bg-white rounded-2xl shadow-md p-6"
+          className="card card-pad"
         >
 
           <div className="flex items-center justify-between mb-6">
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-extrabold tracking-tight text-ink">
                 {isEditing
                   ? "Update Album"
                   : "Create New Album"}
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="card-subtitle">
                 {isEditing
                   ? "Update album information or add photos."
                   : "Create an album with 5–10 photos."}
@@ -1107,7 +1113,7 @@ const applyGradientToForm = () => {
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="label">
                   Title
                 </label>
 
@@ -1116,14 +1122,14 @@ const applyGradientToForm = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
+                  className="input"
                   required
                 />
               </div>
 
               {/* Full Title */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="label">
                   Full Title
                 </label>
 
@@ -1132,14 +1138,14 @@ const applyGradientToForm = () => {
                   name="fullTitle"
                   value={formData.fullTitle}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#552586] focus:border-transparent outline-none"
+                  className="input"
                   required
                 />
               </div>
 
               {/* Images */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="label">
                   {isEditing ? "Add Images" : "Images (5–10)"}
                 </label>
 
@@ -1150,7 +1156,7 @@ const applyGradientToForm = () => {
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handleFileChange}
                   ref={fileInputRef}
-                  className="w-full px-2 py-1.5 border border-gray-300 rounded-lg text-xs bg-white"
+                  className="input py-2 text-xs file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-[#7c3aed]/10 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[#6d28d9]"
                   required={!isEditing}
                 />
               </div>
@@ -1169,11 +1175,11 @@ const applyGradientToForm = () => {
               <div className="flex items-center justify-between mb-4">
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800">
+                  <label className="block text-sm font-bold text-ink">
                     Album Color / Gradient
                   </label>
 
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="mt-1 text-xs text-ink-muted">
                     Choose 1, 2 or 3 colors and control their positions.
                   </p>
                 </div>
@@ -1189,7 +1195,7 @@ const applyGradientToForm = () => {
 
                 {/* Number of Colors */}
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
+                  <label className="label">
                     Colors
                   </label>
 
@@ -1199,10 +1205,10 @@ const applyGradientToForm = () => {
                         key={count}
                         type="button"
                         onClick={() => setGradientType(count)}
-                        className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
+                        className={`h-9 min-w-[2.5rem] rounded-xl border px-3 text-xs font-bold transition ${
                           gradientType === count
-                            ? "bg-[#552586] text-white border-[#552586]"
-                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                            ? "bg-gradient-to-br from-[#7c3aed] to-[#a855f7] text-white border-transparent shadow-glow-sm"
+                            : "bg-white/80 text-ink-soft border-[#e2dcf2] hover:bg-white"
                         }`}
                       >
                         {count}
@@ -1214,14 +1220,14 @@ const applyGradientToForm = () => {
                 {/* Direction */}
                 {gradientType !== "1" && (
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                    <label className="label">
                       Direction
                     </label>
 
                     <select
                       value={gradientDirection}
                       onChange={(e) => setGradientDirection(e.target.value)}
-                      className="w-36 px-3 py-1.5 border border-gray-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-[#552586]"
+                      className="select w-44 py-2 text-xs"
                     >
                       <option value="0">Top → Bottom</option>
                       <option value="45">Diagonal ↗</option>
@@ -1245,11 +1251,11 @@ const applyGradientToForm = () => {
                 {getActiveGradientColors().map((item, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl"
+                    className="flex items-center gap-2 rounded-2xl border border-white/80 bg-white/70 px-3 py-2 shadow-sm"
                   >
 
                     {/* Color Number */}
-                    <span className="text-xs font-semibold text-gray-700 whitespace-nowrap">
+                    <span className="whitespace-nowrap text-xs font-bold text-ink-muted">
                       C{index + 1}
                     </span>
 
@@ -1260,7 +1266,7 @@ const applyGradientToForm = () => {
                       onChange={(e) =>
                         updateGradientColor(index, e.target.value)
                       }
-                      className="w-8 h-8 rounded-md border border-gray-300 cursor-pointer p-0.5 bg-white"
+                      className="h-8 w-8 cursor-pointer rounded-lg border border-[#e2dcf2] bg-white p-0.5"
                     />
 
                     {/* HEX */}
@@ -1270,7 +1276,7 @@ const applyGradientToForm = () => {
                       onChange={(e) =>
                         updateGradientColor(index, e.target.value)
                       }
-                      className="w-20 px-2 py-1.5 border border-gray-300 rounded-md uppercase text-xs font-medium"
+                      className="input w-24 px-2 py-1.5 text-xs font-semibold uppercase"
                     />
 
                     {/* Position */}
@@ -1287,10 +1293,10 @@ const applyGradientToForm = () => {
                               e.target.value
                             )
                           }
-                          className="w-14 px-2 py-1.5 border border-gray-300 rounded-md text-center text-xs"
+                          className="input w-16 px-2 py-1.5 text-center text-xs"
                         />
 
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-ink-muted">
                           %
                         </span>
                       </>
@@ -1313,17 +1319,17 @@ const applyGradientToForm = () => {
                 {/* Live Preview */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs font-semibold text-gray-800">
+                    <p className="text-xs font-semibold text-ink">
                       Live Preview
                     </p>
 
-                    <span className="text-[10px] text-green-600 font-medium">
+                    <span className="badge-success text-[10px]">
                       ● Live
                     </span>
                   </div>
 
                   <div
-                    className="w-full h-20 rounded-xl border border-gray-200 shadow-inner"
+                    className="h-20 w-full rounded-2xl border border-white shadow-inner ring-1 ring-black/5"
                     style={{
                       background: generateGradientCSS(),
                     }}
@@ -1332,11 +1338,11 @@ const applyGradientToForm = () => {
 
                 {/* Generated CSS */}
                 <div>
-                  <p className="text-xs font-semibold text-gray-800 mb-2">
+                  <p className="mb-2 text-xs font-semibold text-ink">
                     Generated CSS
                   </p>
 
-                  <div className="h-20 flex items-center px-3 py-2 rounded-xl bg-gray-900 text-green-400 text-xs break-all font-mono overflow-auto">
+                  <div className="flex h-20 items-center overflow-auto break-all rounded-2xl bg-[#1d1736] px-3 py-2 font-mono text-xs text-[#c4b5fd]">
                     {generateGradientCSS()}
                   </div>
                 </div>
@@ -1350,11 +1356,11 @@ const applyGradientToForm = () => {
 
               <div className="mt-4">
 
-                <p className="text-sm font-medium text-gray-700 mb-2">
+                <p className="label">
                   Generated CSS
                 </p>
 
-                <div className="p-3 rounded-xl bg-gray-900 text-green-400 text-xs sm:text-sm break-all font-mono">
+                <div className="break-all rounded-2xl bg-[#1d1736] p-3 font-mono text-xs text-[#c4b5fd] sm:text-sm">
                   {generateGradientCSS()}
                 </div>
 
@@ -1368,7 +1374,7 @@ const applyGradientToForm = () => {
               <button
                 type="button"
                 onClick={applyGradientToForm}
-                className="mt-4 px-5 py-3 bg-[#552586] hover:bg-[#6a34a0] text-white rounded-xl font-medium transition"
+                className="btn-secondary mt-4"
               >
                 Apply Gradient
               </button>
@@ -1380,11 +1386,11 @@ const applyGradientToForm = () => {
 
                 <div className="mt-3">
 
-                  <p className="text-xs text-gray-500 mb-1">
+                  <p className="mb-1 text-xs text-ink-muted">
                     Value that will be saved:
                   </p>
 
-                  <p className="text-xs font-mono bg-gray-100 p-3 rounded-lg break-all">
+                  <p className="break-all rounded-xl bg-[#7c3aed]/[0.06] p-3 font-mono text-xs text-[#4c1d95]">
                     {formData.color}
                   </p>
 
@@ -1398,7 +1404,7 @@ const applyGradientToForm = () => {
             {/* Images */}
 
             {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="label">
                 {isEditing
                   ? "Add Images"
                   : "Images (5–10)"}
@@ -1422,7 +1428,7 @@ const applyGradientToForm = () => {
 
 
             {error && (
-              <p className="text-red-600 text-sm">
+              <p className="field-error text-sm">
                 {error}
               </p>
             )}
@@ -1432,7 +1438,7 @@ const applyGradientToForm = () => {
 
               <button
                 type="submit"
-                className="px-6 py-3 bg-[#552586] text-white rounded-xl hover:bg-[#6a34a0] transition"
+                className="btn-primary btn-lg"
               >
                 {isEditing
                   ? "Update Album"
@@ -1446,7 +1452,7 @@ const applyGradientToForm = () => {
                   onClick={
                     resetAlbumForm
                   }
-                  className="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition"
+                  className="btn-secondary btn-lg"
                 >
                   Cancel
                 </button>
@@ -1462,21 +1468,21 @@ const applyGradientToForm = () => {
             ALBUM LIST
         ================================================================= */}
 
-        <section className="bg-white rounded-2xl shadow-md p-6">
+        <section className="card card-pad">
 
           <div className="flex items-center justify-between mb-6">
 
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-extrabold tracking-tight text-ink">
                 Albums
               </h2>
 
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="card-subtitle">
                 Manage albums and individual photos.
               </p>
             </div>
 
-            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600">
+            <span className="badge-violet px-3 py-1 text-xs">
               {albums.length} Albums
             </span>
 
@@ -1484,32 +1490,32 @@ const applyGradientToForm = () => {
 
 
           {albums.length === 0 ? (
-            <p className="text-gray-500">
+            <p className="text-ink-muted">
               No albums found.
             </p>
           ) : (
 
-            <div className="overflow-x-auto">
+            <div className="table-wrap">
 
-              <table className="min-w-full">
+              <table className="table-ui">
 
-                <thead className="bg-gray-50">
+                <thead >
 
                   <tr>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">
+                    <th >
                       Album
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">
+                    <th >
                       Full Title
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">
+                    <th >
                       Images
                     </th>
 
-                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">
+                    <th >
                       Actions
                     </th>
 
@@ -1518,7 +1524,7 @@ const applyGradientToForm = () => {
                 </thead>
 
 
-                <tbody className="divide-y divide-gray-200">
+                <tbody >
 
                   {albums.map(
                     (album) => (
@@ -1527,16 +1533,16 @@ const applyGradientToForm = () => {
                         key={
                           album._id
                         }
-                        className="hover:bg-gray-50"
+                        
                       >
 
                         {/* Album */}
 
-                        <td className="px-6 py-5">
+                        <td >
 
                           <div className="flex items-center gap-4">
 
-                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100">
+                            <div className="h-14 w-14 overflow-hidden rounded-xl bg-[#ece7f8] ring-1 ring-black/5">
 
                               {album.images?.[0] && (
                                 <img
@@ -1554,13 +1560,13 @@ const applyGradientToForm = () => {
 
                             <div>
 
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-ink">
                                 {
                                   album.title
                                 }
                               </p>
 
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-ink-muted">
                                 ID:{" "}
                                 {
                                   album._id
@@ -1576,7 +1582,7 @@ const applyGradientToForm = () => {
 
                         {/* Full Title */}
 
-                        <td className="px-6 py-5 text-gray-600">
+                        <td className="text-ink-muted">
                           {
                             album.fullTitle
                           }
@@ -1585,9 +1591,9 @@ const applyGradientToForm = () => {
 
                         {/* Images */}
 
-                        <td className="px-6 py-5">
+                        <td >
 
-                          <span className="inline-flex px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
+                          <span className="badge-violet">
                             {
                               album.images
                                 ?.length ||
@@ -1601,7 +1607,7 @@ const applyGradientToForm = () => {
 
                         {/* Actions */}
 
-                        <td className="px-6 py-5">
+                        <td >
 
                           <div className="flex flex-wrap gap-2">
 
@@ -1611,7 +1617,10 @@ const applyGradientToForm = () => {
                                   album
                                 )
                               }
-                              className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-sm"
+                              type="button"
+                              aria-label={`View ${album.title}`}
+                              data-tooltip="View album"
+                              className="btn-ghost btn-sm"
                             >
                               <Eye size={16}/>
                             </button>
@@ -1623,7 +1632,10 @@ const applyGradientToForm = () => {
                                   album
                                 )
                               }
-                              className="px-3 py-2 rounded-lg bg-purple-100 text-purple-700 hover:bg-purple-200 text-sm font-medium"
+                              type="button"
+                              aria-label={`Manage photos in ${album.title}`}
+                              data-tooltip="Add or remove photos"
+                              className="btn-secondary btn-sm"
                             >
                               <ImagePlus size={16} />
                             </button>
@@ -1635,7 +1647,10 @@ const applyGradientToForm = () => {
                                   album
                                 )
                               }
-                              className="px-3 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 text-sm"
+                              type="button"
+                              aria-label={`Edit ${album.title}`}
+                              data-tooltip="Edit album details"
+                              className="btn-ghost btn-sm"
                             >
                               <Pencil size={16} />
                             </button>
@@ -1647,7 +1662,10 @@ const applyGradientToForm = () => {
                                   album._id
                                 )
                               }
-                              className="px-3 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-sm"
+                              type="button"
+                              aria-label={`Delete ${album.title}`}
+                              data-tooltip="Delete album"
+                              className="btn-danger-soft btn-sm"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -1692,7 +1710,7 @@ const applyGradientToForm = () => {
             exit={{
               opacity: 0,
             }}
-            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#1b0b33]/40 p-2 backdrop-blur-sm sm:p-4"
           >
 
             <motion.div
@@ -1711,20 +1729,20 @@ const applyGradientToForm = () => {
                 scale: 0.95,
                 opacity: 0,
               }}
-              className="bg-white rounded-3xl shadow-2xl w-full max-w-7xl max-h-[95vh] overflow-hidden"
+              className="glass-strong w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-[28px] font-ui"
             >
 
               {/* Header */}
 
-              <div className="flex items-center justify-between p-6 border-b">
+              <div className="flex items-center justify-between gap-3 border-b border-[#ebe6f7] p-5 sm:p-6">
 
                 <div>
 
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-xl font-extrabold tracking-tight text-ink">
                     Manage Photos
                   </h2>
 
-                  <p className="text-gray-500 text-sm mt-1">
+                  <p className="mt-1 text-sm text-ink-muted">
                     {
                       manageAlbum.fullTitle
                     }
@@ -1735,7 +1753,7 @@ const applyGradientToForm = () => {
 
                 <div className="flex items-center gap-3">
 
-                  <span className="px-3 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
+                  <span className="badge-violet px-3 py-1.5 text-xs">
                     {
                       manageAlbum
                         .images
@@ -1749,7 +1767,7 @@ const applyGradientToForm = () => {
                     onClick={
                       closePhotoManager
                     }
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
+                    className="icon-btn h-10 w-10 rounded-full bg-white/80 shadow-sm"
                   >
                     ✕
                   </button>
@@ -1761,7 +1779,7 @@ const applyGradientToForm = () => {
 
               {/* Content */}
 
-              <div className="p-6 overflow-y-auto max-h-[calc(95vh-100px)]">
+              <div className="max-h-[calc(95vh-100px)] overflow-y-auto p-5 sm:p-6">
 
                 {/* Top Controls */}
 
@@ -1790,13 +1808,13 @@ const applyGradientToForm = () => {
                     />
 
                     <span
-                      className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-medium ${
+                      className={`btn ${
                         manageAlbum
                           .images
                           .length >=
                         10
-                          ? "bg-gray-400 cursor-not-allowed"
-                          : "bg-[#552586] hover:bg-[#6a34a0]"
+                          ? "cursor-not-allowed bg-[#d9d3e8] text-white"
+                          : "cursor-pointer bg-gradient-to-br from-[#7c3aed] to-[#a855f7] text-white shadow-glow-sm hover:-translate-y-px"
                       }`}
                     >
                       {isAddingPhotos
@@ -1807,7 +1825,7 @@ const applyGradientToForm = () => {
                   </label>
 
 
-                  <div className="text-sm text-gray-500 flex items-center">
+                  <div className="flex items-center text-sm text-ink-muted">
                     Maximum 10 photos per album
                   </div>
 
@@ -1836,7 +1854,7 @@ const applyGradientToForm = () => {
                           opacity: 1,
                           y: 0,
                         }}
-                        className="group relative rounded-2xl overflow-hidden bg-gray-100 border border-gray-200"
+                        className="group relative overflow-hidden rounded-2xl border border-white/80 bg-white/70 shadow-sm transition duration-300 hover:shadow-glass-lg"
                       >
 
                         {/* Image */}
@@ -1867,7 +1885,7 @@ const applyGradientToForm = () => {
 
                         <div className="absolute top-2 left-2">
 
-                          <span className="px-2 py-1 rounded-lg bg-black/70 text-white text-xs">
+                          <span className="rounded-lg bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur">
                             #
                             {index +
                               1}
@@ -1878,7 +1896,7 @@ const applyGradientToForm = () => {
 
                         {/* Actions */}
 
-                        <div className="p-3 bg-white">
+                        <div className="p-3">
 
                           <div className="flex gap-2">
 
@@ -1906,7 +1924,7 @@ const applyGradientToForm = () => {
                                 className="hidden"
                               />
 
-                              <span className="flex items-center justify-center px-2 py-2 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 text-xs font-medium">
+                              <span className="btn-secondary btn-sm">
                                 Replace
                               </span>
 
@@ -1922,7 +1940,7 @@ const applyGradientToForm = () => {
                                   index
                                 )
                               }
-                              className="flex-1 px-2 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 text-xs font-medium"
+                              className="btn-danger-soft btn-sm flex-1"
                             >
                               Delete
                             </button>
@@ -1950,11 +1968,11 @@ const applyGradientToForm = () => {
                       🖼️
                     </div>
 
-                    <h3 className="text-xl font-semibold text-gray-800">
+                    <h3 className="text-lg font-bold text-ink">
                       No photos
                     </h3>
 
-                    <p className="text-gray-500 mt-2">
+                    <p className="mt-2 text-ink-muted">
                       Add photos to this album.
                     </p>
 
@@ -1967,17 +1985,17 @@ const applyGradientToForm = () => {
                     LIVE PREVIEW
                 ======================================================= */}
 
-                <div className="mt-10 pt-8 border-t">
+                <div className="mt-10 border-t border-[#ebe6f7] pt-8">
 
                   <div className="flex items-center justify-between mb-5">
 
                     <div>
 
-                      <h3 className="text-xl font-bold text-gray-900">
+                      <h3 className="text-lg font-extrabold tracking-tight text-ink">
                         Live Album Preview
                       </h3>
 
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-ink-muted">
                         This is how the current album photos will appear.
                       </p>
 
@@ -1991,7 +2009,7 @@ const applyGradientToForm = () => {
                           0
                         )
                       }
-                      className="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm hover:bg-gray-800"
+                      className="btn-primary btn-sm"
                     >
                       Open Full Preview
                     </button>
@@ -2070,7 +2088,7 @@ const applyGradientToForm = () => {
             exit={{
               opacity: 0,
             }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-[#0d0618]/85 p-4 backdrop-blur-md"
             onClick={
               handleOverlayClick
             }
@@ -2090,22 +2108,22 @@ const applyGradientToForm = () => {
                 scale: 0.95,
                 opacity: 0,
               }}
-              className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden"
+              className="glass-strong relative w-full max-w-6xl max-h-[95vh] overflow-hidden rounded-[28px] font-ui"
             >
 
               {/* Header */}
 
-              <div className="flex items-center justify-between p-5 border-b">
+              <div className="flex items-center justify-between gap-3 border-b border-[#ebe6f7] p-5">
 
                 <div>
 
-                  <h3 className="text-xl font-bold">
+                  <h3 className="text-lg font-extrabold tracking-tight text-ink">
                     {
                       viewAlbum.fullTitle
                     }
                   </h3>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-ink-muted">
                     Photo{" "}
                     {currentImageIndex +
                       1}{" "}
@@ -2124,7 +2142,7 @@ const applyGradientToForm = () => {
                   onClick={
                     closeModal
                   }
-                  className="p-2 hover:bg-gray-200 rounded-full"
+                  className="icon-btn"
                 >
                   ✕
                 </button>
@@ -2136,7 +2154,7 @@ const applyGradientToForm = () => {
 
               <div className="p-6">
 
-                <div className="relative bg-gray-100 rounded-2xl overflow-hidden">
+                <div className="relative overflow-hidden rounded-2xl bg-[#ece7f8]">
 
                   <motion.img
                     key={
@@ -2165,7 +2183,7 @@ const applyGradientToForm = () => {
                     onClick={
                       prevImage
                     }
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full shadow-lg text-3xl"
+                    className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-2xl text-ink shadow-lg backdrop-blur transition hover:scale-105 hover:bg-white"
                   >
                     ‹
                   </button>
@@ -2177,7 +2195,7 @@ const applyGradientToForm = () => {
                     onClick={
                       nextImage
                     }
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white rounded-full shadow-lg text-3xl"
+                    className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-2xl text-ink shadow-lg backdrop-blur transition hover:scale-105 hover:bg-white"
                   >
                     ›
                   </button>
@@ -2202,10 +2220,10 @@ const applyGradientToForm = () => {
                             index
                           )
                         }
-                        className={`flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 ${
+                        className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition ${
                           currentImageIndex ===
                           index
-                            ? "border-[#552586]"
+                            ? "border-[#8b5cf6] ring-4 ring-[#8b5cf6]/20"
                             : "border-transparent"
                         }`}
                       >

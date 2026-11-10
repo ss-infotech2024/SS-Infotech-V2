@@ -22,6 +22,7 @@ import {
   FiZap,
 } from "react-icons/fi";
 import LetterDetailsForm from "../LetterDetailsForm";
+import { toast as notify } from "../ui/toast";
 import PagePreview from "./PagePreview";
 import StatusBadge from "./StatusBadge";
 import CertificateLightbox from "./CertificateLightbox";
@@ -343,17 +344,13 @@ export default function BulkGenerator({ open, onClose }) {
   const [scope, setScope] = useState("all");
   const [job, setJob] = useState(null);
   const [notice, setNotice] = useState(null);
-  const [toast, setToast] = useState(() =>
-    draft?.items?.length
-      ? { id: 0, type: "info", text: `Restored ${plural(draft.items.length, "certificate")} from your last session.` }
-      : null,
-  );
   const [mobileTab, setMobileTab] = useState("settings");
   const [renderLetter, setRenderLetter] = useState(null);
   const renderRef = useRef(null);
   const cacheRef = useRef(new Map());
   const cancelRef = useRef(false);
-  const toastId = useRef(1);
+  const restoredNoticeShown = useRef(false);
+  const progressToast = useRef(null);
 
   const busy = Boolean(job);
   const previewLetter = useDeferredValue(letter);
@@ -369,9 +366,11 @@ export default function BulkGenerator({ open, onClose }) {
     const previous = { html: html.style.overflow, body: body.style.overflow };
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
+    body.dataset.bulkOpen = "1"; // lets toasts move clear of the download controls
     return () => {
       html.style.overflow = previous.html;
       body.style.overflow = previous.body;
+      delete body.dataset.bulkOpen;
     };
   }, [open]);
 
@@ -384,16 +383,43 @@ export default function BulkGenerator({ open, onClose }) {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, lightboxId, busy, onClose]);
 
-  useEffect(() => {
-    if (!toast) return undefined;
-    const timer = setTimeout(() => setToast(null), toast.undo ? 8000 : 5000);
-    return () => clearTimeout(timer);
-  }, [toast]);
-
+  // Uses the app-wide toast system; undoable actions get an "Undo" button.
   const showToast = useCallback((type, text, undo) => {
-    toastId.current += 1;
-    setToast({ id: toastId.current, type, text, undo });
+    notify[type](text, undo ? { action: { label: "Undo", onClick: undo }, duration: 8000 } : undefined);
   }, []);
+
+  useEffect(() => {
+    if (!open || restoredNoticeShown.current) return;
+    restoredNoticeShown.current = true;
+    if (draft?.items?.length) showToast("info", `Restored ${plural(draft.items.length, "certificate")} from your last session.`);
+  }, [open, draft, showToast]);
+
+  // The outcome of a download/regenerate settles its progress toast (or shows a new one for errors).
+  useEffect(() => {
+    if (!notice) return;
+    const type = notice.type === "success" ? "success" : notice.type === "error" ? "error" : "info";
+    if (progressToast.current) {
+      notify.update(progressToast.current, { type, message: notice.text, description: notice.hint || "", progress: undefined });
+      progressToast.current = null;
+    } else if (type === "error") {
+      notify.error(notice.text, { description: notice.hint });
+    }
+  }, [notice]);
+
+  // Live progress toast while certificates are generated.
+  useEffect(() => {
+    if (!job) {
+      if (progressToast.current) {
+        notify.dismiss(progressToast.current);
+        progressToast.current = null;
+      }
+      return;
+    }
+    if (job.kind === "single") return;
+    const progress = job.total ? job.done / job.total : 0;
+    if (!progressToast.current) progressToast.current = notify.loading(job.label, { progress });
+    else notify.update(progressToast.current, { message: job.label, progress });
+  }, [job]);
 
   // ----- derived rows -----
 
@@ -1269,41 +1295,6 @@ export default function BulkGenerator({ open, onClose }) {
                   )}
                 </AnimatePresence>
               </aside>
-            </div>
-
-            {/* Toast */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center px-4">
-              <AnimatePresence>
-                {toast && (
-                  <motion.div
-                    key={toast.id}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 16 }}
-                    className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-white/70 bg-gray-900/85 px-4 py-2.5 text-sm text-white shadow-2xl backdrop-blur-xl"
-                    role="status"
-                    data-toast
-                  >
-                    {toast.type === "error" ? <FiAlertCircle className="text-red-300" /> : toast.type === "success" ? <FiCheckCircle className="text-emerald-300" /> : <FiInfo className="text-purple-200" />}
-                    <span>{toast.text}</span>
-                    {toast.undo && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          toast.undo();
-                          setToast(null);
-                        }}
-                        className="rounded-lg bg-white/15 px-2.5 py-1 text-xs font-semibold transition hover:bg-white/25"
-                      >
-                        Undo
-                      </button>
-                    )}
-                    <button type="button" onClick={() => setToast(null)} className="opacity-60 transition hover:opacity-100" aria-label="Dismiss">
-                      <FiX />
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
 
             <AnimatePresence>

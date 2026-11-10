@@ -35,6 +35,16 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
+    // No response at all means the network or server is unreachable. One shared toast
+    // (fixed id) covers every failing request, so nothing stacks up.
+    if (!error.response && !axios.isCancel(error) && error.code !== "ERR_CANCELED") {
+      import("../components/ui/toast.jsx").then(({ toast }) => {
+        toast.error(error.code === "ECONNABORTED" ? "The server is taking too long to respond" : "Can't reach the server", {
+          id: "network-error",
+          description: "Check your internet connection and try again.",
+        });
+      });
+    }
     if (error.response?.status === 401 && window.location.pathname !== "/login") {
       localStorage.removeItem("isAdminLoggedIn");
       window.location.assign("/login");

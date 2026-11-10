@@ -1,480 +1,394 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
-import Badge from "../components/ui/Badge";
-import Button from "../components/ui/Button";
-import Progress from "../components/ui/Progress";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/Chart";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend } from "recharts";
-import { DollarSign, Users, ShoppingBag, TrendingUp } from "lucide-react";
-import { FaBriefcase } from "react-icons/fa";
-import axios from 'axios';
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import axios from "axios";
+import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  ArrowUpRight,
+  Award,
+  Briefcase,
+  Images,
+  Inbox,
+  PenLine,
+  ScrollText,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { Card, CardHeader, EmptyState, Skeleton, StatCard } from "../components/ui/kit";
+import { toast } from "../components/ui/toast";
+
+const SERIES = [
+  { key: "applications", label: "Applications", color: "#7c3aed" },
+  { key: "candidates", label: "Candidates", color: "#38bdf8" },
+  { key: "certificates", label: "Certificates", color: "#f472b6" },
+];
+
+function listFrom(data, key) {
+  if (Array.isArray(data)) return data;
+  return data?.[key] || data?.data || [];
+}
+
+function monthCounts(items, year, dateOf = (item) => item.createdAt) {
+  const counts = Array(12).fill(0);
+  items.forEach((item) => {
+    const date = new Date(dateOf(item));
+    if (!Number.isNaN(date.getTime()) && date.getFullYear() === year) counts[date.getMonth()] += 1;
+  });
+  return counts;
+}
+
+function greeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+function relativeDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const days = Math.floor((Date.now() - date.getTime()) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 7) return `${days} days ago`;
+  return date.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+}
+
+function ChartTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-2xl border border-white/80 bg-white/95 px-3.5 py-2.5 shadow-glass-lg backdrop-blur-xl">
+      <p className="mb-1 text-xs font-bold text-ink">{label}</p>
+      {payload.map((entry) => (
+        <p key={entry.dataKey} className="flex items-center gap-2 text-xs text-ink-soft">
+          <span className="h-2 w-2 rounded-full" style={{ background: entry.color }} />
+          {entry.name}: <span className="font-bold text-ink">{entry.value}</span>
+        </p>
+      ))}
+    </div>
+  );
+}
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [albums, setAlbums] = useState([]);
   const [applications, setApplications] = useState([]);
   const [candidates, setCandidates] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [slides, setSlides] = useState([]);
-  const [formData, setFormData] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [error, setError] = useState('');
-  const [activeSection, setActiveSection] = useState('albums');
-  const formRef = useRef(null);
-  const fileInputRef = useRef(null);
-  const currentYear = new Date().getFullYear();
+  const [logs, setLogs] = useState([]);
+  const year = new Date().getFullYear();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [albumRes, appRes, candRes, jobRes, slideRes] = await Promise.all([
-          axios.get('/api/albums/album-getall').catch((err) => {
-            console.error('Album Fetch Error:', err);
-            return { data: [] };
-          }),
-          axios.get('/api/applications/recive-applications').catch((err) => {
-            console.error('Application Fetch Error:', err);
-            return { data: [] };
-          }),
-          axios.get('/api/candidate/candidates').catch((err) => {
-            console.error('Candidate Fetch Error:', err);
-            return { data: [] };
-          }),
-          axios.get('/api/jobs/show-jobs').catch((err) => {
-            console.error('Job Fetch Error:', err);
-            return { data: [] };
-          }),
-          axios.get('/api/slides').catch((err) => {
-            console.error('Slide Fetch Error:', err);
-            return { data: [] };
-          }),
-        ]);
-        console.log('API Responses:', { albumRes, appRes, candRes, jobRes, slideRes });
+    let active = true;
+    const failed = [];
+    const load = (url, label) =>
+      axios.get(url).catch((err) => {
+        console.error(`${label} fetch error:`, err);
+        failed.push(label);
+        return { data: [] };
+      });
 
-        setAlbums(Array.isArray(albumRes.data) ? albumRes.data : albumRes.data?.jobs || albumRes.data?.data || []);
-        setApplications(Array.isArray(appRes.data) ? appRes.data : appRes.data?.applications || appRes.data?.data || []);
-        setCandidates(Array.isArray(candRes.data) ? candRes.data : candRes.data?.candidates || candRes.data?.data || []);
-        setJobs(Array.isArray(jobRes.data) ? jobRes.data : jobRes.data?.jobs || jobRes.data?.data || []);
-        setSlides(Array.isArray(slideRes.data) ? slideRes.data : slideRes.data?.slides || slideRes.data?.data || []);
-
-        console.log('Updated States:', { albums, applications, candidates, jobs, slides });
-      } catch (err) {
-        console.error('Overall Fetch Error:', err);
-        setError('Failed to load data. Please try again.');
+    Promise.all([
+      load("/api/albums/album-getall", "albums"),
+      load("/api/applications/recive-applications", "applications"),
+      load("/api/candidate/candidates", "candidates"),
+      load("/api/jobs/show-jobs", "jobs"),
+      load("/api/slides", "slides"),
+      load("/api/certificate-logs", "certificate logs"),
+    ]).then(([albumRes, appRes, candRes, jobRes, slideRes, logRes]) => {
+      if (!active) return;
+      setAlbums(listFrom(albumRes.data, "albums"));
+      setApplications(listFrom(appRes.data, "applications"));
+      setCandidates(listFrom(candRes.data, "candidates"));
+      setJobs(listFrom(jobRes.data, "jobs"));
+      setSlides(listFrom(slideRes.data, "slides"));
+      setLogs(listFrom(logRes.data, "logs"));
+      setLoading(false);
+      if (failed.length) {
+        toast.warning("Some dashboard data couldn't be loaded", { description: `Unavailable: ${failed.join(", ")}.` });
       }
+    });
+    return () => {
+      active = false;
     };
-    fetchData();
   }, []);
 
-  const stats = useMemo(() => [
-    { label: "Total Albums", value: albums.length, delta: albums.length > 0 ? "+5.2%" : "0%", icon: ShoppingBag, trend: albums.length > 0 ? "up" : "down" },
-    { label: "Total Applications", value: applications.length, delta: applications.length > 0 ? "+3.8%" : "0%", icon: Users, trend: applications.length > 0 ? "up" : "down" },
-    { label: "Total Candidates", value: candidates.length, delta: candidates.length > 0 ? "+2.1%" : "0%", icon: Users, trend: candidates.length > 0 ? "up" : "down" },
-    { label: "Total Jobs", value: jobs.length, delta: jobs.length > 0 ? "+4.5%" : "0%", icon: FaBriefcase, trend: jobs.length > 0 ? "up" : "down" },
-  ], [albums.length, applications.length, candidates.length, jobs.length]);
+  const chartData = useMemo(() => {
+    const apps = monthCounts(applications, year);
+    const cands = monthCounts(candidates, year, (c) => c.createdAt || c.uploadDate);
+    const certs = monthCounts(logs, year);
+    // Stop at the current month so future (empty) months don't read as a drop to zero.
+    return Array.from({ length: new Date().getMonth() + 1 }, (_, month) => ({
+      month: new Date(year, month, 1).toLocaleString("en-US", { month: "short" }),
+      applications: apps[month],
+      candidates: cands[month],
+      certificates: certs[month],
+    }));
+  }, [applications, candidates, logs, year]);
 
-  const albumsData = useMemo(() => {
-    const monthlyData = Array(12).fill(0).map((_, i) => {
-      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
-      const count = albums.filter(a => new Date(a.createdAt || Date.now()).getMonth() === i).length;
-      return { month, value: count };
+  const typeSplit = useMemo(() => {
+    const counts = {};
+    logs.forEach((log) => {
+      const type = log.letterType || "Other";
+      counts[type] = (counts[type] || 0) + 1;
     });
-    return monthlyData;
-  }, [albums]);
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [logs]);
 
-  const applicationsData = useMemo(() => {
-    const monthlyData = Array(12).fill(0).map((_, i) => {
-      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
-      const count = applications.filter(a => new Date(a.createdAt || Date.now()).getMonth() === i).length;
-      return { month, value: count };
-    });
-    return monthlyData;
-  }, [applications]);
+  const thisMonth = useMemo(() => {
+    const now = new Date();
+    return logs.filter((log) => {
+      const date = new Date(log.createdAt);
+      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+    }).length;
+  }, [logs]);
 
-  const candidatesData = useMemo(() => {
-    const monthlyData = Array(12).fill(0).map((_, i) => {
-      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
-      const count = candidates.filter(c => new Date(c.createdAt || Date.now()).getMonth() === i).length;
-      return { month, value: count };
-    });
-    return monthlyData;
-  }, [candidates]);
+  const recentLogs = useMemo(
+    () => [...logs].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6),
+    [logs],
+  );
+  const recentApplications = useMemo(
+    () => [...applications].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)).slice(0, 5),
+    [applications],
+  );
 
-  const jobsData = useMemo(() => {
-    const monthlyData = Array(12).fill(0).map((_, i) => {
-      const month = new Date(currentYear, i, 1).toLocaleString('en-US', { month: 'short' });
-      const count = jobs.filter(j => {
-        const date = j.createdAt || j.dateCreated || j.created_date || Date.now();
-        return new Date(date).getMonth() === i;
-      }).length;
-      return { month, value: count };
-    });
-    return monthlyData;
-  }, [jobs]);
+  const stats = [
+    { label: "Applications", value: applications.length, icon: Inbox, accent: "violet", hint: "Total received", to: "/job-applications" },
+    { label: "Certificates issued", value: logs.length, icon: Award, accent: "pink", hint: `${thisMonth} this month`, to: "/certificate-logs" },
+    { label: "Candidates", value: candidates.length, icon: Users, accent: "sky", hint: "From Excel imports", to: "/candidate-excel" },
+    { label: "Open jobs", value: jobs.length, icon: Briefcase, accent: "indigo", hint: `${albums.length} albums · ${slides.length} slides`, to: "/job-listings" },
+  ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setError('');
-  };
-
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (activeSection === 'albums' && files.length > 10) {
-      setError('Maximum 10 images allowed');
-      return;
-    }
-    if (activeSection === 'albums' && !isEditing && files.length < 5) {
-      setError('Minimum 5 images required for new albums');
-      return;
-    }
-    setFormData((prev) => ({ ...prev, files }));
-    setError('');
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'files') {
-        let fieldName;
-        switch (activeSection) {
-          case 'albums': fieldName = 'images'; break;
-          case 'applications': fieldName = 'resume'; break;
-          case 'candidates': fieldName = 'file'; break;
-          case 'slides': fieldName = 'url'; break;
-          default: return;
-        }
-        value.forEach((file) => data.append(fieldName, file));
-      } else {
-        data.append(key, value);
-      }
-    });
-
-    try {
-      if (activeSection === 'albums') {
-        if (isEditing) {
-          const res = await axios.patch(`/api/albums/album/${editId}`, data, { headers: { 'Content-Type': 'multipart/form-data' } });
-          setAlbums((prev) => prev.map((item) => (item._id === editId ? res.data.album : item)));
-        } else {
-          const res = await axios.post('/api/albums/album-post', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-          setAlbums((prev) => [...prev, res.data.album]);
-        }
-      } else if (activeSection === 'applications') {
-        if (isEditing) {
-          setError('Editing applications is not supported.');
-          return;
-        }
-        const res = await axios.post('/api/applications/fill-applications', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-        setApplications((prev) => [...prev, res.data]);
-      } else if (activeSection === 'candidates') {
-        if (isEditing) {
-          setError('Editing candidates is not supported.');
-          return;
-        }
-        const res = await axios.post('/api/candidate/upload-excel', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-        setCandidates((prev) => [...prev, ...res.data]);
-      } else if (activeSection === 'jobs') {
-        if (isEditing) {
-          const res = await axios.put(`/api/jobs/update-jobs/${editId}`, formData);
-          setJobs((prev) => prev.map((item) => (item._id === editId ? res.data : item)));
-        } else {
-          const res = await axios.post('/api/jobs/add-jobs', formData);
-          setJobs((prev) => [...prev, res.data]);
-        }
-      } else if (activeSection === 'slides') {
-        if (isEditing) {
-          setError('Editing slides is not supported.');
-          return;
-        }
-        const res = await axios.post('/api/slides', data, { headers: { 'Content-Type': 'multipart/form-data' } });
-        setSlides((prev) => [...prev, res.data]);
-      }
-      setFormData({});
-      setIsEditing(false);
-      setEditId(null);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.error || `Failed to save ${activeSection.slice(0, -1)}`);
-    }
-  };
-
-  const handleEdit = (item) => {
-    setIsEditing(true);
-    setEditId(item._id);
-    setFormData({ ...item, files: [], resume: undefined, url: undefined });
-    formRef.current.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm(`Are you sure you want to delete this ${activeSection.slice(0, -1)}?`)) return;
-    try {
-      if (activeSection === 'albums') {
-        await axios.delete(`/api/albums/album/${id}`);
-        setAlbums((prev) => prev.filter((item) => item._id !== id));
-      } else if (activeSection === 'applications') {
-        await axios.delete(`/api/applications/delete/${id}`);
-        setApplications((prev) => prev.filter((item) => item._id !== id));
-      } else if (activeSection === 'candidates') {
-        await axios.delete(`/api/candidate/candidate/${id}`);
-        setCandidates((prev) => prev.filter((item) => item._id !== id));
-      } else if (activeSection === 'jobs') {
-        await axios.delete(`/api/jobs/delete-jobs/${id}`);
-        setJobs((prev) => prev.filter((item) => item._id !== id));
-      } else if (activeSection === 'slides') {
-        await axios.delete(`/api/slides/delete/${id}`);
-        setSlides((prev) => prev.filter((item) => item._id !== id));
-      }
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.error || `Failed to delete ${activeSection.slice(0, -1)}`);
-    }
-  };
-
-  const handleDownloadResume = async (publicId) => {
-    try {
-      const response = await axios.get(`/api/applications/download/${publicId}`, {
-        responseType: 'blob',
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `resume-${publicId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      setError('Failed to download resume. Ensure you are authenticated.');
-    }
-  };
-
-  const fields = {
-    albums: [
-      { name: 'title', label: 'Title', type: 'text', required: true },
-      { name: 'fullTitle', label: 'Full Title', type: 'text', required: true },
-      { name: 'color', label: 'Color (e.g., from-purple-500 to-indigo-600)', type: 'text', required: true },
-      { name: 'images', label: 'Images (5-10, JPEG/PNG/WEBP)', type: 'file', accept: 'image/jpeg,image/png,image/webp', multiple: true, required: !isEditing },
-    ],
-    applications: [
-      { name: 'name', label: 'Name', type: 'text', required: true },
-      { name: 'email', label: 'Email', type: 'email', required: true },
-      { name: 'phone', label: 'Phone', type: 'tel', required: true },
-      { name: 'resume', label: 'Resume (PDF)', type: 'file', accept: 'application/pdf', multiple: false, required: !isEditing },
-    ],
-    candidates: [
-      { name: 'file', label: 'Excel File', type: 'file', accept: '.xlsx,.xls', multiple: false, required: !isEditing },
-    ],
-    jobs: [
-      { name: 'title', label: 'Job Title', type: 'text', required: true },
-      { name: 'description', label: 'Description', type: 'textarea', required: true },
-      { name: 'location', label: 'Location', type: 'text', required: true },
-    ],
-    slides: [
-      { name: 'url', label: 'Image/Video (JPEG/PNG/WEBP/MP4)', type: 'file', accept: 'image/jpeg,image/png,image/webp,video/mp4', multiple: false, required: !isEditing },
-    ],
-  };
-
-  const renderRecentItems = () => {
-    let data = [];
-    switch (activeSection) {
-      case 'albums': data = albums.slice(0, 4); break;
-      case 'applications': data = applications.slice(0, 4); break;
-      case 'candidates': data = candidates.slice(0, 4); break;
-      case 'jobs': data = jobs.slice(0, 4); break;
-      case 'slides': data = slides.slice(0, 4); break;
-      default: return null;
-    }
-    // ... (rest of renderRecentItems remains the same)
-    // Note: The switch case structure is simplified here; keep the full implementation as in your code
-  };
+  const pieColors = ["#7c3aed", "#f472b6", "#38bdf8", "#fbbf24"];
 
   return (
-    <div className="grid gap-6 p-6">
-      {/* Section Selector */}
-      {/* <div className="flex gap-4 mb-6">
-        {['albums', 'applications', 'candidates', 'jobs', 'slides'].map((section) => (
-          <Button
-            key={section}
-            variant={activeSection === section ? 'default' : 'outline'}
-            onClick={() => {
-              setActiveSection(section);
-              setFormData({});
-              setIsEditing(false);
-              setEditId(null);
-              setError('');
-              if (fileInputRef.current) fileInputRef.current.value = '';
-            }}
-          >
-            {section.charAt(0).toUpperCase() + section.slice(1)}
-          </Button>
-        ))}
-      </div> */}
+    <div className="page">
+      {/* Hero */}
+      <motion.section
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#1d1736] via-[#3b1f78] to-[#7c3aed] p-6 text-white shadow-glass-lg sm:p-8"
+      >
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full bg-[radial-gradient(circle_at_30%_30%,#ffffff_0%,#e9d5ff_15%,#a78bfa_45%,rgba(124,58,237,0)_72%)] opacity-70" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 right-40 h-56 w-56 animate-spin-slow rounded-full bg-[conic-gradient(from_0deg,#f0abfc,#93c5fd,#c4b5fd,#f0abfc)] opacity-40 [mask:radial-gradient(circle,transparent_55%,black_56%,black_68%,transparent_69%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:linear-gradient(90deg,transparent,black)]" />
+
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-xl">
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/90 ring-1 ring-inset ring-white/20 backdrop-blur">
+              <Sparkles size={13} aria-hidden="true" />
+              {new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
+            </p>
+            <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl">{greeting()}, Admin</h1>
+            <p className="mt-2 text-sm text-white/75 sm:text-base">
+              {loading ? "Gathering today's numbers…" : (
+                <>
+                  <span className="font-bold text-white">{thisMonth}</span> {thisMonth === 1 ? "certificate has" : "certificates have"} been issued this month and{" "}
+                  <span className="font-bold text-white">{applications.length}</span> applications are waiting in your inbox.
+                </>
+              )}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => navigate("/certificates")} className="btn bg-white text-[#3b1f78] shadow-lg hover:-translate-y-px hover:bg-white/95" data-tooltip="Create a single offer letter or certificate">
+              <PenLine size={16} aria-hidden="true" /> New letter
+            </button>
+            <button type="button" onClick={() => navigate("/job-applications")} className="btn bg-white/[0.12] text-white ring-1 ring-inset ring-white/25 backdrop-blur hover:bg-white/20" data-tooltip="Review new applicants">
+              <Inbox size={16} aria-hidden="true" /> Applications
+            </button>
+          </div>
+        </div>
+      </motion.section>
 
       {/* Stats */}
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((s) => {
-          const Icon = s.icon;
-          return (
-            <Card key={s.label} className="overflow-hidden">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{s.label}</CardTitle>
-                <Icon className="size-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{s.value}</div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {/* <span className={isUp ? "text-emerald-600" : "text-rose-600"}>{s.delta}</span> vs last month */}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat, index) => (
+          <StatCard
+            key={stat.label}
+            {...stat}
+            index={index}
+            loading={loading}
+            onClick={() => navigate(stat.to)}
+          />
+        ))}
       </div>
 
       {/* Charts */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Albums Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer
-              config={{ value: { label: "Albums", color: "hsl(var(--primary))" } }}
-              className="h-64"
-            >
-              <AreaChart data={albumsData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area dataKey="value" type="monotone" stroke="hsl(var(--primary))" fill="hsl(var(--primary)/.15)" strokeWidth={2} />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
-        </Card> */}
-
-        {/* <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Applications Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer config={{ value: { label: "Applications", color: "hsl(var(--accent))" } }} className="h-64">
-              <LineChart data={applicationsData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Line type="monotone" dataKey="value" stroke="hsl(var(--accent))" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card> */}
-<Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Applications Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer
-              config={{ value: { label: "Albums", color: "hsl(var(--primary))" } }}
-              className="h-64"
-            >
-              <AreaChart data={applicationsData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area dataKey="value" type="monotone" stroke="hsl(var(--primary))" fill="hsl(var(--primary)/.15)" strokeWidth={2} />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Candidates Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer
-              config={{ value: { label: "Candidates", color: "hsl(var(--primary))" } }}
-              className="h-64"
-            >
-              <AreaChart data={candidatesData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area dataKey="value" type="monotone" stroke="hsl(var(--primary))" fill="hsl(var(--primary)/.15)" strokeWidth={2} />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
+      <div className="grid gap-4 xl:grid-cols-3">
+        <Card className="card-pad xl:col-span-2">
+          <CardHeader
+            title="Activity this year"
+            subtitle={`Monthly applications, candidates and certificates in ${year}`}
+            actions={
+              <div className="flex flex-wrap gap-3">
+                {SERIES.map((series) => (
+                  <span key={series.key} className="flex items-center gap-1.5 text-xs font-semibold text-ink-muted">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: series.color }} /> {series.label}
+                  </span>
+                ))}
+              </div>
+            }
+          />
+          <div className="mt-6 h-72">
+            {loading ? (
+              <Skeleton className="h-full w-full rounded-2xl" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ left: -18, right: 8, top: 6 }}>
+                  <defs>
+                    {SERIES.map((series) => (
+                      <linearGradient key={series.key} id={`fill-${series.key}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={series.color} stopOpacity={0.28} />
+                        <stop offset="100%" stopColor={series.color} stopOpacity={0} />
+                      </linearGradient>
+                    ))}
+                  </defs>
+                  <CartesianGrid vertical={false} stroke="#ebe6f7" strokeDasharray="4 4" />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fill: "#7a7395", fontSize: 12 }} />
+                  <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: "#7a7395", fontSize: 12 }} />
+                  <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#c4b5fd", strokeDasharray: "4 4" }} />
+                  {SERIES.map((series) => (
+                    <Area
+                      key={series.key}
+                      type="monotone"
+                      dataKey={series.key}
+                      name={series.label}
+                      stroke={series.color}
+                      strokeWidth={2.4}
+                      fill={`url(#fill-${series.key})`}
+                      activeDot={{ r: 5, strokeWidth: 2, stroke: "#fff" }}
+                    />
+                  ))}
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </div>
         </Card>
 
-        {/* <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Jobs Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer config={{ value: { label: "Jobs", color: "hsl(var(--accent))" } }} className="h-64">
-              <LineChart data={jobsData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Line type="monotone" dataKey="value" stroke="hsl(var(--accent))" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card> */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Jobs Over Time</CardTitle>
-              <Badge variant="secondary">{currentYear}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <ChartContainer
-              config={{ value: { label: "Albums", color: "hsl(var(--primary))" } }}
-              className="h-64"
-            >
-              <AreaChart data={jobsData} margin={{ left: 12, right: 12 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} />
-                <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area dataKey="value" type="monotone" stroke="hsl(var(--primary))" fill="hsl(var(--primary)/.15)" strokeWidth={2} />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
+        <Card className="card-pad">
+          <CardHeader title="Certificates by type" subtitle="All letters issued so far" />
+          <div className="relative mt-4 h-56">
+            {loading ? (
+              <Skeleton className="mx-auto h-48 w-48 rounded-full" />
+            ) : typeSplit.length === 0 ? (
+              <EmptyState icon={Award} title="No certificates yet" description="Issued letters will appear here." className="py-6" />
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={typeSplit} dataKey="value" nameKey="name" innerRadius="62%" outerRadius="88%" paddingAngle={3} cornerRadius={8} stroke="none">
+                      {typeSplit.map((entry, index) => (
+                        <Cell key={entry.name} fill={pieColors[index % pieColors.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<ChartTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                  <p className="text-3xl font-extrabold text-ink">{logs.length}</p>
+                  <p className="text-xs font-semibold text-ink-muted">issued</p>
+                </div>
+              </>
+            )}
+          </div>
+          {!loading && typeSplit.length > 0 && (
+            <ul className="mt-4 space-y-2">
+              {typeSplit.map((entry, index) => (
+                <li key={entry.name} className="flex items-center justify-between text-sm">
+                  <span className="flex items-center gap-2 text-ink-soft">
+                    <span className="h-2.5 w-2.5 rounded-full" style={{ background: pieColors[index % pieColors.length] }} />
+                    {entry.name}
+                  </span>
+                  <span className="font-bold text-ink">{entry.value}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </Card>
       </div>
 
-      {/* Recent Items */}
-      <div className="grid gap-6 lg:grid-cols-7">
-        <Card className="lg:col-span-4">
-          {renderRecentItems()}
+      {/* Recent */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="card-pad">
+          <CardHeader
+            icon={ScrollText}
+            title="Recently issued"
+            subtitle="Latest certificates and offer letters"
+            actions={<Link to="/certificate-logs" className="btn-ghost btn-sm">View all <ArrowUpRight size={14} aria-hidden="true" /></Link>}
+          />
+          <ul className="mt-4 divide-y divide-[#f0ecf9]">
+            {loading && Array.from({ length: 4 }, (_, i) => (
+              <li key={i} className="flex items-center gap-3 py-3"><Skeleton className="h-9 w-9 rounded-xl" /><Skeleton className="h-4 flex-1" /></li>
+            ))}
+            {!loading && recentLogs.length === 0 && (
+              <li><EmptyState icon={Award} title="Nothing issued yet" description="Generate your first letter to see it here." action={<Link to="/certificates" className="btn-primary btn-sm">Create a letter</Link>} className="py-8" /></li>
+            )}
+            {!loading && recentLogs.map((log) => (
+              <li key={log._id} className="flex items-center gap-3 py-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f472b6]/12 text-[#db2777]">
+                  <Award size={16} aria-hidden="true" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-ink">{log.candidateName || "—"}</p>
+                  <p className="truncate text-xs text-ink-muted">{log.letterType}{log.role ? ` · ${log.role}` : ""}</p>
+                </div>
+                <span className="shrink-0 text-xs font-medium text-ink-faint">{relativeDate(log.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+
+        <Card className="card-pad">
+          <CardHeader
+            icon={Inbox}
+            title="New applications"
+            subtitle="Most recent applicants"
+            actions={<Link to="/job-applications" className="btn-ghost btn-sm">Open inbox <ArrowUpRight size={14} aria-hidden="true" /></Link>}
+          />
+          <ul className="mt-4 divide-y divide-[#f0ecf9]">
+            {loading && Array.from({ length: 4 }, (_, i) => (
+              <li key={i} className="flex items-center gap-3 py-3"><Skeleton className="h-9 w-9 rounded-full" /><Skeleton className="h-4 flex-1" /></li>
+            ))}
+            {!loading && recentApplications.length === 0 && (
+              <li><EmptyState icon={Inbox} title="Inbox is clear" description="New job applications will show up here." className="py-8" /></li>
+            )}
+            {!loading && recentApplications.map((app) => (
+              <li key={app._id} className="flex items-center gap-3 py-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#c4b5fd] to-[#93c5fd] text-xs font-bold text-[#3b1f78]">
+                  {(app.name || "?").trim().split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-ink">{app.name || "—"}</p>
+                  <p className="truncate text-xs text-ink-muted">{app.jobTitle || app.email || ""}</p>
+                </div>
+                <span className="shrink-0 text-xs font-medium text-ink-faint">{relativeDate(app.createdAt)}</span>
+              </li>
+            ))}
+          </ul>
         </Card>
       </div>
 
-      {/* Form Section (Commented out as in original) */}
-      {/* ... */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        {[
+          { to: "/gallery", icon: Images, title: "Gallery", text: `${albums.length} albums on the website` },
+          { to: "/hero-banner", icon: Sparkles, title: "Hero banner", text: `${slides.length} homepage slides` },
+          { to: "/job-listings", icon: Briefcase, title: "Job listings", text: `${jobs.length} positions published` },
+        ].map((item) => (
+          <Link key={item.to} to={item.to} className="card group flex items-center gap-4 p-4 transition duration-300 hover:-translate-y-0.5 hover:shadow-glass-lg">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#7c3aed]/10 text-[#6d28d9] transition group-hover:bg-gradient-to-br group-hover:from-[#7c3aed] group-hover:to-[#a855f7] group-hover:text-white">
+              <item.icon size={19} aria-hidden="true" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold text-ink">{item.title}</span>
+              <span className="block truncate text-xs text-ink-muted">{loading ? "Loading…" : item.text}</span>
+            </span>
+            <ArrowUpRight size={18} className="text-ink-faint transition group-hover:text-[#6d28d9]" aria-hidden="true" />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,33 @@
-import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Button, Upload, Table, message, Popconfirm, Input, Space } from "antd";
-
-// Icons
-import { Trash, Plus, Edit3, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Briefcase, Building2, Clock, Edit3, IndianRupee, MapPin, Plus, Save, Tag, Trash2, X } from "lucide-react";
 import { apiAuthHeaders, apiUrl } from "../lib/api";
+import { Card, CardHeader, EmptyState, Field, IconButton, PageHeader, SearchInput, Skeleton, Spinner, cx } from "../components/ui/kit";
+import { message } from "../components/ui/toast";
+import { confirmDialog } from "../components/ui/confirm";
+
+const EMPTY_FORM = {
+  title: "",
+  company: "",
+  location: "",
+  experience: "",
+  type: "Full-time",
+  skills: "",
+  description: "",
+  salary: "",
+  category: "",
+};
+
+const TEXT_FIELDS = [
+  { name: "title", label: "Job title", placeholder: "e.g. React Developer", required: true },
+  { name: "company", label: "Company", placeholder: "e.g. SS Infotech Pvt. Ltd.", required: true },
+  { name: "location", label: "Location", placeholder: "e.g. Nagpur / Remote" },
+  { name: "experience", label: "Experience", placeholder: "e.g. 0–2 years" },
+  { name: "salary", label: "Salary", placeholder: "e.g. ₹3–5 LPA" },
+  { name: "category", label: "Category", placeholder: "e.g. Software Development" },
+];
+
+const TYPE_BADGE = { "Full-time": "badge-violet", "Part-time": "badge-info", Internship: "badge-success" };
 
 export default function AdminJobs() {
   const BASE_URL = apiUrl("/api/jobs");
@@ -14,18 +36,10 @@ export default function AdminJobs() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [editingJob, setEditingJob] = useState(null);
-
-  const [jobForm, setJobForm] = useState({
-    title: "",
-    company: "",
-    location: "",
-    experience: "",
-    type: "Full-time",
-    skills: "",
-    description: "",
-    salary: "",
-    category: "",
-  });
+  const [jobForm, setJobForm] = useState(EMPTY_FORM);
+  const [errors, setErrors] = useState({});
+  const [search, setSearch] = useState("");
+  const formRef = useRef(null);
 
   // Fetch all jobs
   const fetchJobs = async () => {
@@ -36,7 +50,7 @@ export default function AdminJobs() {
       const data = await res.json();
       setJobs(data.jobs || []);
     } catch (err) {
-      message.error(err.message);
+      message.error(err.message === "Failed to fetch" ? "Can't reach the server to load jobs" : err.message);
     } finally {
       setLoading(false);
     }
@@ -46,15 +60,32 @@ export default function AdminJobs() {
     fetchJobs();
   }, []);
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setJobForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
+  const validate = () => {
+    const next = {};
+    if (!jobForm.title.trim()) next.title = "Job title is required.";
+    if (!jobForm.company.trim()) next.company = "Company is required.";
+    if (!jobForm.description.trim()) next.description = "Add a short description of the role.";
+    setErrors(next);
+    if (Object.keys(next).length) message.warning("Please fill in the highlighted fields");
+    return !Object.keys(next).length;
+  };
+
+  const resetForm = () => {
+    setJobForm(EMPTY_FORM);
+    setEditingJob(null);
+    setErrors({});
   };
 
   // Add or Update Job
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
     setSubmitting(true);
 
     try {
@@ -78,161 +109,202 @@ export default function AdminJobs() {
       if (!res.ok) throw new Error(data.message || "Failed to save job");
 
       message.success(editingJob ? "Job updated successfully!" : "Job added successfully!");
-
-      // Reset form
-      setJobForm({
-        title: "",
-        company: "",
-        location: "",
-        experience: "",
-        type: "Full-time",
-        skills: "",
-        description: "",
-        salary: "",
-        category: "",
-      });
-      setEditingJob(null);
+      resetForm();
       fetchJobs();
     } catch (err) {
-      message.error(err.message);
+      message.error(err.message === "Failed to fetch" ? "Can't reach the server. The job was not saved." : err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
   // Delete job
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this job?")) return;
+  const handleDelete = async (job) => {
+    const ok = await confirmDialog({
+      title: `Delete “${job.title}”?`,
+      description: "The listing will be removed from the careers page. This can't be undone.",
+      confirmText: "Delete job",
+    });
+    if (!ok) return;
     try {
-      const res = await fetch(`${BASE_URL}/delete-jobs/${id}`, { method: "DELETE", headers: apiAuthHeaders() });
+      const res = await fetch(`${BASE_URL}/delete-jobs/${job._id}`, { method: "DELETE", headers: apiAuthHeaders() });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to delete job");
 
       message.success("Job deleted successfully!");
-      setJobs((prev) => prev.filter((job) => job._id !== id));
+      setJobs((prev) => prev.filter((item) => item._id !== job._id));
+      if (editingJob?._id === job._id) resetForm();
     } catch (err) {
-      message.error(err.message);
+      message.error(err.message === "Failed to fetch" ? "Can't reach the server. The job was not deleted." : err.message);
     }
   };
 
   // Edit job
   const handleEdit = (job) => {
     setEditingJob(job);
+    setErrors({});
     setJobForm({
       title: job.title,
       company: job.company,
       location: job.location,
       experience: job.experience,
       type: job.type,
-      skills: job.skills.join(", "),
+      skills: (job.skills || []).join(", "),
       description: job.description,
       salary: job.salary,
       category: job.category,
     });
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const visibleJobs = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return jobs;
+    return jobs.filter((job) => [job.title, job.company, job.location, job.category, ...(job.skills || [])]
+      .some((value) => String(value || "").toLowerCase().includes(q)));
+  }, [jobs, search]);
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <ToastContainer position="top-right" autoClose={3000} />
+    <div className="page">
+      <PageHeader
+        icon={Briefcase}
+        eyebrow="Recruitment"
+        title="Job listings"
+        description="Publish open positions to the careers page and keep them up to date."
+      />
 
-      <h1 className="text-3xl font-bold mb-6">Admin Job Listings</h1>
-
-      {/* Job Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md mb-8 space-y-4"
-      >
-        <h2 className="text-xl font-semibold">{editingJob ? "Edit Job" : "Add New Job"}</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {["title", "company", "location", "experience", "salary", "category"].map((field) => (
-            <input
-              key={field}
-              type="text"
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={jobForm[field]}
-              onChange={handleInputChange}
-              className="border p-2 rounded-md"
-              required={["title", "company"].includes(field)}
-            />
-          ))}
-
-          <select
-            name="type"
-            value={jobForm.type}
-            onChange={handleInputChange}
-            className="border p-2 rounded-md"
-          >
-            <option>Full-time</option>
-            <option>Part-time</option>
-            <option>Internship</option>
-          </select>
-
-          <input
-            type="text"
-            name="skills"
-            placeholder="Skills (comma separated)"
-            value={jobForm.skills}
-            onChange={handleInputChange}
-            className="border p-2 rounded-md"
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        {/* Form */}
+        <Card className="card-pad xl:sticky xl:top-24">
+          <div ref={formRef} className="scroll-mt-24" />
+          <CardHeader
+            icon={editingJob ? Edit3 : Plus}
+            title={editingJob ? "Edit job" : "Add a new job"}
+            subtitle={editingJob ? `Editing “${editingJob.title}”` : "Fields marked * are required."}
+            actions={editingJob && (
+              <button type="button" onClick={resetForm} className="btn-ghost btn-sm" data-tooltip="Discard changes and start a new job">
+                <X size={14} aria-hidden="true" /> Cancel edit
+              </button>
+            )}
           />
-        </div>
-
-        <textarea
-          name="description"
-          placeholder="Job Description"
-          value={jobForm.description}
-          onChange={handleInputChange}
-          className="border p-2 rounded-md w-full"
-          rows="3"
-          required
-        ></textarea>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="bg-[#552586] text-white px-4 py-2 rounded-md hover:bg-[#552586] flex items-center gap-2"
-        >
-          {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : editingJob ? <Edit3 className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
-          {editingJob ? "Update Job" : "Create Job"}
-        </button>
-      </form>
-
-      {/* Jobs List */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Existing Jobs</h2>
-        {loading ? <p>Loading jobs...</p> : null}
-        {!loading && jobs.length === 0 && <p>No jobs found.</p>}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {jobs.map((job) => (
-            <div
-              key={job._id}
-              className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center"
-            >
-              <div>
-                <h3 className="font-semibold">{job.title}</h3>
-                <p className="text-sm text-gray-600">{job.company} • {job.location}</p>
-                <p className="text-xs text-gray-500">{job.skills?.join(", ")}</p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleEdit(job)}
-                  className="text-[#552586] hover:text-[#552586] flex items-center gap-1"
-                >
-                  <Edit3 className="h-4 w-4" /> Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(job._id)}
-                  className="text-red-600 hover:text-red-800 flex items-center gap-1"
-                >
-                  <Trash className="h-4 w-4" /> Delete
-                </button>
-              </div>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {TEXT_FIELDS.map((field) => (
+                <Field key={field.name} label={field.label} htmlFor={`job-${field.name}`} required={field.required} error={errors[field.name]}>
+                  <input
+                    id={`job-${field.name}`}
+                    type="text"
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    value={jobForm[field.name] || ""}
+                    onChange={handleInputChange}
+                    aria-invalid={Boolean(errors[field.name])}
+                    className={cx("input", errors[field.name] && "input-error")}
+                  />
+                </Field>
+              ))}
+              <Field label="Job type" htmlFor="job-type">
+                <select id="job-type" name="type" value={jobForm.type} onChange={handleInputChange} className="select">
+                  <option>Full-time</option>
+                  <option>Part-time</option>
+                  <option>Internship</option>
+                </select>
+              </Field>
+              <Field label="Skills" htmlFor="job-skills" hint="Separate skills with commas.">
+                <input
+                  id="job-skills"
+                  type="text"
+                  name="skills"
+                  placeholder="React, Node.js, SQL"
+                  value={jobForm.skills}
+                  onChange={handleInputChange}
+                  className="input"
+                />
+              </Field>
             </div>
-          ))}
-        </div>
+            <Field label="Description" htmlFor="job-description" required error={errors.description}>
+              <textarea
+                id="job-description"
+                name="description"
+                placeholder="What will this person do? What do they need to know?"
+                value={jobForm.description}
+                onChange={handleInputChange}
+                rows={4}
+                aria-invalid={Boolean(errors.description)}
+                className={cx("textarea", errors.description && "input-error")}
+              />
+            </Field>
+            <button type="submit" disabled={submitting} className="btn-primary w-full sm:w-auto">
+              {submitting ? <Spinner /> : editingJob ? <Save size={16} aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
+              {editingJob ? "Update job" : "Create job"}
+            </button>
+          </form>
+        </Card>
+
+        {/* List */}
+        <Card className="overflow-hidden">
+          <div className="flex flex-col gap-3 border-b border-[#ebe6f7] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <div>
+              <h2 className="card-title">Published jobs</h2>
+              <p className="card-subtitle">{loading ? "Loading…" : `${jobs.length} ${jobs.length === 1 ? "listing" : "listings"}`}</p>
+            </div>
+            <SearchInput value={search} onChange={setSearch} placeholder="Search jobs" className="sm:w-64" />
+          </div>
+
+          {loading ? (
+            <div className="grid gap-3 p-4 sm:p-5">
+              {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-24 rounded-2xl" />)}
+            </div>
+          ) : jobs.length === 0 ? (
+            <EmptyState icon={Briefcase} title="No jobs published" description="Create your first listing with the form." />
+          ) : visibleJobs.length === 0 ? (
+            <EmptyState icon={Briefcase} title="No matches" description="Try a different search." />
+          ) : (
+            <ul className="grid gap-3 p-4 sm:p-5">
+              <AnimatePresence initial={false}>
+                {visibleJobs.map((job) => (
+                  <motion.li
+                    key={job._id}
+                    layout
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    className={cx(
+                      "group rounded-2xl border bg-white/70 p-4 transition duration-200 hover:bg-white hover:shadow-glass",
+                      editingJob?._id === job._id ? "border-[#a78bfa] ring-4 ring-[#8b5cf6]/10" : "border-white/80",
+                    )}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="truncate font-bold text-ink">{job.title}</h3>
+                          {job.type && <span className={TYPE_BADGE[job.type] || "badge-neutral"}>{job.type}</span>}
+                        </div>
+                        <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted">
+                          {job.company && <span className="flex items-center gap-1"><Building2 size={13} aria-hidden="true" />{job.company}</span>}
+                          {job.location && <span className="flex items-center gap-1"><MapPin size={13} aria-hidden="true" />{job.location}</span>}
+                          {job.experience && <span className="flex items-center gap-1"><Clock size={13} aria-hidden="true" />{job.experience}</span>}
+                          {job.salary && <span className="flex items-center gap-1"><IndianRupee size={13} aria-hidden="true" />{job.salary}</span>}
+                        </p>
+                      </div>
+                      <div className="flex shrink-0 gap-1">
+                        <IconButton label={`Edit ${job.title}`} icon={Edit3} onClick={() => handleEdit(job)} />
+                        <IconButton label={`Delete ${job.title}`} icon={Trash2} tone="danger" onClick={() => handleDelete(job)} />
+                      </div>
+                    </div>
+                    {job.skills?.filter(Boolean).length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-1.5">
+                        {job.skills.filter(Boolean).map((skill) => (
+                          <span key={skill} className="badge-neutral"><Tag size={10} aria-hidden="true" />{skill}</span>
+                        ))}
+                      </div>
+                    )}
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+        </Card>
       </div>
     </div>
   );

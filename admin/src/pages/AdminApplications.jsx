@@ -1,21 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
-import { App as AntApp, Button, Input, message, Pagination } from "antd";
-import { Award, Download, Trash2 } from "lucide-react";
+import { Award, Copy, Download, FileText, GraduationCap, Inbox, Mail, Phone, RefreshCw, Trash2, X } from "lucide-react";
 import { DOC_TYPES, ROLE_BY_TEMPLATE, templateFromJobTitle } from "../GenerateCertificate";
+import { Card, EmptyState, IconButton, PageHeader, Pagination, SearchInput, TableSkeleton, cx } from "../components/ui/kit";
+import { toast } from "../components/ui/toast";
+import { confirmDialog } from "../components/ui/confirm";
+import { internships } from "../../../frontend/src/data/internships.js";
 
 function shortText(value, limit) {
   const text = String(value || "").trim();
   if (text.length <= limit) return text;
-  return `${text.slice(0, limit)}....`;
+  return `${text.slice(0, limit)}…`;
 }
-import { internships } from "../../../frontend/src/data/internships.js";
+
+function initials(name = "") {
+  return name.trim().split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase() || "?";
+}
 
 export default function AdminApplications() {
   const navigate = useNavigate();
-  const { message: toast } = AntApp.useApp();
   const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [jobsById, setJobsById] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +43,9 @@ export default function AdminApplications() {
       );
     } catch (err) {
       console.error("Failed to load applications:", err);
-      message.error("Failed to load applications.");
+      toast.error("Failed to load applications.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,6 +96,10 @@ export default function AdminApplications() {
   }, [selectedOnPageCount, allVisibleSelected]);
 
   const selectedApplications = applications.filter((app) => selectedIds.includes(app._id));
+
+  const toggleOne = (id, checked) => setSelectedIds((current) => checked
+    ? [...new Set([...current, id])]
+    : current.filter((selectedId) => selectedId !== id));
 
   const copyText = async (value) => {
     const text = String(value || "").trim();
@@ -188,7 +201,13 @@ export default function AdminApplications() {
 
   const handleDeleteSelected = async () => {
     if (!selectedApplications.length) return;
-    if (!window.confirm(`Delete ${selectedApplications.length} selected application${selectedApplications.length === 1 ? "" : "s"}?`)) return;
+    const count = selectedApplications.length;
+    const ok = await confirmDialog({
+      title: `Delete ${count} selected application${count === 1 ? "" : "s"}?`,
+      description: "The applicants and their resume links will be removed. This can't be undone.",
+      confirmText: `Delete ${count}`,
+    });
+    if (!ok) return;
 
     const results = await Promise.allSettled(
       selectedApplications.map((app) => axios.delete(`/api/applications/delete/${app._id}`))
@@ -212,220 +231,250 @@ export default function AdminApplications() {
 
   // Open resume directly using resumePath
   const handleDownload = (resumePath, name) => {
-    if (!resumePath) return alert("Resume URL not found");
-    const filename = name.replace(/\s+/g, "_") + "_resume.pdf"; // optional custom name
+    if (!resumePath) {
+      toast.error("Resume URL not found");
+      return;
+    }
+    const filename = name.replace(/\s+/g, "_") + "_resume.pdf";
     const a = document.createElement("a");
     a.href = resumePath;
-    a.target = "_blank";  // open in new tab
-    a.download = filename; // browser may ignore for cross-origin URLs, still opens fine
+    a.target = "_blank";
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     a.remove();
   };
 
   // Delete single application
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this application?")) return;
+  const handleDelete = async (app) => {
+    const ok = await confirmDialog({
+      title: `Delete ${app.name || "this"}'s application?`,
+      description: "This can't be undone.",
+      confirmText: "Delete application",
+    });
+    if (!ok) return;
     try {
-      await axios.delete(`/api/applications/delete/${id}`);
-      message.success("Application deleted successfully!");
-      setSelectedIds((current) => current.filter((selectedId) => selectedId !== id));
+      await axios.delete(`/api/applications/delete/${app._id}`);
+      toast.success("Application deleted successfully!");
+      setSelectedIds((current) => current.filter((selectedId) => selectedId !== app._id));
       fetchApplications();
     } catch (err) {
       console.error(err);
-      message.error("Failed to delete application.");
+      toast.error("Failed to delete application.");
     }
   };
 
   // Delete all applications
   const handleDeleteAll = async () => {
-    if (!window.confirm("Are you sure you want to delete ALL applications?")) return;
+    const ok = await confirmDialog({
+      title: "Delete ALL applications?",
+      description: `All ${applications.length} applications will be permanently removed. This can't be undone.`,
+      confirmText: "Delete everything",
+    });
+    if (!ok) return;
     try {
       await axios.delete("/api/applications/delete-all");
-      message.success("All applications deleted successfully!");
+      toast.success("All applications deleted successfully!");
       setSelectedIds([]);
       fetchApplications();
     } catch (err) {
       console.error(err);
-      message.error("Failed to delete all applications.");
+      toast.error("Failed to delete all applications.");
     }
   };
 
+  const rowActions = (app) => (
+    <div className="inline-flex items-center gap-1">
+      <IconButton label={`Download ${app.name}'s resume`} icon={Download} onClick={() => handleDownload(app.resumePath, app.name)} />
+      <IconButton label={`Generate certificate for ${app.name}`} icon={Award} onClick={() => handleGenerateCertificate(app)} className="text-[#6d28d9]" />
+      <IconButton label={`Delete ${app.name}'s application`} icon={Trash2} tone="danger" onClick={() => handleDelete(app)} />
+    </div>
+  );
+
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Job Applications</h2>
-        <Button danger onClick={handleDeleteAll}>
-          Delete All
-        </Button>
-      </div>
+    <div className="page">
+      <PageHeader
+        icon={Inbox}
+        eyebrow="Recruitment"
+        title="Job applications"
+        description="Review applicants, open resumes and issue offer letters in one click."
+        actions={
+          <>
+            <button type="button" className="btn-secondary" onClick={() => { setLoading(true); fetchApplications(); }} data-tooltip="Reload applications">
+              <RefreshCw size={16} className={loading ? "animate-spin" : undefined} aria-hidden="true" /> Refresh
+            </button>
+            <button type="button" className="btn-danger-soft" onClick={handleDeleteAll} disabled={!applications.length} data-tooltip="Permanently delete every application">
+              <Trash2 size={16} aria-hidden="true" /> Delete all
+            </button>
+          </>
+        }
+      />
 
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <Input.Search
-          allowClear
-          value={searchTerm}
-          onChange={(event) => {
-            setSearchTerm(event.target.value);
-            setCurrentPage(1);
-          }}
-          onSearch={(value) => {
-            setSearchTerm(value);
-            setCurrentPage(1);
-          }}
-          placeholder="Search by name, email, or phone"
-          aria-label="Search job applications by name, email, or phone"
-          className="w-full sm:max-w-md"
-        />
-        <span className="text-sm text-gray-500" aria-live="polite">
-          {filteredApplications.length} {filteredApplications.length === 1 ? "application" : "applications"}
-        </span>
-      </div>
-
-      {selectedIds.length > 0 && (
-        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 p-3">
-          <span className="mr-2 text-sm font-medium text-purple-900">
-            {selectedIds.length} selected
-          </span>
-          <Button type="primary" icon={<Award size={16} />} onClick={handleGenerateSelectedCertificates}>
-            Generate certificates
-          </Button>
-          <Button icon={<Download size={16} />} onClick={handleOpenSelectedResumes}>
-            Open selected resumes
-          </Button>
-          <Button danger icon={<Trash2 size={16} />} onClick={handleDeleteSelected}>
-            Delete selected
-          </Button>
-        </div>
-      )}
-
-      <div className="overflow-x-auto border rounded-lg shadow-sm">
-        <table className="w-full border-collapse border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-3 py-2 text-center">
-                <input
-                  ref={pageSelectRef}
-                  type="checkbox"
-                  checked={allVisibleSelected}
-                  onChange={(event) => {
-                    setSelectedIds((current) => event.target.checked
-                      ? [...new Set([...current, ...visibleIds])]
-                      : current.filter((id) => !visibleIds.includes(id))
-                    );
-                  }}
-                  aria-label="Select all applications on this page"
-                  title="Select all applications on this page"
-                />
-              </th>
-              <th className="border px-3 py-2 text-left">Name</th>
-              <th className="border px-3 py-2 text-left">Email</th>
-              <th className="border px-3 py-2 text-left">Phone</th>
-              <th className="border px-3 py-2 text-left">College</th>
-              <th className="border px-3 py-2 text-left">Job</th>
-              <th className="border px-3 py-2 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visibleApplications.map((app) => (
-              <tr key={app._id} className={`hover:bg-gray-50 ${selectedIds.includes(app._id) ? "bg-purple-50" : ""}`}>
-                <td className="border px-3 py-2 text-center">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(app._id)}
-                    onChange={(event) => setSelectedIds((current) => event.target.checked
-                      ? [...new Set([...current, app._id])]
-                      : current.filter((id) => id !== app._id)
-                    )}
-                    aria-label={`Select ${app.name}'s application`}
-                  />
-                </td>
-                <td className="border px-3 py-2">{app.name}</td>
-                <td className="border px-3 py-2 whitespace-nowrap">
-                  <button
-                    type="button"
-                    title={`${app.email} — click to copy`}
-                    onClick={() => copyText(app.email)}
-                    className="text-left text-[#552586] hover:underline"
-                  >
-                    {shortText(app.email, 5)}
-                  </button>
-                </td>
-                <td className="border px-3 py-2 whitespace-nowrap">
-                  <button
-                    type="button"
-                    title={`${app.phone} — click to copy`}
-                    onClick={() => copyText(app.phone)}
-                    className="text-left text-[#552586] hover:underline"
-                  >
-                    {app.phone}
-                  </button>
-                </td>
-                <td className="border px-3 py-2 whitespace-nowrap" title={app.college || ""}>
-                  {app.college ? shortText(app.college, 12) : "—"}
-                </td>
-                <td className="border px-3 py-2">{titleFor(app)}</td>
-                <td className="border px-3 py-2 text-center whitespace-nowrap">
-                  <div className="inline-flex items-center justify-center gap-2">
-                    <Button
-                      type="primary"
-                      shape="circle"
-                      icon={<Download size={16} aria-hidden="true" />}
-                      aria-label={`Download ${app.name}'s resume`}
-                      title="Download resume"
-                      onClick={() => handleDownload(app.resumePath, app.name)}
-                      className="bg-[#552586]"
-                    />
-                    <Button
-                      type="primary"
-                      shape="circle"
-                      icon={<Award size={16} aria-hidden="true" />}
-                      aria-label={`Generate certificate for ${app.name}`}
-                      title="Generate certificate"
-                      onClick={() => handleGenerateCertificate(app)}
-                      className="bg-[#552586]"
-                    />
-                    <Button
-                      danger
-                      shape="circle"
-                      icon={<Trash2 size={16} aria-hidden="true" />}
-                      aria-label={`Delete ${app.name}'s application`}
-                      title="Delete"
-                      onClick={() => handleDelete(app._id)}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-
-            {filteredApplications.length === 0 && (
-              <tr>
-                <td colSpan="7" className="text-center py-6 text-gray-500 italic">
-                  {applications.length === 0
-                    ? "No applications found."
-                    : "No applications match your search."}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {filteredApplications.length > 0 && (
-        <div className="mt-4 flex justify-end">
-          <Pagination
-            current={Math.min(currentPage, totalPages)}
-            pageSize={pageSize}
-            pageSizeOptions={["10", "20", "50", "100"]}
-            total={filteredApplications.length}
-            showSizeChanger
-            showTotal={(total, range) => `${range[0]}-${range[1]} of ${total}`}
-            onChange={(page, size) => {
-              setCurrentPage(page);
-              setPageSize(size);
+      <Card className="overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-[#ebe6f7] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+          <SearchInput
+            value={searchTerm}
+            onChange={(value) => {
+              setSearchTerm(value);
+              setCurrentPage(1);
             }}
+            placeholder="Search by name, email, or phone"
+            label="Search job applications by name, email, or phone"
+            className="sm:max-w-md sm:flex-1"
           />
+          <span className="badge-neutral self-start sm:self-auto" aria-live="polite">
+            {filteredApplications.length} {filteredApplications.length === 1 ? "application" : "applications"}
+          </span>
         </div>
-      )}
+
+        {loading ? (
+          <TableSkeleton rows={6} columns={6} />
+        ) : filteredApplications.length === 0 ? (
+          <EmptyState
+            icon={Inbox}
+            title={applications.length === 0 ? "No applications found." : "No applications match your search."}
+            description={applications.length === 0 ? "New applicants from the careers page will appear here." : "Try a different name, email or phone number."}
+          />
+        ) : (
+          <>
+            {/* Desktop table */}
+            <div className="table-wrap hidden lg:block">
+              <table className="table-ui">
+                <thead>
+                  <tr>
+                    <th className="w-10">
+                      <input
+                        ref={pageSelectRef}
+                        type="checkbox"
+                        className="checkbox"
+                        checked={allVisibleSelected}
+                        onChange={(event) => {
+                          setSelectedIds((current) => event.target.checked
+                            ? [...new Set([...current, ...visibleIds])]
+                            : current.filter((id) => !visibleIds.includes(id))
+                          );
+                        }}
+                        aria-label="Select all applications on this page"
+                        data-tooltip="Select all on this page"
+                      />
+                    </th>
+                    <th>Applicant</th>
+                    <th>Contact</th>
+                    <th>College</th>
+                    <th>Job</th>
+                    <th className="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visibleApplications.map((app) => {
+                    const selected = selectedIds.includes(app._id);
+                    return (
+                      <tr key={app._id} className={selected ? "!bg-[#7c3aed]/[0.06]" : undefined}>
+                        <td>
+                          <input
+                            type="checkbox"
+                            className="checkbox"
+                            checked={selected}
+                            onChange={(event) => toggleOne(app._id, event.target.checked)}
+                            aria-label={`Select ${app.name}'s application`}
+                          />
+                        </td>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#ddd6fe] to-[#bae6fd] text-xs font-bold text-[#3b1f78]">{initials(app.name)}</span>
+                            <span className="font-semibold text-ink">{app.name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex flex-col items-start gap-0.5">
+                            <button type="button" onClick={() => copyText(app.email)} data-tooltip={`${app.email} — click to copy`} className="inline-flex items-center gap-1.5 text-[13px] text-[#6d28d9] hover:underline">
+                              <Mail size={13} aria-hidden="true" /> {shortText(app.email, 22)}
+                            </button>
+                            <button type="button" onClick={() => copyText(app.phone)} data-tooltip={`${app.phone} — click to copy`} className="inline-flex items-center gap-1.5 text-[13px] text-ink-soft hover:text-[#6d28d9] hover:underline">
+                              <Phone size={13} aria-hidden="true" /> {app.phone}
+                            </button>
+                          </div>
+                        </td>
+                        <td className="max-w-[200px]" data-tooltip={app.college || undefined}>
+                          <span className="block truncate">{app.college || "—"}</span>
+                        </td>
+                        <td><span className="badge-violet max-w-[220px] truncate">{titleFor(app)}</span></td>
+                        <td className="text-right">{rowActions(app)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile / tablet cards */}
+            <ul className="divide-y divide-[#f0ecf9] lg:hidden">
+              {visibleApplications.map((app) => {
+                const selected = selectedIds.includes(app._id);
+                return (
+                  <li key={app._id} className={cx("flex gap-3 p-4", selected && "bg-[#7c3aed]/[0.05]")}>
+                    <input
+                      type="checkbox"
+                      className="checkbox mt-2.5"
+                      checked={selected}
+                      onChange={(event) => toggleOne(app._id, event.target.checked)}
+                      aria-label={`Select ${app.name}'s application`}
+                    />
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <p className="font-semibold text-ink">{app.name}</p>
+                      <span className="badge-violet">{titleFor(app)}</span>
+                      <button type="button" onClick={() => copyText(app.email)} className="flex max-w-full items-center gap-1.5 truncate text-xs text-[#6d28d9]"><Copy size={12} aria-hidden="true" />{app.email}</button>
+                      <button type="button" onClick={() => copyText(app.phone)} className="flex items-center gap-1.5 text-xs text-ink-soft"><Phone size={12} aria-hidden="true" />{app.phone}</button>
+                      {app.college && <p className="flex items-center gap-1.5 text-xs text-ink-muted"><GraduationCap size={12} aria-hidden="true" />{app.college}</p>}
+                    </div>
+                    <div className="flex flex-col">{rowActions(app)}</div>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="border-t border-[#ebe6f7]">
+              <Pagination
+                page={Math.min(currentPage, totalPages)}
+                pageSize={pageSize}
+                total={filteredApplications.length}
+                onPageChange={setCurrentPage}
+                onPageSizeChange={(size) => {
+                  setPageSize(size);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+          </>
+        )}
+      </Card>
+
+      {/* Floating selection bar */}
+      <AnimatePresence>
+        {selectedIds.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ type: "spring", stiffness: 380, damping: 32 }}
+            className="sticky bottom-4 z-20 mx-auto flex w-fit max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-white/80 bg-[#1d1736]/90 p-2 pl-4 text-white shadow-glass-lg backdrop-blur-xl"
+            role="region"
+            aria-label="Selected applications"
+          >
+            <span className="mr-1 text-sm font-semibold">{selectedIds.length} selected</span>
+            <button type="button" className="btn btn-sm bg-gradient-to-br from-[#7c3aed] to-[#a855f7] text-white" onClick={handleGenerateSelectedCertificates} data-tooltip="Open the selected applicants as letters">
+              <Award size={14} aria-hidden="true" /> Generate certificates
+            </button>
+            <button type="button" className="btn btn-sm bg-white/10 text-white hover:bg-white/20" onClick={handleOpenSelectedResumes}>
+              <FileText size={14} aria-hidden="true" /> Open selected resumes
+            </button>
+            <button type="button" className="btn btn-sm bg-rose-500/90 text-white hover:bg-rose-500" onClick={handleDeleteSelected}>
+              <Trash2 size={14} aria-hidden="true" /> Delete selected
+            </button>
+            <IconButton label="Clear selection" icon={X} className="text-white/70 hover:bg-white/10 hover:text-white" onClick={() => setSelectedIds([])} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

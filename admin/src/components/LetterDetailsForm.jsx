@@ -8,25 +8,23 @@ import {
   templateSetFor,
 } from "../lib/letters";
 
+// Both variants use the design-system controls; "glass" stacks the selects for narrow panels.
 const STYLES = {
   default: {
-    selects: "flex gap-4",
-    select: "border p-2 rounded",
-    grid: "grid grid-cols-2 gap-4",
-    label: "text-sm font-semibold mb-1",
-    input: "border rounded p-2",
-    collegeInput: undefined,
+    selects: "grid gap-3",
+    select: "select",
+    grid: "grid grid-cols-1 gap-4 sm:grid-cols-2",
+    label: "label",
+    input: "input",
+    collegeInput: "input",
   },
   glass: {
     selects: "grid gap-3",
-    select:
-      "w-full rounded-xl border border-purple-100 bg-white/80 px-3 py-2.5 text-sm text-gray-800 shadow-sm outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-200",
+    select: "select",
     grid: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-    label: "mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500",
-    input:
-      "w-full rounded-xl border border-purple-100 bg-white/80 px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-200",
-    collegeInput:
-      "w-full rounded-xl border border-purple-100 bg-white/80 px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-purple-300 focus:ring-2 focus:ring-purple-200",
+    label: "label",
+    input: "input",
+    collegeInput: "input",
   },
 };
 

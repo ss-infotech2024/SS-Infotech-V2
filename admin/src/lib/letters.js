@@ -144,11 +144,22 @@ export async function saveCertificateLog(letter) {
 // Captures a rendered letter as a PNG data URL at 2x resolution.
 // `options` are extra html2canvas options (e.g. ignoreElements to skip cloning unrelated UI).
 export async function captureLetterImage(element, options = {}) {
+  const { onclone, ...rest } = options;
   const canvas = await html2canvas(element, {
     scale: 2,
     useCORS: true,
     backgroundColor: "#ffffff",
-    ...options,
+    ...rest,
+    // On-screen previews are shrunk with `transform: scale()`. html2canvas positions words
+    // using the shrunk size but draws glyphs at full size, so text overlaps. Undo the
+    // preview scaling in html2canvas's private copy of the page so the letter is captured
+    // at its true A4 size (the visible preview is unaffected).
+    onclone: (clonedDocument, clonedElement) => {
+      clonedDocument.querySelectorAll("[data-letter-scale]").forEach((node) => {
+        node.style.transform = "none";
+      });
+      onclone?.(clonedDocument, clonedElement);
+    },
   });
   return canvas.toDataURL("image/png");
 }
